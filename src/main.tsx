@@ -2,14 +2,13 @@ import { ThemeProvider } from '@emotion/react';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
-import './index.css';
-import App from './App.tsx';
+import AppRouter from './routes/index.tsx';
 import { theme } from './styles/them.ts';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ThemeProvider theme={theme}>
-      <App />
+      <AppRouter />
     </ThemeProvider>
   </StrictMode>,
 );
