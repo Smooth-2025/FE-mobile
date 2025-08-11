@@ -1,6 +1,5 @@
 import { lazy, Suspense, type ReactNode } from 'react';
 import { createBrowserRouter, Navigate, RouterProvider, type RouteObject } from 'react-router-dom';
-
 import AppLayout from '@/layout/AppLayout';
 
 // page lazy import
