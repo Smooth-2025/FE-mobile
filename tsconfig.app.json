@@ -35,6 +35,7 @@
       "@hooks/*": ["hooks/*"],
       "@layout/*": ["layout/*"],
       "@pages/*": ["pages/*"],
+      "@routes/*": ["routes/*"],
       "@store/*": ["store/*"],
       "@styles/*": ["styles/*"],
       "@types/*": ["types/*"],
