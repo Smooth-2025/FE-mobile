@@ -1,3 +1,38 @@
 #!/bin/sh
+set -e
+
+# If node is not found, try more managers/locations
+if ! command -v node >/dev/null 2>&1; then
+  # Homebrew nvm shim
+  if [ -s "/opt/homebrew/opt/nvm/nvm.sh" ]; then
+    export NVM_DIR="$HOME/.nvm"
+    . "/opt/homebrew/opt/nvm/nvm.sh"
+  fi
+fi
+
+# Volta
+if ! command -v node >/dev/null 2>&1; then
+  if command -v volta >/dev/null 2>&1; then
+    export VOLTA_HOME="$HOME/.volta"
+    export PATH="$VOLTA_HOME/bin:$PATH"
+  fi
+fi
+
+# nodenv
+if ! command -v node >/dev/null 2>&1; then
+  if command -v nodenv >/dev/null 2>&1; then
+    export PATH="$(nodenv root)/shims:$PATH"
+  fi
+fi
+
+# As a last resort, if this repo was opened in a shell where node exists,
+# hard-prepend that directory to PATH for non-interactive git hook shells.
+if ! command -v node >/dev/null 2>&1; then
+  NODE_BIN_DIR="$(/usr/bin/env bash -lc 'command -v node >/dev/null 2>&1 && dirname "$(command -v node)" || echo ""')"
+  if [ -n "$NODE_BIN_DIR" ]; then
+    export PATH="$NODE_BIN_DIR:$PATH"
+  fi
+fi
 
 npx lint-staged
+
