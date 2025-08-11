@@ -37,7 +37,7 @@ export default tseslint.config([
       'import/resolver': {
         typescript: {
           // paths를 쓰면 project 지정 가능
-          // project: './tsconfig.json',
+          project: './tsconfig.json',
         },
       },
     },
