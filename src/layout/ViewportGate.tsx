@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { VIEWPORT_MAX_WIDTH, VIEWPORT_MIN_WIDTH } from '@/utils/viewPort';
+import { VIEWPORT_MAX_WIDTH, VIEWPORT_MIN_WIDTH } from '@/constants/viewPort';
 import { useViewportRangeGate } from '@/hooks/useViewportRangeGate';
 import type { ReactNode } from 'react';
 

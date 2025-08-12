@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { VIEWPORT_MAX_WIDTH, VIEWPORT_MIN_WIDTH } from '@/utils/viewPort';
+import { VIEWPORT_MAX_WIDTH, VIEWPORT_MIN_WIDTH } from '@/constants/viewPort';
 
 export function useViewportRangeGate(min = VIEWPORT_MIN_WIDTH, max = VIEWPORT_MAX_WIDTH) {
   const [allowed, setAllowed] = useState(true);
