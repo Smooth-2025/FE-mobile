@@ -29,5 +29,4 @@ export const ButtonWrapper = styled.button<{ size: 'sm' | 'md' | 'lg' }>`
 
 export const ButtonText = styled.span`
   font-size: 16px;
-  font-weight: bold;
 `;
