@@ -85,6 +85,20 @@ export const GlobalStyle = () => (
         font-display: swap;
       }
 
+      html,
+      body,
+      #root {
+        height: 100%;
+      }
+      :root {
+        --app-dvh: 100dvh;
+      }
+      .safe-p {
+        padding-left: max(16px, env(safe-area-inset-left));
+        padding-right: max(16px, env(safe-area-inset-right));
+        padding-bottom: max(16px, env(safe-area-inset-bottom));
+      }
+
       *,
       *::before,
       *::after {
