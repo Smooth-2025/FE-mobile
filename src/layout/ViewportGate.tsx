@@ -8,7 +8,6 @@ const Blocked = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px;
 `;
 const Card = styled.div`
   width: 100%;
