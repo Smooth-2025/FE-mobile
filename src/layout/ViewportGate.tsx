@@ -3,6 +3,29 @@ import { VIEWPORT_MAX_WIDTH, VIEWPORT_MIN_WIDTH } from '@/constants/viewPort';
 import { useViewportRangeGate } from '@/hooks/useViewportRangeGate';
 import type { ReactNode } from 'react';
 
+const Blocked = styled.div`
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+const Card = styled.div`
+  width: 100%;
+  max-width: 560px;
+  border-radius: 16px;
+  padding: 24px;
+  background: ${({ theme }) => theme.colors?.bg_page ?? '#111'};
+  color: ${({ theme }) => theme?.colors?.primary600 ?? '#fff'};
+  h1 {
+    font-size: 20px;
+    margin: 0 0 12px;
+  }
+  p,
+  li {
+    line-height: 1.6;
+  }
+`;
+
 type Props = { children: ReactNode };
 
 export default function ViewportGate({ children }: Props) {
@@ -28,27 +51,3 @@ export default function ViewportGate({ children }: Props) {
     </Blocked>
   );
 }
-
-const Blocked = styled.div`
-  min-height: 100dvh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-`;
-const Card = styled.div`
-  width: 100%;
-  max-width: 560px;
-  border-radius: 16px;
-  padding: 24px;
-  background: ${({ theme }) => theme.colors?.bg_page ?? '#111'};
-  color: ${({ theme }) => theme?.colors?.primary600 ?? '#fff'};
-  h1 {
-    font-size: 20px;
-    margin: 0 0 12px;
-  }
-  p,
-  li {
-    line-height: 1.6;
-  }
-`;
