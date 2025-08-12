@@ -1,29 +1,40 @@
 import styled from '@emotion/styled';
-import { Outlet, Link } from 'react-router-dom';
+import { Outlet, useMatches } from 'react-router-dom';
+import { theme } from '@/styles/theme';
+import BottomNav, { NAV_HEIGHT } from './BottomNav';
 
 const Shell = styled.div`
-  padding: 16px 24px;
+  width: 100%;
+  min-height: 100dvh;
+  background-color: ${theme.colors.bg_page};
+  box-sizing: border-box;
 `;
 
-const Nav = styled.nav`
-  display: flex;
-  gap: 12px;
-  margin-bottom: 16px;
-  a {
-    text-decoration: none;
-    color: ${({ theme }) => theme.colors.primary600};
-  }
+const Content = styled.main<{ $hasBottomNav: boolean }>`
+  height: calc(100dvh - (${(props) => (props.$hasBottomNav ? `${NAV_HEIGHT}px` : '0px')}));
+  overflow: auto;
+  padding-bottom: 20px;
+  box-sizing: border-box;
 `;
+
+type RouteHandle = { hideBottomNav?: boolean };
+type MatchUnknown = { handle?: unknown };
+
+const isRouteHandle = (h: unknown): h is RouteHandle =>
+  typeof h === 'object' && h !== null && 'hideBottomNav' in (h as Record<string, unknown>);
+
 export default function AppLayout() {
+  const matches = useMatches() as ReadonlyArray<MatchUnknown>;
+  const hideBottomNav = matches.some(
+    (m) => isRouteHandle(m.handle) && m.handle.hideBottomNav === true,
+  );
+
   return (
     <Shell>
-      <Nav>
-        <Link to="/">Home</Link>
-        <Link to="/drive">Drive</Link>
-        <Link to="/report">Report</Link>
-        <Link to="/mypage">MyPage</Link>
-      </Nav>
-      <Outlet />
+      <Content $hasBottomNav={!hideBottomNav}>
+        <Outlet />
+      </Content>
+      {!hideBottomNav && <BottomNav />}
     </Shell>
   );
 }

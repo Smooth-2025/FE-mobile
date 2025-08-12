@@ -34,6 +34,8 @@ const routes: RouteObject[] = [
       { path: 'drive', element: <DrivePage /> },
       { path: 'report', element: <ReportPage /> },
       { path: 'mypage', element: <MyPage /> },
+      //-- 하단 네비바 제거시(handle) 사용   --
+      // { path: 'mypage/:id', element: <MyPage />, handle: { hideBottomNav: true } },
     ],
   },
   // 404
