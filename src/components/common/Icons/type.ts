@@ -10,7 +10,9 @@ export type IconName =
   | 'user'
   | 'warningTriangle'
   | 'warningCircle'
-  | 'checkmarkCircle';
+  | 'checkmarkCircle'
+  | 'chevronLeft'
+  | 'close';
 
 export interface IconProps extends IconStyleProps {
   name: IconName;
