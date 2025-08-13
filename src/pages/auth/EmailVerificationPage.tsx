@@ -6,6 +6,7 @@ import { useEmailVerification } from '@hooks/useEmailVerification';
 import { useCountdown } from '@hooks/useCountdown';
 import { useToast } from '@hooks/useToast';
 import { theme } from '@styles/theme';
+import AlertToast from '@components/common/AlertToast/AlertToast';
 
 const ErrorMessage = styled.p`
   color: #ef4444;
@@ -134,159 +135,173 @@ const ResendLink = styled.button`
 `;
 
 export function EmailVerificationPage() {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { showToast } = useToast();
-  
-  const [verificationCode, setVerificationCode] = useState('');
-  const [codeError, setCodeError] = useState('');
-  const { verifyCode, resendCode, isLoading } = useEmailVerification();
-  
-  // 이메일 가져오기
-  const email = location.state?.email;
-  
-  // 타이머 설정 (3분 = 180초)
-  const { formattedTime, isExpired, startTimer, resetTimer } = useCountdown({
-    initialSeconds: 180,
-    onComplete: () => {
-    showToast({ 
-      type: 'error', 
-      content: '인증 유효 시간이 지났습니다. 다시 요청해주세요.' 
-    })}
-  });
+    const navigate = useNavigate();
+    const location = useLocation();
+    const { showToast, toasts } = useToast();
 
-  useEffect(() => {
-    if (!email) {
-      navigate('/signup/email');
-      return;
-    }
-    
-    // 타이머 시작
-    startTimer();
-  }, [email, navigate, startTimer]);
+    const [verificationCode, setVerificationCode] = useState('');
+    const [codeError, setCodeError] = useState('');
+    const { verifyCode, resendCode, isLoading } = useEmailVerification();
 
-  // 인증번호 유효성 검사
-  const validateCode = (code: string): string => {
-    if (!code) {
-      return '인증번호를 입력해주세요.';
-    }
-    if (!/^\d{5}$/.test(code)) {
-      return '인증번호는 5자리 숫자입니다.';
-    }
-    return '';
-  };
+    // 이메일 가져오기
+    const email = location.state?.email;
 
-  // 인증번호 입력 처리
-  const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/\D/g, '').slice(0, 5); // 숫자만, 최대 5자리
-    setVerificationCode(value);
-    
-    // 실시간 유효성 검사
-    const error = validateCode(value);
-    setCodeError(error);
-  };
+    // 타이머 설정 (3분 = 180초)
+    const { formattedTime, isExpired, startTimer, resetTimer } = useCountdown({
+        initialSeconds: 180,
+        onComplete: () => {
+            showToast({
+                type: 'error',
+                content: '인증 유효 시간이 지났습니다. 다시 요청해주세요.'
+            })
+        }
+    });
 
-  // 인증 완료
-  const handleVerify = async () => {
-    if (isExpired) {
-      showToast({
-        type: 'error',
-        content: '인증 시간이 만료되었습니다.'
-      });
-      return;
-    }
+    useEffect(() => {
+        if (!email) {
+            navigate('/signup/email');
+            return;
+        }
 
-    const error = validateCode(verificationCode);
-    if (error) {
-      setCodeError(error);
-      return;
-    }
+        // 타이머 시작
+        startTimer();
+    }, [email, navigate, startTimer]);
 
-    const success = await verifyCode(email, verificationCode);
-    if (success) {
-      // 다음 단계로 이동
-      navigate('/signup/profile', { 
-        state: { email, emailVerified: true } 
-      });
-    } else {
-      setCodeError('인증번호를 확인해 주세요');
-    }
-  };
+    // 인증번호 유효성 검사
+    const validateCode = (code: string): string => {
+        if (!code) {
+            return '인증번호를 입력해주세요.';
+        }
+        if (!/^\d{5}$/.test(code)) {
+            return '인증번호는 5자리 숫자입니다.';
+        }
+        return '';
+    };
 
-  // 재전송
-  const handleResend = async () => {
-    const success = await resendCode(email);
-    if (success) {
-      resetTimer();
-      setVerificationCode('');
-      setCodeError('');
-    }
-  };
+    // 인증번호 입력 처리
+    const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value.replace(/\D/g, '').slice(0, 5); // 숫자만, 최대 5자리
+        setVerificationCode(value);
 
-  const isCodeValid = verificationCode.length === 5 && !codeError;
+        // 실시간 유효성 검사
+        const error = validateCode(value);
+        setCodeError(error);
+    };
 
-  return (
-    <Container>
-      <Header>
-        <BackButton onClick={() => navigate(-1)}>
-          ←
-        </BackButton>
-        
-        <ProgressBar>
-          <ProgressFill progress={25} />
-        </ProgressBar>
-        
-        <Title>이메일 인증</Title>
-        <Subtitle>
-          {email}로 인증코드를 발송했습니다.<br />
-          메일을 확인하고 인증코드 5자리를 입력해주세요.
-        </Subtitle>
-      </Header>
+    // 인증 완료
+    const handleVerify = async () => {
+        if (isExpired) {
+            showToast({
+                type: 'error',
+                content: '인증 시간이 만료되었습니다.'
+            });
+            return;
+        }
 
-      <EmailDisplay>{email}</EmailDisplay>
+        const error = validateCode(verificationCode);
+        if (error) {
+            setCodeError(error);
+            return;
+        }
 
-      <FormGroup>
-        <Label>인증코드</Label>
-        <Input
-          type="text"
-          placeholder="인증코드 5자리"
-          value={verificationCode}
-          onChange={handleCodeChange}
-          maxLength={5}
+        const success = await verifyCode(email, verificationCode);
+        if (success) {
+            // 다음 단계로 이동
+            navigate('/signup/profile', {
+                state: { email, emailVerified: true }
+            });
+        } else {
+            setCodeError('인증번호를 확인해 주세요');
+        }
+    };
 
-          style={{
-            borderColor: codeError ? '#ef4444' : undefined,
-             borderWidth: codeError ? '2px' : '1px'
-          }}
-        />
-        {codeError && (
-    <ErrorMessage>{codeError}</ErrorMessage>
-    )}
+    // 재전송
+    const handleResend = async () => {
+        const success = await resendCode(email);
+        if (success) {
+            resetTimer();
+            setVerificationCode('');
+            setCodeError('');
+        }
+    };
 
-        {!isExpired && !codeError &&(
-          <TimerDisplay>{formattedTime}</TimerDisplay>
-        )}
+    const isCodeValid = verificationCode.length === 5 && !codeError;
 
-        {isExpired && (
-    <ErrorMessage>인증 시간이 만료되었습니다.</ErrorMessage>
-  )}
-      </FormGroup>
+    return (
+        <>
+            <Container>
+                <Header>
+                    <BackButton onClick={() => navigate(-1)}>
+                        ←
+                    </BackButton>
 
-      <VerifyButton
-        disabled={!isCodeValid || isLoading || isExpired}
-        onClick={handleVerify}
-      >
-        {isLoading ? '인증 중...' : '인증완료'}
-      </VerifyButton>
+                    <ProgressBar>
+                        <ProgressFill progress={25} />
+                    </ProgressBar>
 
-      <ResendText>
-        메일이 도착하지 않았나요?{' '}
-        <ResendLink onClick={handleResend} disabled={isLoading}>
-          재전송
-        </ResendLink>
-      </ResendText>
-    </Container>
-  );
+                    <Title>이메일 인증</Title>
+                    <Subtitle>
+                        {email}로 인증코드를 발송했습니다.<br />
+                        메일을 확인하고 인증코드 5자리를 입력해주세요.
+                    </Subtitle>
+                </Header>
+
+                <EmailDisplay>{email}</EmailDisplay>
+
+                <FormGroup>
+                    <Label>인증코드</Label>
+                    <Input
+                        type="text"
+                        placeholder="인증코드 5자리"
+                        value={verificationCode}
+                        onChange={handleCodeChange}
+                        maxLength={5}
+
+                        style={{
+                            borderColor: codeError ? '#ef4444' : undefined,
+                            borderWidth: codeError ? '2px' : '1px'
+                        }}
+                    />
+                    {codeError && (
+                        <ErrorMessage>{codeError}</ErrorMessage>
+                    )}
+
+                    {!isExpired && !codeError && (
+                        <TimerDisplay>{formattedTime}</TimerDisplay>
+                    )}
+
+                    {isExpired && (
+                        <ErrorMessage>인증 시간이 만료되었습니다.</ErrorMessage>
+                    )}
+                </FormGroup>
+
+                <VerifyButton
+                    disabled={!isCodeValid || isLoading || isExpired}
+                    onClick={handleVerify}
+                >
+                    {isLoading ? '인증 중...' : '인증완료'}
+                </VerifyButton>
+
+                <ResendText>
+                    메일이 도착하지 않았나요?{' '}
+                    <ResendLink onClick={handleResend} disabled={isLoading}>
+                        재전송
+                    </ResendLink>
+                </ResendText>
+            </Container>
+            {toasts && toasts.map(toast => (
+                <AlertToast
+                    key={toast.id}
+                    type={toast.type}
+                    title={toast.title}
+                    content={toast.content}
+                    position={toast.position}
+                    duration={toast.duration}
+                />
+            ))}
+        </>
+
+    );
 }
 
 export default EmailVerificationPage;

@@ -7,7 +7,7 @@ export const useEmailVerification = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [verificationSent, setVerificationSent] = useState(false);
   const [verifiedEmail, setVerifiedEmail] = useState<string | null>(null);
-  const { showLoginError, showSuccess } = useToast();
+  const { showLoginError, showSuccess, toasts } = useToast();
 
   // 인증코드 발송
   const sendCode = async (email: string): Promise<boolean> => {
@@ -74,5 +74,6 @@ export const useEmailVerification = () => {
     sendCode,
     verifyCode,
     resendCode,
+    toasts,
   };
 };

@@ -4,6 +4,7 @@ import styled from '@emotion/styled';
 import { Input } from '@components/common';
 import { useEmailVerification } from '@hooks/useEmailVerification';
 import { theme } from '@styles/theme';
+import AlertToast from '@components/common/AlertToast/AlertToast';
 
 const ErrorMessage = styled.p`
   color: #ef4444;
@@ -98,7 +99,7 @@ export function EmailInputPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
-  const { sendCode, isLoading } = useEmailVerification();
+  const { sendCode, isLoading, toasts } = useEmailVerification();
 
   // 이메일 유효성 검사
   const validateEmail = (email: string): string => {
@@ -141,6 +142,7 @@ export function EmailInputPage() {
   const isEmailValid = email && !emailError;
 
   return (
+    <>
     <Container>
       <Header>
         <BackButton onClick={() => navigate(-1)}>
@@ -181,6 +183,18 @@ export function EmailInputPage() {
         {isLoading ? '발송 중...' : '인증코드 전송'}
       </SendButton>
     </Container>
+    {toasts && toasts.map(toast => (
+        <AlertToast
+          key={toast.id}
+          type={toast.type}
+          title={toast.title}
+          content={toast.content}
+          position={toast.position}
+          duration={toast.duration}
+        />
+      ))}
+    </>
+    
   );
 }
 
