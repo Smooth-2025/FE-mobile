@@ -1,16 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { useDispatch, useSelector, type TypedUseSelectorHook } from 'react-redux';
 import alertReducer from './slices/alertSlice';
-import userReducer from './slices/userSlice';
 import websocketReducer from './slices/websocketSlice';
 import websocketMiddleware from './middleware/websocketMiddleware';
-
+import authReducer from './slices/authSlice';
 
 export const store = configureStore({
   reducer: {
     alert: alertReducer,
-    user: userReducer,
     websocket: websocketReducer,
+    auth: authReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
