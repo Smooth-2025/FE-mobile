@@ -17,7 +17,6 @@ import type { Middleware } from '@reduxjs/toolkit';
 import type { Subscription } from 'rxjs';
 import type { IMessage } from '@stomp/stompjs';
 import type { AlertType } from '../slices/alertSlice';
-import type { RootState } from '../index';
 
 let rxStomp: RxStomp | null = null;
 const subscriptions: Map<string, Subscription> = new Map();
@@ -64,7 +63,7 @@ function extractDisplayText(obj: unknown): string {
   }
 }
 
-export const websocketMiddleware: Middleware = ({ dispatch, getState }) => (next) => (action) => {
+export const websocketMiddleware: Middleware = ({ dispatch }) => (next) => (action) => {
   const result = next(action);
 
   if (connectWebSocket.match(action)) {
@@ -77,21 +76,12 @@ export const websocketMiddleware: Middleware = ({ dispatch, getState }) => (next
 
     const socket = new SockJS('/ws');
     const token = tokenUtils.getToken();
-    const state = getState() as RootState;
-    let userId = state.auth?.user?.id;
-    
-    // userId가 없지만 토큰이 있으면 더미 userId 사용 (임시 해결책)
-    if (!userId && token) {
-      userId = 'user123'; // 실제로는 토큰에서 파싱
-      console.warn('⚠️ userId가 없어서 더미 값 사용:', userId);
-    }
 
     rxStomp = new RxStomp();
     const config: RxStompConfig = {
       webSocketFactory: () => socket,
       connectHeaders: {
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        ...(userId ? { userId } : {})
+        ...(token ? { Authorization: `Bearer ${token}` } : {})
       },
       heartbeatIncoming: 10000,
       heartbeatOutgoing: 10000,
@@ -132,7 +122,7 @@ export const websocketMiddleware: Middleware = ({ dispatch, getState }) => (next
   }
 
   if (subscribeToAlerts.match(action)) {
-    const destination = `/user/alert`; // ✅ 백엔드 설정에 맞는 개인 destination
+    const destination = `/user/alert`; 
     if (rxStomp) {
       console.warn(`📩 알림 토픽 구독 시도: ${destination}`);
 

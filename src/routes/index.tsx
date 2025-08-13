@@ -13,7 +13,7 @@ const NotFoundPage = lazy(() => import('@pages/NotFoundPage'));
 
 // 권한 여부에 따른 가드 설정
 function RequireAuth({ children }: { children: ReactNode }) {
-  const isAuth = Boolean(localStorage.getItem('token')); // 권한 부분은 로직에 맞게 수정
+  const isAuth = Boolean(localStorage.getItem('smooth_token')); // 올바른 토큰 키 사용
   return isAuth ? <>{children}</> : <Navigate to="/login" replace />;
 }
 

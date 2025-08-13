@@ -13,7 +13,7 @@ import type { UseWebSocketReturn, UseWebSocketProps } from '@/services/websocket
 
 
 export const useWebSocket = (props: UseWebSocketProps = {}): UseWebSocketReturn => {
-  const { autoConnect = false, userId } = props;
+  const { autoConnect = false } = props;
   const dispatch = useDispatch<AppDispatch>();
 
   const connectionStatus = useSelector((s: RootState) => s.websocket.connectionStatus);
@@ -24,11 +24,9 @@ export const useWebSocket = (props: UseWebSocketProps = {}): UseWebSocketReturn 
 
   const connect = useCallback(async () => {
     dispatch(connectWebSocket());
-    if (userId) {
-      // createAction 사용 시 payload는 객체여야 함
-      dispatch(subscribeToAlerts({ userId }));
-    }
-  }, [dispatch, userId]);
+    // userId 없이 바로 알림 구독
+    dispatch(subscribeToAlerts({}));
+  }, [dispatch]);
 
   const disconnect = useCallback(() => {
     dispatch(disconnectWebSocket());
@@ -37,10 +35,9 @@ export const useWebSocket = (props: UseWebSocketProps = {}): UseWebSocketReturn 
   const reconnect = useCallback(async () => {
     dispatch(disconnectWebSocket());
     dispatch(connectWebSocket());
-    if (userId) {
-      dispatch(subscribeToAlerts({ userId }));
-    }
-  }, [dispatch, userId]);
+    // userId 없이 바로 알림 구독
+    dispatch(subscribeToAlerts({}));
+  }, [dispatch]);
 
   const sendCommand: UseWebSocketReturn['sendCommand'] = useCallback((command, data) => {
     dispatch(sendCommandAction({ command, data }));
