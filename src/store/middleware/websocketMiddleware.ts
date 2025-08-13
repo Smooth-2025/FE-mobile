@@ -1,11 +1,23 @@
-import { RxStomp, RxStompState } from '@stomp/rx-stomp';
+import { RxStomp, RxStompState, type RxStompConfig } from '@stomp/rx-stomp';
 import SockJS from 'sockjs-client';
-import { ConnectionStatus } from '../../services/websocket/types';
-import { setConnectionStatus, addAlert } from '../slices/alertSlice';
+import { ConnectionStatus } from '@/services/websocket/types';
+import { tokenUtils } from '@/utils/token';
+import { setConnectionStatus, setError } from '../slices/websocketSlice';
+import { addAlert } from '../slices/alertSlice';
+import {
+  connectWebSocket,
+  disconnectWebSocket,
+  subscribeToAlerts,
+  unsubscribeFromAlerts,
+  sendTestAlert,
+  pingWebSocket,
+  sendCommand,
+} from './websocketActions';
 import type { Middleware } from '@reduxjs/toolkit';
-import type { IMessage, StompConfig } from '@stomp/stompjs';
 import type { Subscription } from 'rxjs';
-import type { WebSocketAction } from './websocketActions';
+import type { IMessage } from '@stomp/stompjs';
+import type { AlertType } from '../slices/alertSlice';
+import type { RootState } from '../index';
 
 let rxStomp: RxStomp | null = null;
 const subscriptions: Map<string, Subscription> = new Map();
@@ -23,21 +35,28 @@ function getString(obj: unknown, key: string): string | undefined {
 function getAny(obj: unknown, key: string): unknown {
   return isRecord(obj) ? obj[key] : undefined;
 }
-
-/** 화면에 보여줄 문자열만 추출 (우선순위: message > content > title > JSON) */
+function parseAlertType(v: unknown): AlertType {
+  if (typeof v !== 'string') return 'unknown';
+  const allowed: Record<AlertType, true> = {
+    accident: true,
+    'accident-nearby': true,
+    obstacle: true,
+    pothole: true,
+    start: true,
+    end: true,
+    unknown: true,
+  };
+  return (allowed as Record<string, true>)[v] ? (v as AlertType) : 'unknown';
+}
 function extractDisplayText(obj: unknown): string {
   if (obj === null) return '';
   if (typeof obj === 'string') return obj;
-
   const message = getString(obj, 'message');
   if (message) return message;
-
   const content = getString(obj, 'content');
   if (content) return content;
-
   const title = getString(obj, 'title');
   if (title) return title;
-
   try {
     return JSON.stringify(obj);
   } catch {
@@ -45,182 +64,181 @@ function extractDisplayText(obj: unknown): string {
   }
 }
 
-const websocketMiddleware: Middleware = ({ dispatch }) => {
-  return (next) => (action: WebSocketAction) => {
-    switch (action.type) {
-      case 'websocket/connect': {
-        if (rxStomp) {
-          rxStomp.deactivate();
-          subscriptions.clear();
-        }
+export const websocketMiddleware: Middleware = ({ dispatch, getState }) => (next) => (action) => {
+  const result = next(action);
 
-        // 프록시(/ws)로 SockJS 연결
-        const socket = new SockJS('/ws');
-        rxStomp = new RxStomp();
-
-        const config: StompConfig = {
-          webSocketFactory: () => socket,
-          heartbeatIncoming: 10000,
-          heartbeatOutgoing: 10000,
-          reconnectDelay: 3000,
-          debug: (str) => {
-            console.error('🔍 STOMP Debug:', str);
-          },
-        };
-
-        rxStomp.configure(config);
-        rxStomp.activate();
-
-        rxStomp.connectionState$.subscribe((state) => {
-          if (state === RxStompState.OPEN) {
-            dispatch(setConnectionStatus(ConnectionStatus.CONNECTED));
-            console.error('✅ STOMP 연결 성공!');
-          } else if (state === RxStompState.CLOSED) {
-            dispatch(setConnectionStatus(ConnectionStatus.DISCONNECTED));
-            subscriptions.clear();
-            console.error('❌ STOMP 연결 종료');
-          } else if (state === RxStompState.CONNECTING) {
-            dispatch(setConnectionStatus(ConnectionStatus.CONNECTING));
-          }
-        });
-        break;
+  if (connectWebSocket.match(action)) {
+    if (rxStomp) {
+      try { rxStomp.deactivate(); } catch (error) {
+        console.error('WebSocket deactivation error:', error);
       }
-
-      case 'websocket/disconnect': {
-        if (rxStomp) {
-          rxStomp.deactivate();
-          rxStomp = null;
-          subscriptions.clear();
-          dispatch(setConnectionStatus(ConnectionStatus.DISCONNECTED));
-        }
-        break;
-      }
-
-      case 'websocket/subscribe': {
-        const { userId } = action.payload;
-        const destination = `/user/${userId}/alert`;
-
-        if (rxStomp && rxStomp.connected()) {
-          console.error(`📩 알림 토픽 구독 시도: ${destination}`);
-
-          const handleReceivedData = (message: IMessage) => {
-            console.error('🎯 알림 메시지 수신!', message);
-
-            try {
-              console.error('📩 STOMP 메시지 수신:', message.body);
-              let rawData: unknown;
-              try {
-                rawData = JSON.parse(message.body);
-              } catch {
-                rawData = message.body; // 문자열인 경우 그대로
-              }
-              console.error('🚨 알림 데이터 파싱 OK:', rawData);
-
-              // 표시 텍스트
-              const display = extractDisplayText(rawData);
-
-              // 서버 필드 안전 추출
-              const type =
-                ((): string => {
-                  const t = getAny(rawData, 'type');
-                  return typeof t === 'string' ? t : 'start';
-                })();
-
-              const timestamp =
-                ((): string => {
-                  const ts = getAny(rawData, 'timestamp');
-                  return typeof ts === 'string' ? ts : new Date().toISOString();
-                })();
-
-              const idFromServer =
-                ((): string | undefined => {
-                  const id = getAny(rawData, 'id');
-                  return typeof id === 'string' ? id : undefined;
-                })();
-
-              const id =
-                idFromServer ??
-                (globalThis.crypto?.randomUUID?.() ? globalThis.crypto.randomUUID() : String(Date.now()));
-
-              const title = getString(rawData, 'title');
-              const content = getString(rawData, 'content');
-
-              // 알림 엔티티: 원문은 raw에 보존, 화면에는 message를 그대로 사용
-              const alertData = {
-                id,
-                type: type as unknown, // 프로젝트의 AlertType 합치려면 매핑 필요 시 추가
-                message: display,  // ✅ 백엔드 메시지 그대로(우선순위 추출)
-                ...(title ? { title } : {}),
-                ...(content ? { content } : {}),
-                timestamp,
-                raw: rawData,    
-                isRead: false,
-              };
-
-              dispatch(addAlert(alertData));
-
-              // (웹 전용) 브라우저 알림
-              if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
-                const notifTitle = title || '📢 알림';
-                const notifBody = display;
-             
-                new Notification(notifTitle, { body: notifBody, icon: '/favicon.ico' });
-              }
-            } catch (error) {
-              console.error('❌ 메시지 처리 오류:', error);
-            }
-          };
-
-          const subscription = rxStomp.watch(destination).subscribe(handleReceivedData);
-          subscriptions.set(destination, subscription);
-          console.error('✅ 알림 토픽 구독 완료');
-        }
-        break;
-      }
-
-      case 'websocket/unsubscribe': {
-        const { destination } = action.payload;
-        const subscription = subscriptions.get(destination);
-        if (subscription) {
-          subscription.unsubscribe();
-          subscriptions.delete(destination);
-          console.error(`🔕 구독 해제: ${destination}`);
-        }
-        break;
-      }
-
-      case 'websocket/sendTestAlert': {
-        const { type, payload } = action.payload;
-        if (rxStomp && rxStomp.connected()) {
-          const destination = '/app/test-alert';
-          const data = { type, ...payload };
-
-          rxStomp.publish({
-            destination,
-            body: JSON.stringify(data),
-          });
-          console.error('📤 테스트 알림 전송:', data);
-        }
-        break;
-      }
-
-      case 'websocket/ping': {
-        if (rxStomp && rxStomp.connected()) {
-          rxStomp.publish({
-            destination: '/app/ping',
-            body: JSON.stringify({ timestamp: new Date().toISOString() }),
-          });
-          console.error('📤 STOMP PING 메시지 전송');
-        }
-        break;
-      }
-
-      default:
-        break;
+      subscriptions.clear();
     }
 
-    return next(action);
-  };
+    const socket = new SockJS('/ws');
+    const token = tokenUtils.getToken();
+    const state = getState() as RootState;
+    let userId = state.auth?.user?.id;
+    
+    // userId가 없지만 토큰이 있으면 더미 userId 사용 (임시 해결책)
+    if (!userId && token) {
+      userId = 'user123'; // 실제로는 토큰에서 파싱
+      console.warn('⚠️ userId가 없어서 더미 값 사용:', userId);
+    }
+
+    rxStomp = new RxStomp();
+    const config: RxStompConfig = {
+      webSocketFactory: () => socket,
+      connectHeaders: {
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...(userId ? { userId } : {})
+      },
+      heartbeatIncoming: 10000,
+      heartbeatOutgoing: 10000,
+      reconnectDelay: 3000,
+      debug: (str) => console.warn('🔍 STOMP Debug:', str),
+    };
+    rxStomp.configure(config);
+    rxStomp.activate();
+
+    rxStomp.connectionState$.subscribe((state) => {
+      if (state === RxStompState.OPEN) {
+        dispatch(setConnectionStatus(ConnectionStatus.CONNECTED));
+        console.warn('✅ STOMP 연결 성공!');
+        // 원하면 여기서 자동 재구독
+        // dispatch(subscribeToAlerts());
+      } else if (state === RxStompState.CLOSED) {
+        dispatch(setConnectionStatus(ConnectionStatus.DISCONNECTED));
+        subscriptions.clear();
+        console.error('❌ STOMP 연결 종료');
+      } else if (state === RxStompState.CONNECTING) {
+        dispatch(setConnectionStatus(ConnectionStatus.CONNECTING));
+      }
+    });
+
+    return result;
+  }
+
+  if (disconnectWebSocket.match(action)) {
+    if (rxStomp) {
+      try { rxStomp.deactivate(); } catch (error) {
+        console.error('WebSocket deactivation error:', error);
+      }
+      rxStomp = null;
+      subscriptions.clear();
+      dispatch(setConnectionStatus(ConnectionStatus.DISCONNECTED));
+    }
+    return result;
+  }
+
+  if (subscribeToAlerts.match(action)) {
+    const destination = `/user/alert`; // ✅ 백엔드 설정에 맞는 개인 destination
+    if (rxStomp) {
+      console.warn(`📩 알림 토픽 구독 시도: ${destination}`);
+
+      const handleReceivedData = (message: IMessage) => {
+        try {
+          let rawData: unknown;
+          try { rawData = JSON.parse(message.body); } catch { rawData = message.body; }
+
+          const display = extractDisplayText(rawData);
+          const type: AlertType = parseAlertType(getAny(rawData, 'type'));
+          const timestamp = (() => {
+            const ts = getAny(rawData, 'timestamp');
+            return typeof ts === 'string' ? ts : new Date().toISOString();
+          })();
+          const idFromServer = (() => {
+            const v = getAny(rawData, 'id');
+            return typeof v === 'string' ? v : undefined;
+          })();
+          const id = idFromServer ?? (globalThis.crypto?.randomUUID?.()
+            ? globalThis.crypto.randomUUID()
+            : String(Date.now()));
+          const title = getString(rawData, 'title');
+          const content = getString(rawData, 'content');
+
+          dispatch(addAlert({
+            id,
+            type,
+            message: display,
+            ...(title ? { title } : {}),
+            ...(content ? { content } : {}),
+            timestamp,
+            raw: rawData,
+            isRead: false,
+          }));
+
+          // start 알림일 때 자동으로 /drive 페이지로 이동
+          if (type === 'start') {
+            // 네비게이션 이벤트 발생
+            window.dispatchEvent(new CustomEvent('navigate-to-drive', { 
+              detail: { reason: 'driving-start' } 
+            }));
+            console.warn('🚗 주행 시작 알림 수신 - /drive 페이지로 이동');
+          }
+
+          // end 알림일 때 홈으로 이동 (선택사항)
+          if (type === 'end') {
+            window.dispatchEvent(new CustomEvent('navigate-to-home', { 
+              detail: { reason: 'driving-end' } 
+            }));
+            console.warn('🏠 주행 종료 알림 수신 - 홈으로 이동');
+          }
+
+          if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+            new Notification(title || '📢 알림', { body: display, icon: '/favicon.ico' });
+          }
+        } catch (error) {
+          console.error('❌ 메시지 처리 오류:', error);
+          dispatch(setError((error as Error)?.message ?? 'message handling error'));
+        }
+      };
+
+      const sub = rxStomp.watch(destination).subscribe(handleReceivedData);
+      subscriptions.set(destination, sub);
+      console.warn('✅ 알림 토픽 구독 완료');
+    }
+    return result;
+  }
+
+  if (unsubscribeFromAlerts.match(action)) {
+    const { destination } = action.payload;
+    const sub = subscriptions.get(destination);
+    if (sub) {
+      sub.unsubscribe();
+      subscriptions.delete(destination);
+      console.warn(`🔕 구독 해제: ${destination}`);
+    }
+    return result;
+  }
+
+  if (sendTestAlert.match(action)) {
+    const { type, payload } = action.payload;
+    if (rxStomp) {
+      rxStomp.publish({ destination: '/app/test-alert', body: JSON.stringify({ type, ...payload }) });
+      console.warn('📤 테스트 알림 전송:', { type, ...payload });
+    }
+    return result;
+  }
+
+  if (pingWebSocket.match(action)) {
+    if (rxStomp) {
+      rxStomp.publish({ destination: '/app/ping', body: JSON.stringify({ timestamp: new Date().toISOString() }) });
+      console.warn('📤 STOMP PING 메시지 전송');
+    }
+    return result;
+  }
+
+  if (sendCommand.match?.(action)) {
+    const { command, data } = action.payload;
+    if (rxStomp) {
+      rxStomp.publish({ destination: command, body: JSON.stringify(data ?? {}) });
+      console.warn('📤 커맨드 전송:', { command, data });
+    }
+    return result;
+  }
+
+  return result;
 };
 
 export default websocketMiddleware;
