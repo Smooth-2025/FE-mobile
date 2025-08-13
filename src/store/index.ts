@@ -3,7 +3,7 @@ import { useDispatch, useSelector, type TypedUseSelectorHook } from 'react-redux
 import alertReducer from './slices/alertSlice';
 import userReducer from './slices/userSlice';
 import websocketReducer from './slices/websocketSlice';
-import { websocketMiddleware } from './middleware/websocketMiddleware';
+import websocketMiddleware from './middleware/websocketMiddleware';
 
 
 export const store = configureStore({
@@ -15,7 +15,7 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: ['websocket/connect/pending', 'websocket/disconnect/pending'],
+        ignoredActions: ['websocket/connect', 'websocket/disconnect', 'websocket/subscribe', 'websocket/sendTestAlert', 'websocket/ping'],
       },
     }).concat(websocketMiddleware),
 });
