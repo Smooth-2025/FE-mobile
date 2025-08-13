@@ -1,12 +1,13 @@
 import axios, { type AxiosResponse, type InternalAxiosRequestConfig } from 'axios';
 
 const api = axios.create({
-  baseURL: '',
+  baseURL: '', 
   timeout: 5000,
   headers: {
     'Content-Type': 'application/json',
   },
 });
+
 
 //요청 인터셉터
 api.interceptors.request.use(
