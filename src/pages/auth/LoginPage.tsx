@@ -337,7 +337,6 @@ export function LoginPage() {
 
           {/* 회원가입 링크 */}
           <SignupLink>
-            이메일로 가입하기{' '}
             <LinkButton 
               type="button"
               onClick={() => navigate('/register')}
