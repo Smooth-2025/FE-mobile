@@ -16,7 +16,7 @@ const userSlice = createSlice({
     setUserId: (state, action: PayloadAction<string>) => {
       state.userId = action.payload;
     },
-    clearUser: state => {
+    clearUser: (state) => {
       state.userId = null;
     },
   },

@@ -1,4 +1,4 @@
-import { ConnectionStatus } from '@/services/websocket/types.ts';
+import { ConnectionStatus, type AlertMessage } from '@/services/websocket/types.ts';
 import WebSocketService from '../../services/websocket/WebSocketService';
 import {
   connectWebSocket,
@@ -9,7 +9,6 @@ import {
   setError,
 } from '../slices/websocketSlice';
 import { addAlert } from '../slices/alertSlice';
-import type { AlertMessage } from '@/services/websocket/types.ts';
 
 export const websocketMiddleware =
   (store: { dispatch: (action: unknown) => void }) =>

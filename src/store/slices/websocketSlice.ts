@@ -17,28 +17,25 @@ export const connectWebSocket = createAsyncThunk(
   'websocket/connect',
   async (payload: WebSocketConnectPayload) => {
     return payload;
-  }
+  },
 );
 
-export const disconnectWebSocket = createAsyncThunk(
-  'websocket/disconnect',
-  async () => {
-    return {};
-  }
-);
+export const disconnectWebSocket = createAsyncThunk('websocket/disconnect', async () => {
+  return {};
+});
 
 export const sendWebSocketMessage = createAsyncThunk(
   'websocket/sendMessage',
   async (payload: WebSocketSendMessagePayload) => {
     return payload;
-  }
+  },
 );
 
 export const sendTestAlert = createAsyncThunk(
   'websocket/sendTestAlert',
   async (payload: WebSocketSendMessagePayload) => {
     return payload;
-  }
+  },
 );
 
 interface WebSocketState {

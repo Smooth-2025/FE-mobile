@@ -2,9 +2,16 @@
 // ===== 알림 관련 타입들 =====
 export type AlertType = 'accident' | 'accident-nearby' | 'obstacle' | 'pothole' | 'start' | 'end';
 
-export interface AlertMessageBase { type: AlertType; }
-export interface AlertTextMessage extends AlertMessageBase { title: string; content: string; }
-export interface AlertTimestampMessage extends AlertMessageBase { timestamp: string; }
+export interface AlertMessageBase {
+  type: AlertType;
+}
+export interface AlertTextMessage extends AlertMessageBase {
+  title: string;
+  content: string;
+}
+export interface AlertTimestampMessage extends AlertMessageBase {
+  timestamp: string;
+}
 export type AlertMessage = AlertTextMessage | AlertTimestampMessage;
 
 // ===== WebSocket 관련 타입들 =====

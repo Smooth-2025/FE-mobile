@@ -1,12 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector, type TypedUseSelectorHook } from 'react-redux';
 import alertReducer from './slices/alertSlice';
 import userReducer from './slices/userSlice';
 import websocketReducer from './slices/websocketSlice';
 import { websocketMiddleware } from './middleware/websocketMiddleware';
-import type { TypedUseSelectorHook } from 'react-redux';
 
-const store = configureStore({
+
+export const store = configureStore({
   reducer: {
     alert: alertReducer,
     user: userReducer,
@@ -26,4 +26,4 @@ export type AppDispatch = typeof store.dispatch;
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 export const useAppDispatch = () => useDispatch<AppDispatch>();
 
-export default store;
+

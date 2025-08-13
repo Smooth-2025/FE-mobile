@@ -3,18 +3,18 @@ import type { ToastProps, ToastType } from '../../components/common/AlertToast/t
 
 // 웹소켓 AlertType을 AlertToast ToastType으로 매핑
 const alertTypeMap: Record<AlertType, ToastType> = {
-  'accident': 'error',
+  accident: 'error',
   'accident-nearby': 'accident-nearby',
-  'obstacle': 'obstacle',
-  'pothole': 'pothole',
-  'start': 'success',
-  'end': 'success',
+  obstacle: 'obstacle',
+  pothole: 'pothole',
+  start: 'success',
+  end: 'success',
 };
 
 // 웹소켓 알림을 AlertToast props로 변환
 export function convertAlertToToast(alert: AlertMessage): ToastProps {
   const toastType = alertTypeMap[alert.type];
-  
+
   if ('title' in alert) {
     // 일반 알림 (title, content 있음)
     return {
@@ -35,7 +35,7 @@ export function convertAlertToToast(alert: AlertMessage): ToastProps {
       duration: 3000,
     };
   }
-  
+
   // 기본값
   return {
     type: 'error',

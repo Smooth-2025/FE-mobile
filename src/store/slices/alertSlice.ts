@@ -40,11 +40,11 @@ const alertSlice = createSlice({
       state.alerts.unshift(action.payload);
       state.unreadCount += 1;
     },
-    clearAlerts: state => {
+    clearAlerts: (state) => {
       state.alerts = [];
       state.unreadCount = 0;
     },
-    markAllAsRead: state => {
+    markAllAsRead: (state) => {
       state.unreadCount = 0;
     },
   },
