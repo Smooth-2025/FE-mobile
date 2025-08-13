@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import { theme } from '@styles/theme';
+import { Icon } from '@components/common/Icons';
 import { useAppDispatch, useAppSelector } from '@hooks/useAppRedux';
 import { Input } from '@components/common';
 import { useToast } from '@/hooks/useToast';
@@ -61,15 +62,15 @@ const PasswordToggleButton = styled.button`
   background: none;
   border: none;
   cursor: pointer;
-  color: ${theme.colors.neutral500};
-  font-size: 14px;
-  padding: 4px 8px;
+  padding: 8px; // 클릭 영역 확보
   border-radius: 4px;
   transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &:hover {
     background-color: ${theme.colors.neutral100};
-    color: ${theme.colors.neutral600};
   }
 
   &:focus {
@@ -317,7 +318,11 @@ export function LoginPage() {
                   disabled={isLoginLoading}
                   aria-label={showPassword ? '비밀번호 숨기기' : '비밀번호 보기'}
                 >
-                  {showPassword ? '숨기기' : '보기'}
+                  <Icon
+                    name={showPassword ? 'eyeOpen' : 'eyeClosed'}
+                    size={20}
+                    color={theme.colors.neutral500}
+                  />
                 </PasswordToggleButton>
               </PasswordWrapper>
               {touchedFields.password && formErrors.password && (
