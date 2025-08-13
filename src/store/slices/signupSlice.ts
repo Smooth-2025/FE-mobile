@@ -1,12 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import type { SignupState, SignupStep, ProfileData, TermsData, EmergencyData } from '@/types/api';
+import type { SignupState, SignupStep, ProfileFormData, TermsData, EmergencyData } from '@/types/api';
 
 const initialState: SignupState = {
   currentStep: 'email',
   email: '',
   isEmailVerified: false,
-  profileData: null,
+  profileFormData: null,
   termsAccepted: null,
   emergencyData: null,
 };
@@ -31,8 +31,8 @@ const signupSlice = createSlice({
     },
     
     // 필수정보 저장
-    setProfileData: (state, action: PayloadAction<ProfileData>) => {
-      state.profileData = action.payload;
+    setProfileData: (state, action: PayloadAction<ProfileFormData>) => {
+      state.profileFormData = action.payload;
     },
     
     // 약관동의 저장

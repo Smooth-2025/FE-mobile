@@ -44,6 +44,7 @@ export interface LoginResponse extends BaseResponse {
 // export interface CommonResponse extends BaseResponse {
 //   // BaseResponse와 동일하지만 명시적으로 구분
 // }
+
 export type CommonResponse = BaseResponse;
 
 // 테스트 API 응답
@@ -114,18 +115,39 @@ export interface SignupState {
   currentStep: SignupStep;
   email: string;
   isEmailVerified: boolean;
-  profileData: ProfileData | null;
+  profileFormData: ProfileFormData | null;
   termsAccepted: TermsData | null;
   emergencyData: EmergencyData | null;
 }
 
 // 2단계: 필수정보 입력 데이터
-export interface ProfileData {
+export interface ProfileFormData {
   password: string;
   passwordConfirm: string;
   name: string;
   phone: string;
-  gender: 'MALE' | 'FEMALE';
+  gender: 'MALE' | 'FEMALE' | '';
+}
+
+// 폼 에러 타입
+export interface ProfileFormErrors {
+  password?: string;
+  passwordConfirm?: string;
+  name?: string;
+  phone?: string;
+  gender?: string;
+}
+
+// 폼 성공 메시지 타입
+export interface ProfileFormSuccess {
+  password?: string;
+  passwordConfirm?: string;
+}
+
+// 유효성 검사 결과 타입
+export interface ValidationResult {
+  error?: string;
+  success?: string;
 }
 
 // 3단계: 약관동의 데이터  
