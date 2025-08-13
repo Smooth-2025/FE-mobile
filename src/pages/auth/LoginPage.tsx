@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { setUserId } from '../../store/slices/userSlice';
-import { useAlert } from '../../hooks/useAlert';
-import { AlertToast } from '../../components/common/AlertToast/AlertToast';
+import { useWebSocketAlert } from '../../hooks/useWebSocketAlert';
+import AlertToast from '../../components/common/AlertToast/AlertToast';
 
 export default function LoginPage() {
   const dispatch = useDispatch();
@@ -17,7 +17,7 @@ export default function LoginPage() {
     disconnect,
     requestNotificationPermission,
     sendTestAlert,
-  } = useAlert();
+  } = useWebSocketAlert();
 
   const handleConnect = async () => {
     if (inputUserId.trim()) {
@@ -149,24 +149,21 @@ export default function LoginPage() {
           {alerts.length === 0 ? (
             <p style={{ padding: '20px', textAlign: 'center', color: '#666' }}>알림이 없습니다.</p>
           ) : (
-            alerts.map((alert, index) => (
+            alerts.map((alert) => (
               <div
-                key={index}
+                key={alert.id}
                 style={{
                   padding: '12px',
                   borderBottom: '1px solid #eee',
-                  backgroundColor: index < unreadCount ? '#f8f9fa' : 'white',
+                  backgroundColor: !alert.isRead ? '#f8f9fa' : 'white',
                 }}
               >
                 <div style={{ fontWeight: 'bold', color: '#333' }}>{alert.type}</div>
-                {'title' in alert ? (
-                  <>
-                    <div style={{ fontWeight: '600', marginTop: '4px' }}>{alert.title}</div>
-                    <div style={{ color: '#666', marginTop: '2px' }}>{alert.content}</div>
-                  </>
-                ) : (
-                  <div style={{ color: '#666', marginTop: '2px' }}>시간: {alert.timestamp}</div>
-                )}
+                <div style={{ fontWeight: '600', marginTop: '4px' }}>{alert.title}</div>
+                <div style={{ color: '#666', marginTop: '2px' }}>{alert.content}</div>
+                <div style={{ color: '#999', fontSize: '12px', marginTop: '4px' }}>
+                  {new Date(alert.timestamp).toLocaleString()}
+                </div>
               </div>
             ))
           )}
