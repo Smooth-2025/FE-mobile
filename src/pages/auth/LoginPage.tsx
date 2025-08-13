@@ -363,3 +363,4 @@ export function LoginPage() {
     </>
   );
 }
+export { LoginPage as default };
