@@ -1,7 +1,10 @@
+import Header from '@/layout/Header';
+import { theme } from '@/styles/theme';
+
 export default function homePage() {
   return (
     <main>
-      <h1>HomePage</h1>
+      <Header type="logo" bgColor={theme.colors.bg_page} />
     </main>
   );
 }
