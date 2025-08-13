@@ -10,10 +10,9 @@ const Shell = styled.div`
   box-sizing: border-box;
 `;
 
-const Content = styled.main<{ $hasBottomNav: boolean }>`
+const Content = styled.div<{ $hasBottomNav: boolean }>`
   height: calc(100dvh - (${(props) => (props.$hasBottomNav ? `${NAV_HEIGHT}px` : '0px')}));
   overflow: auto;
-  padding-bottom: 20px;
   box-sizing: border-box;
 `;
 
