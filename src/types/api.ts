@@ -78,3 +78,83 @@ export interface ErrorResponse {
   errorCode?: string;
   details?: Record<string, unknown>;
 }
+// 이메일 인증코드 발송 요청
+export interface SendVerificationRequest {
+  email: string;
+}
+
+// 이메일 인증코드 발송 응답
+export interface SendVerificationResponse extends BaseResponse {
+  email: string;
+  expirationTime: number; // 만료시간 (초)
+}
+
+// 이메일 인증코드 검증 요청
+export interface VerifyEmailRequest {
+  email: string;
+  code: string;
+}
+
+// 이메일 인증코드 검증 응답
+export interface VerifyEmailResponse extends BaseResponse {
+  email: string;
+  verified: boolean;
+}
+
+// 이메일 중복 체크 응답
+export interface CheckEmailResponse {
+  isDuplicate: boolean;
+}
+
+// 회원가입 단계 타입 (4단계)
+export type SignupStep = 'email' | 'profile' | 'terms' | 'emergency' | 'complete';
+
+// 회원가입 상태 타입
+export interface SignupState {
+  currentStep: SignupStep;
+  email: string;
+  isEmailVerified: boolean;
+  profileData: ProfileData | null;
+  termsAccepted: TermsData | null;
+  emergencyData: EmergencyData | null;
+}
+
+// 2단계: 필수정보 입력 데이터
+export interface ProfileData {
+  password: string;
+  passwordConfirm: string;
+  name: string;
+  phone: string;
+  gender: 'MALE' | 'FEMALE';
+}
+
+// 3단계: 약관동의 데이터  
+export interface TermsData {
+  termsOfServiceAgreed: boolean;
+  privacyPolicyAgreed: boolean;
+  marketingAgreed?: boolean; // 선택사항
+}
+
+// 4단계: 응급정보 데이터 (모두 선택사항)
+export interface EmergencyData {
+  bloodType?: 'A' | 'B' | 'AB' | 'O';
+  emergencyContact1?: string;
+  emergencyContact2?: string;
+  emergencyContact3?: string;
+}
+
+// 최종 회원가입 요청 (기존 RegisterRequest 대체할 수도 있음)
+export interface CompleteSignupRequest {
+  email: string;
+  password: string;
+  name: string;
+  phone: string;
+  gender: 'MALE' | 'FEMALE';
+  termsOfServiceAgreed: boolean;
+  privacyPolicyAgreed: boolean;
+  marketingAgreed?: boolean;
+  bloodType?: 'A' | 'B' | 'AB' | 'O';
+  emergencyContact1?: string;
+  emergencyContact2?: string;
+  emergencyContact3?: string;
+}

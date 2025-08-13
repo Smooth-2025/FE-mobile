@@ -344,7 +344,7 @@ export function LoginPage() {
           <SignupLink>
             <LinkButton 
               type="button"
-              onClick={() => navigate('/register')}
+              onClick={() => navigate('/signup/email')}
               disabled={isLoginLoading}
             >
               이메일로 가입하기
