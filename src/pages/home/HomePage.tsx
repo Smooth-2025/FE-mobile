@@ -3,8 +3,8 @@ import VehicleUnlinkedView from '@/components/car/VehicleUnlinkedView';
 import Header from '@/layout/Header';
 import { theme } from '@/styles/theme';
 
-export default function homePage() {
-  const isLinked = true;
+export default function HomePage() {
+  const isLinked = false;
 
   return (
     <main>
