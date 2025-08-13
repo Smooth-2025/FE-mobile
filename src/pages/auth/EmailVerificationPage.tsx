@@ -239,7 +239,7 @@ export function EmailVerificationPage() {
         <Title>이메일 인증</Title>
         <Subtitle>
           {email}로 인증코드를 발송했습니다.<br />
-          메일을 확인하고 인증코드 6자리를 입력해주세요.
+          메일을 확인하고 인증코드 5자리를 입력해주세요.
         </Subtitle>
       </Header>
 
