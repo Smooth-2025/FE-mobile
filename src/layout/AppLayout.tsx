@@ -1,40 +1,54 @@
 import styled from '@emotion/styled';
-import { Outlet, useMatches } from 'react-router-dom';
-import { theme } from '@/styles/theme';
-import BottomNav, { NAV_HEIGHT } from './BottomNav';
+import { Outlet, Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { useWebSocket } from '@/hooks/useWebSocket';
+import { ConnectionStatus } from '@/services/websocket/types';
+import { selectUser, selectIsAuthenticated } from '@/store/slices/authSlice';
 
 const Shell = styled.div`
-  width: 100%;
-  min-height: 100dvh;
-  background-color: ${theme.colors.bg_page};
-  box-sizing: border-box;
+  padding: 16px 24px;
 `;
 
-const Content = styled.main<{ $hasBottomNav: boolean }>`
-  height: calc(100dvh - (${(props) => (props.$hasBottomNav ? `${NAV_HEIGHT}px` : '0px')}));
-  overflow: auto;
-  padding-bottom: 20px;
-  box-sizing: border-box;
+const Nav = styled.nav`
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+  a {
+    text-decoration: none;
+    color: ${({ theme }) => theme.colors.primary600};
+  }
 `;
 
-type RouteHandle = { hideBottomNav?: boolean };
-type MatchUnknown = { handle?: unknown };
-
-const isRouteHandle = (h: unknown): h is RouteHandle =>
-  typeof h === 'object' && h !== null && 'hideBottomNav' in (h as Record<string, unknown>);
+const Dot = styled.span<{ status: ConnectionStatus }>`
+  display: inline-block; width: 8px; height: 8px; margin-left: 8px; border-radius: 50%;
+  background: ${({ status }) =>
+    status === ConnectionStatus.CONNECTED ? '#22c55e'
+    : status === ConnectionStatus.CONNECTING || status === ConnectionStatus.RECONNECTING ? '#f59e0b'
+    : '#ef4444'};
+`;
 
 export default function AppLayout() {
-  const matches = useMatches() as ReadonlyArray<MatchUnknown>;
-  const hideBottomNav = matches.some(
-    (m) => isRouteHandle(m.handle) && m.handle.hideBottomNav === true,
-  );
+  const user = useSelector(selectUser);
+  const isAuthenticated = useSelector(selectIsAuthenticated);
+  
+  // 인증된 사용자만 웹소켓 자동 연결
+  const { connectionStatus } = useWebSocket({ 
+    autoConnect: isAuthenticated, 
+    userId: user?.id || undefined 
+  });
 
   return (
     <Shell>
-      <Content $hasBottomNav={!hideBottomNav}>
-        <Outlet />
-      </Content>
-      {!hideBottomNav && <BottomNav />}
+      <Nav>
+        <Link to="/">Home</Link>
+        <Link to="/drive">Drive</Link>
+        <Link to="/report">Report</Link>
+        <Link to="/mypage">MyPage</Link>
+        <span style={{ marginLeft: 'auto', fontSize: 12, color: '#666' }}>
+          WS: {connectionStatus}<Dot status={connectionStatus} />
+        </span>
+      </Nav>
+      <Outlet />
     </Shell>
   );
 }
