@@ -13,8 +13,9 @@ const NotFoundPage = lazy(() => import('@pages/NotFoundPage'));
 const EmailInputPage = lazy(() => import('@pages/auth/EmailInputPage'));
 const EmailVerificationPage = lazy(() => import('@pages/auth/EmailVerificationPage'));
 const ProfileInputPage = lazy(() => import('@pages/auth/ProfileInputPage'));
-const TermsAgreementPage = lazy(() => import('@pages/auth/TermsAgreementPage'))
+const TermsAgreementPage = lazy(() => import('@pages/auth/TermsAgreementPage'));
 const EmergencyInfoPage = lazy(() => import('@pages/auth/EmergencyInfoPage'));
+const SignupCompletePage = lazy(() => import('@pages/auth/SignupCompletePage'));
 // 권한 여부에 따른 가드 설정
 function RequireAuth({ children }: { children: ReactNode }) {
   const isAuth = Boolean(localStorage.getItem('smooth_token')); // 권한 부분은 로직에 맞게 수정
@@ -30,6 +31,8 @@ const routes: RouteObject[] = [
   { path: '/signup/profile', element: <ProfileInputPage />},
   { path: '/signup/terms', element: <TermsAgreementPage />},
   { path: '/signup/emergency', element: <EmergencyInfoPage />},
+  { path: '/signup/complete', element: < SignupCompletePage/>},
+
   // 보호 페이지(레이아웃 하위)
   {
     path: '/',
