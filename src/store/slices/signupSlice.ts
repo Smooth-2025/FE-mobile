@@ -1,13 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import type { SignupState, SignupStep, ProfileFormData, TermsData, EmergencyData } from '@/types/api';
+import type { SignupState, SignupStep, ProfileFormData, AgreementState, EmergencyData } from '@/types/api';
 
 const initialState: SignupState = {
   currentStep: 'email',
   email: '',
   isEmailVerified: false,
   profileFormData: null,
-  termsAccepted: null,
+  agreementState: null,
   emergencyData: null,
 };
 
@@ -36,8 +36,8 @@ const signupSlice = createSlice({
     },
     
     // 약관동의 저장
-    setTermsData: (state, action: PayloadAction<TermsData>) => {
-      state.termsAccepted = action.payload;
+    setTermsData: (state, action: PayloadAction<AgreementState>) => {
+      state.agreementState = action.payload;
     },
     
     // 응급정보 저장

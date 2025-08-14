@@ -116,7 +116,7 @@ export interface SignupState {
   email: string;
   isEmailVerified: boolean;
   profileFormData: ProfileFormData | null;
-  termsAccepted: TermsData | null;
+  agreementState: AgreementState | null;
   emergencyData: EmergencyData | null;
 }
 
@@ -151,10 +151,18 @@ export interface ValidationResult {
 }
 
 // 3단계: 약관동의 데이터  
-export interface TermsData {
-  termsOfServiceAgreed: boolean;
-  privacyPolicyAgreed: boolean;
-  marketingAgreed?: boolean; // 선택사항
+export interface AgreementState {
+  allAgreed: boolean;
+  termsOfService: boolean;
+  privacyPolicy: boolean;
+}
+
+// 약관 동의 훅 반환 타입
+export interface UseTermsAgreementReturn {
+  agreements: AgreementState;
+  handleAllAgreementChange: (checked: boolean) => void;
+  handleIndividualAgreementChange: (key: keyof Omit<AgreementState, 'allAgreed'>) => (e: React.ChangeEvent<HTMLInputElement>) => void;
+  isAllRequiredAgreed: boolean;
 }
 
 // 4단계: 응급정보 데이터 (모두 선택사항)
