@@ -6,9 +6,9 @@ import { selectAlerts } from '@/store/slices/alertSlice';
 import { theme } from '@/styles/theme';
 import DrivePortal from '@/components/DrivePortal';
 import DriveOverlayPage from '@/pages/driveOverlay/DriveOverlayPage';
-import { useWebSocket } from '@/hooks/useWebSocket';
 import { selectIsAuthenticated } from '@/store/slices/authSlice';
 import { ConnectionStatus } from '@/services/websocket/types';
+import { useWebSocket } from '@/hooks/useWebSocket';
 import BottomNav, { NAV_HEIGHT } from './BottomNav';
 
 const Shell = styled.div`
@@ -86,7 +86,7 @@ export default function AppLayout() {
   // 웹소켓 전역 설정
   const isAuthenticated = useSelector(selectIsAuthenticated);
 
-  // 인증된 사용자만 웹소켓 자동 연결 (JWT만 사용)
+  //인증된 사용자만 웹소켓 자동 연결 (JWT만 사용) - RxStomp 비활성화
   const { connectionStatus } = useWebSocket({
     autoConnect: isAuthenticated,
   });

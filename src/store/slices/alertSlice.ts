@@ -23,7 +23,7 @@ export interface AlertMessage {
   title?: string;
   content?: string;
 
-  timestamp: string; 
+  timestamp: string;
   isRead: boolean;
 
   // 원문 전체
@@ -76,17 +76,13 @@ const alertSlice = createSlice({
   },
 });
 
-export const {
-  addAlert,
-  markAsRead,
-  markAllAsRead,
-  clearAlerts,
-  setConnectionStatus,
-} = alertSlice.actions;
+export const { addAlert, markAsRead, markAllAsRead, clearAlerts, setConnectionStatus } =
+  alertSlice.actions;
 
 export default alertSlice.reducer;
 
 // 셀렉터들
 export const selectAlerts = (state: { alert: AlertState }) => state.alert.alerts;
 export const selectUnreadCount = (state: { alert: AlertState }) => state.alert.unreadCount;
-export const selectAlertConnectionStatus = (state: { alert: AlertState }) => state.alert.connectionStatus;
+export const selectAlertConnectionStatus = (state: { alert: AlertState }) =>
+  state.alert.connectionStatus;

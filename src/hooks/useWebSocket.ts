@@ -44,7 +44,7 @@ export const useWebSocket = (props: UseWebSocketProps = {}): UseWebSocketReturn 
   }, [dispatch]);
 
   const sendCommand: UseWebSocketReturn['sendCommand'] = useCallback((command, data) => {
-    dispatch(sendCommandAction({ command, data })); 
+    dispatch(sendCommandAction({ command, data }));
     return true;
   }, [dispatch]);
 
