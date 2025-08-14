@@ -78,12 +78,22 @@ export const Checkbox = styled.input`
   cursor: pointer;
 `;
 
+export const HiddenCheckbox = styled.input`
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+`;
+
 export const CheckboxLabel = styled.span<{ isAll?: boolean }>`
   font-size: ${props => props.isAll ? '16px' : '14px'};
   font-weight: ${props => props.isAll ? '600' : '400'};
   color: ${theme.colors.neutral700};
   flex: 1;
+  cursor: pointer;
 `;
+
 
 export const TermsContent = styled.div`
   margin-top: 16px;
@@ -128,5 +138,36 @@ export const ConfirmButton = styled.button<{ disabled: boolean }>`
   
   &:active {
     transform: ${props => props.disabled ? 'none' : 'translateY(1px)'};
+  }
+`;
+
+// 커스텀 체크박스
+export const CustomCheckbox = styled.div<{ checked: boolean }>`
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  border: 2px solid ${props => props.checked ? theme.colors.primary600 : '#d1d5db'};
+  background-color: ${props => props.checked ? theme.colors.primary600 : '#ffffff'};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  
+  &:hover {
+    border-color: ${theme.colors.primary600};
+  }
+  
+  // 체크 표시
+  &::after {
+    content: '';
+    width: 6px;
+    height: 10px;
+    border: solid #ffffff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    opacity: ${props => props.checked ? 1 : 0};
+    transition: opacity 0.2s ease;
   }
 `;

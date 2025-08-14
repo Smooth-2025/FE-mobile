@@ -161,7 +161,7 @@ export interface AgreementState {
 export interface UseTermsAgreementReturn {
   agreements: AgreementState;
   handleAllAgreementChange: (checked: boolean) => void;
-  handleIndividualAgreementChange: (key: keyof Omit<AgreementState, 'allAgreed'>) => (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleIndividualAgreementChange: (key: keyof Omit<AgreementState, 'allAgreed'>) => (checked: boolean) => void;  // 🔧 수정
   isAllRequiredAgreed: boolean;
 }
 
