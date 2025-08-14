@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import { useAppDispatch, useAppSelector } from '@hooks/useAppRedux';
-import { Icon } from '@components/common/Icons';
 import { theme } from '@styles/theme';
+import { Icon } from '@components/common/Icons';
 import { Input } from '@components/common';
 import AlertToast from '@components/common/AlertToast/AlertToast';
 import {
@@ -12,10 +12,10 @@ import {
   selectIsAuthenticated,
   selectIsLoginLoading,
   selectAuthError,
-  selectUser
+  selectUser,
 } from '@store/slices/authSlice';
-import type { LoginRequest } from '@/types/api';
 import { useToast } from '@/hooks/useToast';
+import type { LoginRequest } from '@/types/api';
 
 // 스타일드 컴포넌트들
 const PageContainer = styled.div`
@@ -57,7 +57,7 @@ const PasswordWrapper = styled.div`
 const PasswordToggleButton = styled.button`
   position: absolute;
   right: 16px;
-  top: 50%;
+  top: 70%;
   transform: translateY(-50%);
   background: none;
   border: none;
@@ -82,22 +82,22 @@ const PasswordToggleButton = styled.button`
 const LoginButton = styled.button<{ isLoading: boolean }>`
   width: 100%;
   padding: 16px;
-  background: ${props => props.isLoading ? '#93c5fd' : '#3b82f6'};
+  background: ${(props) => (props.isLoading ? '#93c5fd' : '#3b82f6')};
   color: white;
   border: none;
   border-radius: 12px;
   font-size: 16px;
   font-weight: 600;
-  cursor: ${props => props.isLoading ? 'not-allowed' : 'pointer'};
+  cursor: ${(props) => (props.isLoading ? 'not-allowed' : 'pointer')};
   transition: all 0.2s ease;
   margin-top: 24px;
 
   &:hover {
-    background: ${props => props.isLoading ? '#93c5fd' : '#2563eb'};
+    background: ${(props) => (props.isLoading ? '#93c5fd' : '#2563eb')};
   }
 
   &:active {
-    transform: ${props => props.isLoading ? 'none' : 'translateY(1px)'};
+    transform: ${(props) => (props.isLoading ? 'none' : 'translateY(1px)')};
   }
 `;
 
@@ -122,12 +122,11 @@ const LinkButton = styled.button`
   cursor: pointer;
   font-size: 14px;
   text-decoration: underline;
-  
+
   &:hover {
     color: #2563eb;
   }
 `;
-
 
 // 폼 유효성 검사
 interface FormErrors {
@@ -143,7 +142,7 @@ const validateForm = (email: string, password: string): FormErrors => {
   } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     errors.email = '이메일을 다시 확인해주세요';
   }
-  // 비밀번호 유효성 검사  
+  // 비밀번호 유효성 검사
   if (!password) {
     errors.password = '비밀번호를 입력해주세요.';
   } else if (password.length < 8) {
@@ -152,7 +151,6 @@ const validateForm = (email: string, password: string): FormErrors => {
 
   return errors;
 };
-
 
 // LoginPage 컴포넌트
 export function LoginPage() {
@@ -169,7 +167,7 @@ export function LoginPage() {
   // 로컬 상태
   const [formData, setFormData] = useState({
     email: '',
-    password: ''
+    password: '',
   });
   const [formErrors, setFormErrors] = useState<FormErrors>({});
   const [touchedFields, setTouchedFields] = useState<Record<string, boolean>>({});
@@ -202,26 +200,25 @@ export function LoginPage() {
   // 이벤트 핸들러들
 
   // 입력값 변경
-  const handleInputChange = (field: keyof typeof formData) => (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const value = e.target.value;
-    setFormData(prev => ({ ...prev, [field]: value }));
-   
-    // 실시간 유효성 검사 (터치된 필드만)
-    if (touchedFields[field]) {
-      const errors = validateForm(
-        field === 'email' ? value : formData.email,
-        field === 'password' ? value : formData.password
-      );
-      setFormErrors(errors);
-    }
-  };
+  const handleInputChange =
+    (field: keyof typeof formData) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      setFormData((prev) => ({ ...prev, [field]: value }));
+
+      // 실시간 유효성 검사 (터치된 필드만)
+      if (touchedFields[field]) {
+        const errors = validateForm(
+          field === 'email' ? value : formData.email,
+          field === 'password' ? value : formData.password,
+        );
+        setFormErrors(errors);
+      }
+    };
 
   // 필드 터치 표시
   const handleFieldBlur = (field: string) => () => {
-    setTouchedFields(prev => ({ ...prev, [field]: true }));
-    
+    setTouchedFields((prev) => ({ ...prev, [field]: true }));
+
     // 터치된 필드의 유효성 검사
     const errors = validateForm(formData.email, formData.password);
     setFormErrors(errors);
@@ -229,7 +226,7 @@ export function LoginPage() {
 
   // 비밀번호 보기/숨기기 토글
   const togglePasswordVisibility = () => {
-    setShowPassword(prev => !prev);
+    setShowPassword((prev) => !prev);
   };
 
   // 폼 제출
@@ -251,7 +248,7 @@ export function LoginPage() {
     try {
       const loginData: LoginRequest = {
         email: formData.email,
-        password: formData.password
+        password: formData.password,
       };
       await dispatch(loginAsync(loginData)).unwrap();
       // 성공시 useEffect에서 자동 리다이렉트
@@ -283,9 +280,12 @@ export function LoginPage() {
                 disabled={isLoginLoading}
                 required
                 style={{
-                  borderColor: touchedFields.email && formErrors.email ? '#ef4444' : 
-                              touchedFields.email && !formErrors.email && formData.email ? '#22c55e' : 
-                              undefined
+                  borderColor:
+                    touchedFields.email && formErrors.email
+                      ? '#ef4444'
+                      : touchedFields.email && !formErrors.email && formData.email
+                        ? '#22c55e'
+                        : undefined,
                 }}
               />
               {touchedFields.email && formErrors.email && (
@@ -306,10 +306,13 @@ export function LoginPage() {
                   disabled={isLoginLoading}
                   required
                   style={{
-                    borderColor: touchedFields.password && formErrors.password ? '#ef4444' : 
-                                touchedFields.password && !formErrors.password && formData.password ? '#22c55e' : 
-                                undefined,
-                    paddingRight: '60px' // 버튼 공간 확보
+                    borderColor:
+                      touchedFields.password && formErrors.password
+                        ? '#ef4444'
+                        : touchedFields.password && !formErrors.password && formData.password
+                          ? '#22c55e'
+                          : undefined,
+                    paddingRight: '60px', // 버튼 공간 확보
                   }}
                 />
                 <PasswordToggleButton
@@ -331,20 +334,16 @@ export function LoginPage() {
             </div>
 
             {/* 로그인 버튼 */}
-            <LoginButton 
-              type="submit" 
-              isLoading={isLoginLoading}
-              disabled={isLoginLoading}
-            >
+            <LoginButton type="submit" isLoading={isLoginLoading} disabled={isLoginLoading}>
               {isLoginLoading ? '로그인 중...' : '로그인'}
             </LoginButton>
           </Form>
 
           {/* 회원가입 링크 */}
           <SignupLink>
-            <LinkButton 
+            <LinkButton
               type="button"
-              onClick={() => navigate('/register')}
+              onClick={() => navigate('/signup/email')}
               disabled={isLoginLoading}
             >
               이메일로 가입하기
@@ -354,7 +353,7 @@ export function LoginPage() {
       </PageContainer>
 
       {/* 토스트 알림들 */}
-      {toasts.map(toast => (
+      {toasts.map((toast) => (
         <AlertToast
           key={toast.id}
           type={toast.type}

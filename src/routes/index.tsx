@@ -10,6 +10,10 @@ const DrivePage = lazy(() => import('@pages/drive/DrivePage'));
 const ReportPage = lazy(() => import('@pages/report/ReportPage'));
 const MyPage = lazy(() => import('@pages/myPage/MyPage'));
 const NotFoundPage = lazy(() => import('@pages/NotFoundPage'));
+const EmailInputPage = lazy(() => import('@pages/auth/EmailInputPage'));
+const EmailVerificationPage = lazy(() => import('@pages/auth/EmailVerificationPage'));
+const ProfileInputPage = lazy(() => import('@pages/auth/ProfileInputPage'));
+const TermsAgreementPage = lazy(() => import('@pages/auth/TermsAgreementPage'))
 
 // 권한 여부에 따른 가드 설정
 function RequireAuth({ children }: { children: ReactNode }) {
@@ -21,6 +25,10 @@ const routes: RouteObject[] = [
   // 공개 페이지
   { path: '/login', element: <LoginPage /> },
   { path: '/signup', element: <SignupPage /> },
+  { path: '/signup/email', element: <EmailInputPage />},
+  { path: '/signup/verification', element: <EmailVerificationPage />},
+  { path: '/signup/profile', element: <ProfileInputPage />},
+  { path: '/signup/terms', element: <TermsAgreementPage />},
   // 보호 페이지(레이아웃 하위)
   {
     path: '/',
