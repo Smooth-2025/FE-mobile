@@ -31,6 +31,7 @@ export default function DrivePage() {
     try {
       const latitude = 37.5665; // 서울 시청 좌표
       const longitude = 126.9780;
+      const userId = 'test-user-123'; // JWT 토큰과 동일한 userId 사용
 
       const response = await fetch(`/api/test/${type}`, {
         method: 'POST',
@@ -38,6 +39,7 @@ export default function DrivePage() {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: new URLSearchParams({
+          userId: userId,
           latitude: latitude.toString(),
           longitude: longitude.toString(),
         }),

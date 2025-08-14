@@ -122,7 +122,7 @@ export const websocketMiddleware: Middleware = ({ dispatch }) => (next) => (acti
   }
 
   if (subscribeToAlerts.match(action)) {
-    const destination = `/user/alert`; 
+    const destination = `/user/queue/alert`; 
     if (rxStomp) {
       console.warn(`📩 알림 토픽 구독 시도: ${destination}`);
 

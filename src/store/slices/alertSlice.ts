@@ -16,7 +16,7 @@ export type AlertType =
 export interface AlertMessage {
   id: string;
   type: AlertType;
-  // 화면에 그대로 보여줄 텍스트(백엔드 원문 우선)
+  // ✅ 화면에 그대로 보여줄 텍스트(백엔드 원문 우선)
   message: string;
 
   // 옵션: 서버가 보낼 수도 있는 보조 필드

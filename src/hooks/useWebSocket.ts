@@ -25,7 +25,9 @@ export const useWebSocket = (props: UseWebSocketProps = {}): UseWebSocketReturn 
   const connect = useCallback(async () => {
     dispatch(connectWebSocket());
     // userId 없이 바로 알림 구독
-    dispatch(subscribeToAlerts({}));
+    dispatch(subscribeToAlerts({
+      userId: ''
+    }));
   }, [dispatch]);
 
   const disconnect = useCallback(() => {
@@ -36,11 +38,13 @@ export const useWebSocket = (props: UseWebSocketProps = {}): UseWebSocketReturn 
     dispatch(disconnectWebSocket());
     dispatch(connectWebSocket());
     // userId 없이 바로 알림 구독
-    dispatch(subscribeToAlerts({}));
+    dispatch(subscribeToAlerts({
+      userId: ''
+    }));
   }, [dispatch]);
 
   const sendCommand: UseWebSocketReturn['sendCommand'] = useCallback((command, data) => {
-    dispatch(sendCommandAction({ command, data }));
+    dispatch(sendCommandAction({ command, data })); 
     return true;
   }, [dispatch]);
 
