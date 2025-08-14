@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { Outlet, useMatches } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { selectAlerts } from '@/store/slices/alertSlice';
 import { theme } from '@/styles/theme';
 import DrivePortal from '@/components/DrivePortal';
 import DriveOverlayPage from '@/pages/driveOverlay/DriveOverlayPage';
@@ -60,20 +61,27 @@ const isRouteHandle = (h: unknown): h is RouteHandle =>
   typeof h === 'object' && h !== null && 'hideBottomNav' in (h as Record<string, unknown>);
 
 export default function AppLayout() {
-  const [drivingActive, setDrivingActive] = useState(true); // start end
+  const [drivingActive, setDrivingActive] = useState(false);
 
   const matches = useMatches() as ReadonlyArray<MatchUnknown>;
   const hideBottomNav = matches.some(
     (m) => isRouteHandle(m.handle) && m.handle.hideBottomNav === true,
   );
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDrivingActive(false);
-    }, 3000);
+  const alerts = useSelector(selectAlerts);
 
-    return () => clearTimeout(timer);
-  }, []);
+  useEffect(() => {
+    if (!alerts?.length) return;
+    const latest = alerts[0];
+    if (latest.type === 'start' && drivingActive !== true) {
+      setDrivingActive(true);
+      return;
+    }
+    if (latest.type === 'end' && drivingActive !== false) {
+      setDrivingActive(false);
+      return;
+    }
+  }, [alerts, drivingActive]);
 
   // 웹소켓 전역 설정
   const isAuthenticated = useSelector(selectIsAuthenticated);
