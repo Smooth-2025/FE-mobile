@@ -98,35 +98,35 @@ export const ButtonGroup = styled.div`
   margin-top: 32px;
 `;
 
-export const RegisterButton = styled.button`
+export const RegisterButton = styled.button<{ disabled?: boolean }>`
   flex: 1;
   padding: 16px;
   border: none;
   border-radius: 8px;
   font-size: 16px;
   font-weight: 600;
-  cursor: pointer;
+  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
   transition: all 0.2s ease;
   
-  background-color: ${theme.colors.primary500};
-  color: #ffffff;
+  background-color: ${props => props.disabled ? '#e5e7eb' : theme.colors.primary500};
+  color: ${props => props.disabled ? '#9ca3af' : '#ffffff'};
   
   &:hover {
-    background-color: ${theme.colors.primary600};
+    background-color: ${props => props.disabled ? '#e5e7eb' : theme.colors.primary600};
   }
   
   &:active {
-    transform: translateY(1px);
+    transform: ${props => props.disabled ? 'none' : 'translateY(1px)'};
   }
 `;
 
-export const SkipButton = styled.button`
+export const SkipButton = styled.button<{ disabled?: boolean }>`
   background: none;
   border: none;
-  color: ${theme.colors.neutral600};
+  color: ${props => props.disabled ? '#9ca3af' : theme.colors.neutral600};
   font-size: 16px;
   font-weight: 500;
-  cursor: pointer;
+  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
   padding: 16px 0;
   text-decoration: underline;
   transition: all 0.2s ease;
@@ -134,6 +134,6 @@ export const SkipButton = styled.button`
   width: 100%;
   
   &:hover {
-    color: ${theme.colors.neutral700};
+    color: ${props => props.disabled ? '#9ca3af' : theme.colors.neutral700};
   }
 `;
