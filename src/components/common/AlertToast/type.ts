@@ -1,5 +1,5 @@
 export type ToastPosition = 'top' | 'bottom';
-export type ToastType = 'success' | 'error' | 'accident-nearby' | 'obstacle' | 'pothole';
+export type ToastType = 'success' | 'error' | 'info' | 'accident' | 'accident-nearby' | 'obstacle' | 'pothole' | 'start' | 'end' | 'unknown';
 export type ToastIconType = 'checkmarkCircle' | 'warningCircle' | 'warningTriangle';
 
 export type ToastProps = {
