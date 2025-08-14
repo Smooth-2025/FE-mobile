@@ -14,7 +14,13 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: ['websocket/connect', 'websocket/disconnect', 'websocket/subscribe', 'websocket/sendTestAlert', 'websocket/ping'],
+        ignoredActions: [
+          'websocket/connect',
+          'websocket/disconnect',
+          'websocket/subscribe',
+          'websocket/sendTestAlert',
+          'websocket/ping',
+        ],
       },
     }).concat(websocketMiddleware),
 });
@@ -24,5 +30,3 @@ export type AppDispatch = typeof store.dispatch;
 
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 export const useAppDispatch = () => useDispatch<AppDispatch>();
-
-

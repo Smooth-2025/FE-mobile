@@ -1,7 +1,6 @@
 const TOKEN_KEY = 'smooth_token';
 
 export const tokenUtils = {
-  
   // 토큰 저장
   setToken: (token: string): void => {
     localStorage.setItem(TOKEN_KEY, token);
@@ -27,10 +26,13 @@ export const tokenUtils = {
     const publicPaths = [
       '/api/auth/login',
       '/api/auth/register',
+      '/api/auth/send-verification',
+      '/api/auth/verify-email',
+      '/api/auth/check-email',
       '/api/auth/forgot-password', //나중에 비밀번호 찾기
       '/api/public',
     ];
-    
-    return publicPaths.some(publicPath => path.includes(publicPath));
-  }
+
+    return publicPaths.some((publicPath) => path.includes(publicPath));
+  },
 };
