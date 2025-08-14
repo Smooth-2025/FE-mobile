@@ -1,4 +1,4 @@
-export default function myPage() {
+export default function MyPage() {
   return (
     <main>
       <h1>MyPage</h1>

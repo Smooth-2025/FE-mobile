@@ -1,7 +1,11 @@
+import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { Outlet, useMatches } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { selectAlerts } from '@/store/slices/alertSlice';
 import { theme } from '@/styles/theme';
+import DrivePortal from '@/components/DrivePortal';
+import DriveOverlayPage from '@/pages/driveOverlay/DriveOverlayPage';
 import { useWebSocket } from '@/hooks/useWebSocket';
 import { selectIsAuthenticated } from '@/store/slices/authSlice';
 import { ConnectionStatus } from '@/services/websocket/types';
@@ -43,9 +47,11 @@ const Dot = styled.span<{ status: ConnectionStatus }>`
   height: 6px;
   border-radius: 50%;
   background: ${({ status }) =>
-    status === ConnectionStatus.CONNECTED ? '#22c55e'
-    : status === ConnectionStatus.CONNECTING || status === ConnectionStatus.RECONNECTING ? '#f59e0b'
-    : '#ef4444'};
+    status === ConnectionStatus.CONNECTED
+      ? '#22c55e'
+      : status === ConnectionStatus.CONNECTING || status === ConnectionStatus.RECONNECTING
+        ? '#f59e0b'
+        : '#ef4444'};
 `;
 
 type RouteHandle = { hideBottomNav?: boolean };
@@ -55,26 +61,50 @@ const isRouteHandle = (h: unknown): h is RouteHandle =>
   typeof h === 'object' && h !== null && 'hideBottomNav' in (h as Record<string, unknown>);
 
 export default function AppLayout() {
+  const [drivingActive, setDrivingActive] = useState(false);
+
   const matches = useMatches() as ReadonlyArray<MatchUnknown>;
   const hideBottomNav = matches.some(
     (m) => isRouteHandle(m.handle) && m.handle.hideBottomNav === true,
   );
 
+  const alerts = useSelector(selectAlerts);
+
+  useEffect(() => {
+    if (!alerts?.length) return;
+    const latest = alerts[0];
+    if (latest.type === 'start' && drivingActive !== true) {
+      setDrivingActive(true);
+      return;
+    }
+    if (latest.type === 'end' && drivingActive !== false) {
+      setDrivingActive(false);
+      return;
+    }
+  }, [alerts, drivingActive]);
+
   // 웹소켓 전역 설정
   const isAuthenticated = useSelector(selectIsAuthenticated);
-  
+
   // 인증된 사용자만 웹소켓 자동 연결 (JWT만 사용)
-  const { connectionStatus } = useWebSocket({ 
-    autoConnect: isAuthenticated
+  const { connectionStatus } = useWebSocket({
+    autoConnect: isAuthenticated,
   });
 
   return (
-    <Shell>
-      <Content $hasBottomNav={!hideBottomNav}>
-        <Outlet />
-      </Content>
-      {!hideBottomNav && <BottomNav />}
-      
+    <>
+      <Shell>
+        <Content $hasBottomNav={!hideBottomNav}>
+          <Outlet />
+        </Content>
+        {!hideBottomNav && <BottomNav />}
+      </Shell>
+      {drivingActive && (
+        <DrivePortal>
+          <DriveOverlayPage />
+        </DrivePortal>
+      )}
+
       {/* 개발용 WebSocket 상태 표시 - 운영에서는 제거 가능 */}
       {process.env.NODE_ENV === 'development' && (
         <WSStatus>
@@ -82,6 +112,6 @@ export default function AppLayout() {
           <Dot status={connectionStatus} />
         </WSStatus>
       )}
-    </Shell>
+    </>
   );
 }
