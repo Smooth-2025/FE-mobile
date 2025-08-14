@@ -1,6 +1,9 @@
+import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import { Outlet, useMatches } from 'react-router-dom';
 import { theme } from '@/styles/theme';
+import DrivePortal from '@/components/DrivePortal';
+import DriveOverlayPage from '@/pages/driveOverlay/DriveOverlayPage';
 import BottomNav, { NAV_HEIGHT } from './BottomNav';
 
 const Shell = styled.div`
@@ -24,17 +27,34 @@ const isRouteHandle = (h: unknown): h is RouteHandle =>
   typeof h === 'object' && h !== null && 'hideBottomNav' in (h as Record<string, unknown>);
 
 export default function AppLayout() {
+  const [drivingActive, setDrivingActive] = useState(true); // start end
+
   const matches = useMatches() as ReadonlyArray<MatchUnknown>;
   const hideBottomNav = matches.some(
     (m) => isRouteHandle(m.handle) && m.handle.hideBottomNav === true,
   );
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDrivingActive(false);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <Shell>
-      <Content $hasBottomNav={!hideBottomNav}>
-        <Outlet />
-      </Content>
-      {!hideBottomNav && <BottomNav />}
-    </Shell>
+    <>
+      <Shell>
+        <Content $hasBottomNav={!hideBottomNav}>
+          <Outlet />
+        </Content>
+        {!hideBottomNav && <BottomNav />}
+      </Shell>
+      {drivingActive && (
+        <DrivePortal>
+          <DriveOverlayPage />
+        </DrivePortal>
+      )}
+    </>
   );
 }
