@@ -1,4 +1,4 @@
-export default function reportPage() {
+export default function ReportPage() {
   return (
     <main>
       <h1>ReportPage</h1>
