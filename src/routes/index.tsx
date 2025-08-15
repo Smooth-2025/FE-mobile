@@ -19,6 +19,9 @@ const TermsAgreementPage = lazy(() => import('@pages/auth/TermsAgreementPage'))
 function RequireAuth({ children }: { children: ReactNode }) {
   const isAuth = Boolean(localStorage.getItem('smooth_token')); // 올바른 토큰 키 사용
   return isAuth ? <>{children}</> : <Navigate to="/login" replace />;
+  
+  // 임시로 로그인 페이지로 가는거 방지. 웹소켓 테스트 시 위의 두줄은 주석처리 후 아래 주석을 풀고 사용하세요
+ // return <>{children}</>;
 }
 
 const routes: RouteObject[] = [

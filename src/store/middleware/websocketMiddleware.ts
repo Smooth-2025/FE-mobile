@@ -4,6 +4,7 @@ import { ConnectionStatus } from '@/services/websocket/types';
 import { tokenUtils } from '@/utils/token';
 import { setConnectionStatus, setError } from '../slices/websocketSlice';
 import { addAlert } from '../slices/alertSlice';
+import { selectUser } from '../slices/authSlice';
 import {
   connectWebSocket,
   disconnectWebSocket,
@@ -64,7 +65,7 @@ function extractDisplayText(obj: unknown): string {
 }
 
 export const websocketMiddleware: Middleware =
-  ({ dispatch }) =>
+  ({ dispatch, getState }) =>
   (next) =>
   (action) => {
     const result = next(action);
@@ -81,13 +82,15 @@ export const websocketMiddleware: Middleware =
 
       const socket = new SockJS('/ws'); // ec2 주소로 변경!
       const token = tokenUtils.getToken();
+      const user = selectUser(getState());
+      const userId = String(user?.id || 1);
 
       rxStomp = new RxStomp();
       const config: RxStompConfig = {
         webSocketFactory: () => socket,
         connectHeaders: {
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          userId: '1', // 더미 사용자 ID
+          userId: userId,
         },
         heartbeatIncoming: 10000,
         heartbeatOutgoing: 10000,
@@ -130,7 +133,9 @@ export const websocketMiddleware: Middleware =
     }
 
     if (subscribeToAlerts.match(action)) {
-      const destination = `/user/1/queue/alert`;
+      const user = selectUser(getState());
+      const userId = String(user?.id || 1);
+      const destination = `/user/${userId}/queue/alert`;
       if (rxStomp) {
         console.warn(`📩 알림 토픽 구독 시도: ${destination}`);
 

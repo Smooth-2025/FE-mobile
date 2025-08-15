@@ -86,7 +86,7 @@ export default function AppLayout() {
   // 웹소켓 전역 설정
   const isAuthenticated = useSelector(selectIsAuthenticated);
 
-  //인증된 사용자만 웹소켓 자동 연결 (JWT만 사용) - RxStomp 비활성화
+  //인증된 사용자 웹소켓 자동 연결
   const { connectionStatus } = useWebSocket({
     autoConnect: isAuthenticated,
   });
@@ -104,14 +104,10 @@ export default function AppLayout() {
           <DriveOverlayPage />
         </DrivePortal>
       )}
-
-      {/* 개발용 WebSocket 상태 표시 - 운영에서는 제거 가능 */}
-      {process.env.NODE_ENV === 'development' && (
         <WSStatus>
           WS: {connectionStatus}
           <Dot status={connectionStatus} />
         </WSStatus>
-      )}
     </>
   );
 }

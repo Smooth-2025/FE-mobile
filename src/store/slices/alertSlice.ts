@@ -12,7 +12,7 @@ export type AlertType =
   | 'end'
   | 'unknown';
 
-// 백엔드 원문을 그대로 보여주기 위해 message/raw를 포함
+// 백엔드 원문 message/raw를 포함
 export interface AlertMessage {
   id: string;
   type: AlertType;
