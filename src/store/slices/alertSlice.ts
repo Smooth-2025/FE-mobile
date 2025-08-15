@@ -12,18 +12,18 @@ export type AlertType =
   | 'end'
   | 'unknown';
 
-// 백엔드 원문을 그대로 보여주기 위해 message/raw를 포함
+// 백엔드 원문 message/raw를 포함
 export interface AlertMessage {
   id: string;
   type: AlertType;
-  // 화면에 그대로 보여줄 텍스트(백엔드 원문 우선)
+  // ✅ 화면에 그대로 보여줄 텍스트(백엔드 원문 우선)
   message: string;
 
   // 옵션: 서버가 보낼 수도 있는 보조 필드
   title?: string;
   content?: string;
 
-  timestamp: string; 
+  timestamp: string;
   isRead: boolean;
 
   // 원문 전체
@@ -76,17 +76,13 @@ const alertSlice = createSlice({
   },
 });
 
-export const {
-  addAlert,
-  markAsRead,
-  markAllAsRead,
-  clearAlerts,
-  setConnectionStatus,
-} = alertSlice.actions;
+export const { addAlert, markAsRead, markAllAsRead, clearAlerts, setConnectionStatus } =
+  alertSlice.actions;
 
 export default alertSlice.reducer;
 
 // 셀렉터들
 export const selectAlerts = (state: { alert: AlertState }) => state.alert.alerts;
 export const selectUnreadCount = (state: { alert: AlertState }) => state.alert.unreadCount;
-export const selectAlertConnectionStatus = (state: { alert: AlertState }) => state.alert.connectionStatus;
+export const selectAlertConnectionStatus = (state: { alert: AlertState }) =>
+  state.alert.connectionStatus;

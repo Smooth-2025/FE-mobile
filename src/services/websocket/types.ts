@@ -1,28 +1,32 @@
-export type AlertType = 'accident' | 'accident-nearby' | 'obstacle' | 'pothole' | 'start' | 'end' | 'unknown';
+export type AlertType =
+  | 'accident'
+  | 'accident-nearby'
+  | 'obstacle'
+  | 'pothole'
+  | 'start'
+  | 'end'
+  | 'unknown';
 
 export interface AlertMessageBase {
   type: AlertType;
-  raw?: unknown; 
+  raw?: unknown;
 }
 
 export interface AlertTextMessage extends AlertMessageBase {
-  title?: string;   
-  content?: string;  
+  title?: string;
+  content?: string;
 }
 
 export interface AlertTimestampMessage extends AlertMessageBase {
-  timestamp?: string; 
+  timestamp?: string;
 }
 
 export interface AlertRawMessage extends AlertMessageBase {
-  message?: string;   
-  payload?: unknown; 
+  message?: string;
+  payload?: unknown;
 }
 
-export type AlertMessage =
-  | AlertTextMessage
-  | AlertTimestampMessage
-  | AlertRawMessage;
+export type AlertMessage = AlertTextMessage | AlertTimestampMessage | AlertRawMessage;
 
 // ===== WebSocket 관련 타입들 =====
 
@@ -34,8 +38,7 @@ export const ConnectionStatus = {
   ERROR: 'ERROR',
 } as const;
 
-export type ConnectionStatus =
-  typeof ConnectionStatus[keyof typeof ConnectionStatus];
+export type ConnectionStatus = (typeof ConnectionStatus)[keyof typeof ConnectionStatus];
 
 export interface WebSocketConfig {
   wsUrl: string;

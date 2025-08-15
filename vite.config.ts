@@ -17,12 +17,12 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:8080',
+        target: 'http://localhost:8080', // ec2 주소로 변경
         changeOrigin: true,
         secure: false,
       },
       '/ws': {
-        target: 'http://localhost:8080',
+        target: 'http://localhost:8080', // ec2 주소로 변경
         changeOrigin: true,
         secure: false,
         ws: true,
