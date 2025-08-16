@@ -20,9 +20,8 @@ export const useTermsAgreement = (): UseTermsAgreementReturn => {
 
   // 개별 약관 동의 처리
   const handleIndividualAgreementChange = (key: keyof Omit<AgreementState, 'allAgreed'>) => (
-    e: React.ChangeEvent<HTMLInputElement>
+    checked: boolean
   ) => {
-    const checked = e.target.checked;
     const newAgreements = {
       ...agreements,
       [key]: checked,
@@ -37,8 +36,7 @@ export const useTermsAgreement = (): UseTermsAgreementReturn => {
 
   // 모든 필수 약관 동의 여부 확인
   const isAllRequiredAgreed = agreements.termsOfService && agreements.privacyPolicy;
-
-  return {
+return {
     agreements,
     handleAllAgreementChange,
     handleIndividualAgreementChange,

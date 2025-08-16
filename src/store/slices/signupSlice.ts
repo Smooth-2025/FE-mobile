@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import type { SignupState, SignupStep, ProfileFormData, AgreementState, EmergencyData } from '@/types/api';
+import type { SignupState, SignupStep, ProfileFormData, AgreementState, EmergencyFormData } from '@/types/api';
 
 const initialState: SignupState = {
   currentStep: 'email',
@@ -8,7 +8,7 @@ const initialState: SignupState = {
   isEmailVerified: false,
   profileFormData: null,
   agreementState: null,
-  emergencyData: null,
+  emergencyFormData: null,
 };
 
 const signupSlice = createSlice({
@@ -41,8 +41,8 @@ const signupSlice = createSlice({
     },
     
     // 응급정보 저장
-    setEmergencyData: (state, action: PayloadAction<EmergencyData>) => {
-      state.emergencyData = action.payload;
+    setEmergencyData: (state, action: PayloadAction<EmergencyFormData>) => {
+      state.emergencyFormData = action.payload;
     },
     
     // 초기화

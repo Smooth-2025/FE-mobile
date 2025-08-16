@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useTermsAgreement } from '@hooks/useTermsAgreement';
 import { TERMS_CONTENT } from '@constants/termsContent';
 import {
-  Container,
+Container,
   Header,
   BackButton,
   ProgressBar,
@@ -14,7 +14,8 @@ import {
   AgreementItem,
   AllAgreementItem,
   CheckboxWrapper,
-  Checkbox,
+  HiddenCheckbox,
+  CustomCheckbox,
   CheckboxLabel,
   TermsContent,
   TermsLink,
@@ -79,54 +80,58 @@ export function TermsAgreementPage() {
       </Header>
 
       <AgreementSection>
-        {/* 전체 동의 */}
-        <AllAgreementItem>
-          <CheckboxWrapper>
-            <Checkbox
-              type="checkbox"
-              checked={agreements.allAgreed}
-              onChange={(e) => handleAllAgreementChange(e.target.checked)}
-            />
-            <CheckboxLabel isAll>약관 전체 동의</CheckboxLabel>
-          </CheckboxWrapper>
-        </AllAgreementItem>
+{/* 전체 동의 */}
+              <AllAgreementItem>
+                  <CheckboxWrapper>
+                      <HiddenCheckbox
+                          type="checkbox"
+                          checked={agreements.allAgreed}
+                          onChange={(e) => handleAllAgreementChange(e.target.checked)}
+                      />
+                      <CustomCheckbox checked={agreements.allAgreed} />
+                      <CheckboxLabel isAll>약관 전체 동의</CheckboxLabel>
+                  </CheckboxWrapper>
+              </AllAgreementItem>
 
-        {/* 이용약관 */}
-        <AgreementItem>
-          <CheckboxWrapper>
-            <Checkbox
-              type="checkbox"
-              checked={agreements.termsOfService}
-              onChange={handleIndividualAgreementChange('termsOfService')}
-            />
-            <CheckboxLabel>
-              이용약관 <TermsLink>(필수)</TermsLink>
-            </CheckboxLabel>
-          </CheckboxWrapper>
-          
-          <TermsContent>
-            {TERMS_CONTENT.termsOfService}
-          </TermsContent>
-        </AgreementItem>
+              {/* 이용약관 */}
+              <AgreementItem>
+                  <CheckboxWrapper>
+                      <HiddenCheckbox
+                          type="checkbox"
+                          checked={agreements.termsOfService}
+                          onChange={(e) => handleIndividualAgreementChange('termsOfService')(e.target.checked)}
+                      />
+                      <CustomCheckbox checked={agreements.termsOfService} />
+                      <CheckboxLabel>
+                          이용약관 <TermsLink>(필수)</TermsLink>
+                      </CheckboxLabel>
+                  </CheckboxWrapper>
 
-        {/* 개인정보 처리방침 */}
-        <AgreementItem>
-          <CheckboxWrapper>
-            <Checkbox
-              type="checkbox"
-              checked={agreements.privacyPolicy}
-              onChange={handleIndividualAgreementChange('privacyPolicy')}
-            />
-            <CheckboxLabel>
-              개인정보 처리방침 <TermsLink>(필수)</TermsLink>
-            </CheckboxLabel>
-          </CheckboxWrapper>
-          
-          <TermsContent>
-            {TERMS_CONTENT.privacyPolicy}
-          </TermsContent>
-        </AgreementItem>
-      </AgreementSection>
+                  <TermsContent>
+                      {TERMS_CONTENT.termsOfService}
+                  </TermsContent>
+              </AgreementItem>
+
+              {/* 개인정보 처리방침 */}
+              <AgreementItem>
+                  <CheckboxWrapper>
+                      <HiddenCheckbox
+                          type="checkbox"
+                          checked={agreements.privacyPolicy}
+                          onChange={(e) => handleIndividualAgreementChange('privacyPolicy')(e.target.checked)}
+                      />
+                      <CustomCheckbox checked={agreements.privacyPolicy} />
+                      <CheckboxLabel>
+                          개인정보 처리방침 <TermsLink>(필수)</TermsLink>
+                      </CheckboxLabel>
+                  </CheckboxWrapper>
+
+                  <TermsContent>
+                      {TERMS_CONTENT.privacyPolicy}
+                  </TermsContent>
+              </AgreementItem>
+          </AgreementSection>
+
 
       <ConfirmButton
         disabled={!isAllRequiredAgreed}

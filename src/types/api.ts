@@ -117,7 +117,7 @@ export interface SignupState {
   isEmailVerified: boolean;
   profileFormData: ProfileFormData | null;
   agreementState: AgreementState | null;
-  emergencyData: EmergencyData | null;
+  emergencyFormData: EmergencyFormData | null;
 }
 
 // 2단계: 필수정보 입력 데이터
@@ -161,16 +161,32 @@ export interface AgreementState {
 export interface UseTermsAgreementReturn {
   agreements: AgreementState;
   handleAllAgreementChange: (checked: boolean) => void;
-  handleIndividualAgreementChange: (key: keyof Omit<AgreementState, 'allAgreed'>) => (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleIndividualAgreementChange: (key: keyof Omit<AgreementState, 'allAgreed'>) => (checked: boolean) => void;  // 🔧 수정
   isAllRequiredAgreed: boolean;
 }
 
 // 4단계: 응급정보 데이터 (모두 선택사항)
-export interface EmergencyData {
-  bloodType?: 'A' | 'B' | 'AB' | 'O';
+export interface EmergencyFormData {
+  bloodType: 'A' | 'B' | 'O' | 'AB' | '';
+  emergencyContact1: string;
+  emergencyContact2: string;
+  emergencyContact3: string;
+}
+
+// 응급정보 폼 에러 타입
+export interface EmergencyFormErrors {
   emergencyContact1?: string;
   emergencyContact2?: string;
   emergencyContact3?: string;
+}
+
+// 응급정보 훅 반환 타입
+export interface UseEmergencyFormReturn {
+  formData: EmergencyFormData;
+  formErrors: EmergencyFormErrors;
+  handleInputChange: (field: keyof EmergencyFormData) => (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleBloodTypeSelect: (bloodType: 'A' | 'B' | 'O' | 'AB') => void;
+  handleFieldBlur: (field: keyof EmergencyFormData) => () => void;
 }
 
 // 최종 회원가입 요청 (기존 RegisterRequest 대체할 수도 있음)
