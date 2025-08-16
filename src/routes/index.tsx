@@ -5,7 +5,6 @@ import AppLayout from '@/layout/AppLayout';
 // page lazy import
 const HomePage = lazy(() => import('@pages/home/HomePage'));
 const LoginPage = lazy(() => import('@pages/auth/LoginPage'));
-const SignupPage = lazy(() => import('@pages/auth/SignupPage'));
 const DrivePage = lazy(() => import('@pages/drive/DrivePage'));
 const ReportPage = lazy(() => import('@pages/report/ReportPage'));
 const MyPage = lazy(() => import('@pages/myPage/MyPage'));
@@ -25,7 +24,6 @@ function RequireAuth({ children }: { children: ReactNode }) {
 const routes: RouteObject[] = [
   // 공개 페이지
   { path: '/login', element: <LoginPage /> },
-  { path: '/signup', element: <SignupPage /> },
   { path: '/signup/email', element: <EmailInputPage />},
   { path: '/signup/verification', element: <EmailVerificationPage />},
   { path: '/signup/profile', element: <ProfileInputPage />},
