@@ -68,20 +68,19 @@ export default function AppLayout() {
     (m) => isRouteHandle(m.handle) && m.handle.hideBottomNav === true,
   );
 
-  const alerts = useSelector(selectAlerts);
+  const alert = useSelector(selectAlerts);
 
   useEffect(() => {
-    if (!alerts?.length) return;
-    const latest = alerts[0];
-    if (latest.type === 'start' && drivingActive !== true) {
+    if (!alert) return;
+    if (alert.type === 'start' && drivingActive !== true) {
       setDrivingActive(true);
       return;
     }
-    if (latest.type === 'end' && drivingActive !== false) {
+    if (alert.type === 'end' && drivingActive !== false) {
       setDrivingActive(false);
       return;
     }
-  }, [alerts, drivingActive]);
+  }, [alert, drivingActive]);
 
   // 웹소켓 전역 설정
   const isAuthenticated = useSelector(selectIsAuthenticated);
@@ -104,10 +103,10 @@ export default function AppLayout() {
           <DriveOverlayPage />
         </DrivePortal>
       )}
-        <WSStatus>
-          WS: {connectionStatus}
-          <Dot status={connectionStatus} />
-        </WSStatus>
+      <WSStatus>
+        WS: {connectionStatus}
+        <Dot status={connectionStatus} />
+      </WSStatus>
     </>
   );
 }
