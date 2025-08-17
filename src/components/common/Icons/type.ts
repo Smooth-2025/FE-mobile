@@ -12,7 +12,9 @@ export type IconName =
   | 'warningCircle'
   | 'checkmarkCircle'
   | 'chevronLeft'
-  | 'close';
+  | 'close'
+  | 'eyeClosed'
+  | 'eyeOpen';
 
 export interface IconProps extends IconStyleProps {
   name: IconName;
