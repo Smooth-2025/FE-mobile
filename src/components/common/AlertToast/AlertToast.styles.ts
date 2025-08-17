@@ -7,7 +7,10 @@ export const ToastContainer = styled.div<{
   position: ToastPosition;
 }>`
   position: fixed;
-  ${(props) => (props.position === 'top' ? 'top: 60px;' : 'bottom: 100px;')}
+  ${(props) =>
+    props.position === 'top'
+      ? 'top: calc(60px + var(--stack-offset, 0px));'
+      : 'bottom: calc(100px + var(--stack-offset, 0px));'}
   left: 20px;
   right: 20px;
   background-color: ${(props) => props.bg};
@@ -17,7 +20,6 @@ export const ToastContainer = styled.div<{
   display: flex;
   align-items: center;
   z-index: 99999;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 `;
 
 export const IconWrapper = styled.div`

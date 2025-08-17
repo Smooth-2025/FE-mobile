@@ -28,6 +28,13 @@ const styleMap: Record<
     icon: 'warningCircle',
     iconColor: theme.colors.danger600,
   },
+  info: {
+    bg: 'rgba(0, 0, 0, 0.7)',
+    border: 'transparent',
+    text: theme.colors.white,
+    icon: 'warningCircle',
+    iconColor: theme.colors.neutral500,
+  },
   accident: {
     bg: theme.colors.danger200,
     border: theme.colors.danger700,
@@ -86,7 +93,6 @@ export default function AlertToast({
   position = 'bottom',
   duration = 3000,
 }: ToastProps) {
-  // Safety check: fallback to 'unknown' if type is not in styleMap
   const safeType = styleMap[type] ? type : 'unknown';
   const { bg, border, text, icon, iconColor } = styleMap[safeType];
 
