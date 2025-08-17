@@ -82,7 +82,7 @@ export const { addAlert, markAsRead, markAllAsRead, clearAlerts, setConnectionSt
 export default alertSlice.reducer;
 
 // 셀렉터들
-export const selectAlerts = (state: { alert: AlertState }) => state.alert.alerts;
+export const selectAlerts = (state: { alert: AlertState }) => state.alert.alerts[0] ?? null;
 export const selectUnreadCount = (state: { alert: AlertState }) => state.alert.unreadCount;
 export const selectAlertConnectionStatus = (state: { alert: AlertState }) =>
   state.alert.connectionStatus;
