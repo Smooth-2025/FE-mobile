@@ -25,11 +25,11 @@ import {
 export function ProfileInputPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   // 이메일 정보 가져오기
   const email = location.state?.email;
   const emailVerified = location.state?.emailVerified;
-  
+
   // 커스텀 훅 사용
   const {
     formData,
@@ -60,7 +60,7 @@ export function ProfileInputPage() {
           email,
           emailVerified,
           profileData: formData,
-        }
+        },
       });
     }
   };
@@ -68,14 +68,12 @@ export function ProfileInputPage() {
   return (
     <Container>
       <Header>
-        <BackButton onClick={() => navigate(-1)}>
-          ←
-        </BackButton>
-        
+        <BackButton onClick={() => navigate(-1)}>←</BackButton>
+
         <ProgressBar>
           <ProgressFill progress={50} />
         </ProgressBar>
-        
+
         <Title>필수 정보를 입력해주세요</Title>
       </Header>
 
@@ -90,16 +88,16 @@ export function ProfileInputPage() {
             onChange={handleInputChange('password')}
             onBlur={handleFieldBlur('password')}
             style={{
-              borderColor: formErrors.password ? '#ef4444' : 
-                          formSuccess.password ? '#22c55e' : undefined,
-              borderWidth: (formErrors.password || formSuccess.password) ? '2px' : '1px',
-              paddingRight: '60px'
+              borderColor: formErrors.password
+                ? '#ef4444'
+                : formSuccess.password
+                  ? '#22c55e'
+                  : undefined,
+              borderWidth: formErrors.password || formSuccess.password ? '2px' : '1px',
+              paddingRight: '60px',
             }}
           />
-          <PasswordToggleButton
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-          >
+          <PasswordToggleButton type="button" onClick={() => setShowPassword(!showPassword)}>
             <Icon
               name={showPassword ? 'eyeOpen' : 'eyeClosed'}
               size={20}
@@ -107,12 +105,8 @@ export function ProfileInputPage() {
             />
           </PasswordToggleButton>
         </PasswordWrapper>
-        {formSuccess.password && (
-          <SuccessMessage>{formSuccess.password}</SuccessMessage>
-        )}
-        {formErrors.password && (
-          <ErrorMessage>{formErrors.password}</ErrorMessage>
-        )}
+        {formSuccess.password && <SuccessMessage>{formSuccess.password}</SuccessMessage>}
+        {formErrors.password && <ErrorMessage>{formErrors.password}</ErrorMessage>}
       </FormGroup>
 
       {/* 비밀번호 확인 */}
@@ -126,10 +120,14 @@ export function ProfileInputPage() {
             onChange={handleInputChange('passwordConfirm')}
             onBlur={handleFieldBlur('passwordConfirm')}
             style={{
-              borderColor: formErrors.passwordConfirm ? '#ef4444' : 
-                          formSuccess.passwordConfirm ? '#22c55e' : undefined,
-              borderWidth: (formErrors.passwordConfirm || formSuccess.passwordConfirm) ? '2px' : '1px',
-              paddingRight: '60px'
+              borderColor: formErrors.passwordConfirm
+                ? '#ef4444'
+                : formSuccess.passwordConfirm
+                  ? '#22c55e'
+                  : undefined,
+              borderWidth:
+                formErrors.passwordConfirm || formSuccess.passwordConfirm ? '2px' : '1px',
+              paddingRight: '60px',
             }}
           />
           <PasswordToggleButton
@@ -146,9 +144,7 @@ export function ProfileInputPage() {
         {formSuccess.passwordConfirm && (
           <SuccessMessage>{formSuccess.passwordConfirm}</SuccessMessage>
         )}
-        {formErrors.passwordConfirm && (
-          <ErrorMessage>{formErrors.passwordConfirm}</ErrorMessage>
-        )}
+        {formErrors.passwordConfirm && <ErrorMessage>{formErrors.passwordConfirm}</ErrorMessage>}
       </FormGroup>
 
       {/* 이름 */}
@@ -162,12 +158,10 @@ export function ProfileInputPage() {
           onBlur={handleFieldBlur('name')}
           style={{
             borderColor: formErrors.name ? '#ef4444' : undefined,
-            borderWidth: formErrors.name ? '2px' : '1px'
+            borderWidth: formErrors.name ? '2px' : '1px',
           }}
         />
-        {formErrors.name && (
-          <ErrorMessage>{formErrors.name}</ErrorMessage>
-        )}
+        {formErrors.name && <ErrorMessage>{formErrors.name}</ErrorMessage>}
       </FormGroup>
 
       {/* 휴대폰 번호 */}
@@ -182,12 +176,10 @@ export function ProfileInputPage() {
           maxLength={13}
           style={{
             borderColor: formErrors.phone ? '#ef4444' : undefined,
-            borderWidth: formErrors.phone ? '2px' : '1px'
+            borderWidth: formErrors.phone ? '2px' : '1px',
           }}
         />
-        {formErrors.phone && (
-          <ErrorMessage>{formErrors.phone}</ErrorMessage>
-        )}
+        {formErrors.phone && <ErrorMessage>{formErrors.phone}</ErrorMessage>}
       </FormGroup>
 
       {/* 성별 */}
@@ -209,15 +201,10 @@ export function ProfileInputPage() {
             여성
           </GenderButton>
         </GenderGroup>
-        {formErrors.gender && (
-          <ErrorMessage>{formErrors.gender}</ErrorMessage>
-        )}
+        {formErrors.gender && <ErrorMessage>{formErrors.gender}</ErrorMessage>}
       </FormGroup>
 
-      <NextButton
-        disabled={!isFormValid()}
-        onClick={handleNext}
-      >
+      <NextButton disabled={!isFormValid()} onClick={handleNext}>
         다음
       </NextButton>
     </Container>

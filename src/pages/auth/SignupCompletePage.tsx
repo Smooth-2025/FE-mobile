@@ -19,11 +19,13 @@ export function SignupCompletePage() {
       <ContentWrapper>
         <TitleSection>
           <Title>
-            {name ? `${name}님,` : '스무스님,'}<br />
+            {name ? `${name}님,` : '스무스님,'}
+            <br />
             가입을 축하합니다!
           </Title>
           <Subtitle>
-            오늘부터 당신만의<br />
+            오늘부터 당신만의
+            <br />
             드라이빙 리포트를 만들어보세요
           </Subtitle>
         </TitleSection>
@@ -34,9 +36,7 @@ export function SignupCompletePage() {
         </IllustrationWrapper>
       </ContentWrapper>
 
-      <ConfirmButton onClick={handleConfirm}>
-        확인
-      </ConfirmButton>
+      <ConfirmButton onClick={handleConfirm}>확인</ConfirmButton>
     </Container>
   );
 }

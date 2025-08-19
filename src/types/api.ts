@@ -150,7 +150,7 @@ export interface ValidationResult {
   success?: string;
 }
 
-// 3단계: 약관동의 데이터  
+// 3단계: 약관동의 데이터
 export interface AgreementState {
   allAgreed: boolean;
   termsOfService: boolean;
@@ -161,7 +161,9 @@ export interface AgreementState {
 export interface UseTermsAgreementReturn {
   agreements: AgreementState;
   handleAllAgreementChange: (checked: boolean) => void;
-  handleIndividualAgreementChange: (key: keyof Omit<AgreementState, 'allAgreed'>) => (checked: boolean) => void;  // 🔧 수정
+  handleIndividualAgreementChange: (
+    key: keyof Omit<AgreementState, 'allAgreed'>,
+  ) => (checked: boolean) => void; // 🔧 수정
   isAllRequiredAgreed: boolean;
 }
 
@@ -184,7 +186,9 @@ export interface EmergencyFormErrors {
 export interface UseEmergencyFormReturn {
   formData: EmergencyFormData;
   formErrors: EmergencyFormErrors;
-  handleInputChange: (field: keyof EmergencyFormData) => (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleInputChange: (
+    field: keyof EmergencyFormData,
+  ) => (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleBloodTypeSelect: (bloodType: 'A' | 'B' | 'O' | 'AB') => void;
   handleFieldBlur: (field: keyof EmergencyFormData) => () => void;
 }

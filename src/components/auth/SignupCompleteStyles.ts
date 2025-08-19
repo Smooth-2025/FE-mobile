@@ -50,9 +50,13 @@ export const GiftBox = styled.div`
   position: relative;
   display: inline-block;
   animation: bounce 2s ease-in-out infinite;
-  
+
   @keyframes bounce {
-    0%, 20%, 50%, 80%, 100% {
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
       transform: translateY(0);
     }
     40% {
@@ -71,7 +75,7 @@ export const Confetti = styled.div`
   transform: translateX(-50%);
   width: 200px;
   height: 100px;
-  
+
   &::before,
   &::after {
     content: '🎉';
@@ -79,17 +83,17 @@ export const Confetti = styled.div`
     font-size: 24px;
     animation: confetti 3s ease-in-out infinite;
   }
-  
+
   &::before {
     left: -30px;
     animation-delay: 0.5s;
   }
-  
+
   &::after {
     right: -30px;
     animation-delay: 1s;
   }
-  
+
   @keyframes confetti {
     0% {
       transform: translateY(0) rotate(0deg);
@@ -117,14 +121,14 @@ export const ConfirmButton = styled.button`
   cursor: pointer;
   transition: all 0.2s ease;
   margin-top: 40px;
-  
+
   background-color: ${theme.colors.primary500};
   color: #ffffff;
-  
+
   &:hover {
     background-color: ${theme.colors.primary600};
   }
-  
+
   &:active {
     transform: translateY(1px);
   }

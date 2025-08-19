@@ -29,7 +29,7 @@ export const ProgressBar = styled.div`
 `;
 
 export const ProgressFill = styled.div<{ progress: number }>`
-  width: ${props => props.progress}%;
+  width: ${(props) => props.progress}%;
   height: 100%;
   background-color: ${theme.colors.primary500};
   border-radius: 2px;
@@ -72,7 +72,7 @@ export const PasswordToggleButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  
+
   &:hover {
     background-color: ${theme.colors.neutral100};
   }
@@ -101,15 +101,15 @@ export const GenderGroup = styled.div`
 export const GenderButton = styled.button<{ selected: boolean }>`
   flex: 1;
   padding: 16px;
-  border: 2px solid ${props => props.selected ? theme.colors.primary500 : '#e5e7eb'};
+  border: 2px solid ${(props) => (props.selected ? theme.colors.primary500 : '#e5e7eb')};
   border-radius: 8px;
-  background: ${props => props.selected ? theme.colors.primary50 : '#ffffff'};
-  color: ${props => props.selected ? theme.colors.primary500 : theme.colors.neutral700};
+  background: ${(props) => (props.selected ? theme.colors.primary50 : '#ffffff')};
+  color: ${(props) => (props.selected ? theme.colors.primary500 : theme.colors.neutral700)};
   font-size: 16px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
-  
+
   &:hover {
     border-color: ${theme.colors.primary500};
     background-color: ${theme.colors.primary50};
@@ -123,18 +123,18 @@ export const NextButton = styled.button<{ disabled: boolean }>`
   border-radius: 8px;
   font-size: 16px;
   font-weight: 600;
-  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
+  cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
   transition: all 0.2s ease;
   margin-top: 32px;
-  
-  background-color: ${props => props.disabled ? '#e5e7eb' : theme.colors.primary500};
-  color: ${props => props.disabled ? '#9ca3af' : '#ffffff'};
-  
+
+  background-color: ${(props) => (props.disabled ? '#e5e7eb' : theme.colors.primary500)};
+  color: ${(props) => (props.disabled ? '#9ca3af' : '#ffffff')};
+
   &:hover {
-    background-color: ${props => props.disabled ? '#e5e7eb' : theme.colors.primary600};
+    background-color: ${(props) => (props.disabled ? '#e5e7eb' : theme.colors.primary600)};
   }
-  
+
   &:active {
-    transform: ${props => props.disabled ? 'none' : 'translateY(1px)'};
+    transform: ${(props) => (props.disabled ? 'none' : 'translateY(1px)')};
   }
 `;

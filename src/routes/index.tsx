@@ -32,8 +32,8 @@ const routes: RouteObject[] = [
   { path: '/signup/verification', element: <EmailVerificationPage /> },
   { path: '/signup/profile', element: <ProfileInputPage /> },
   { path: '/signup/terms', element: <TermsAgreementPage /> },
-  { path: '/signup/emergency', element: <EmergencyInfoPage /> }, 
-  { path: '/signup/complete', element: <SignupCompletePage /> }, 
+  { path: '/signup/emergency', element: <EmergencyInfoPage /> },
+  { path: '/signup/complete', element: <SignupCompletePage /> },
 
   // 보호 페이지(레이아웃 하위)
   {

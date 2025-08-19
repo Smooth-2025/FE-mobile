@@ -10,7 +10,10 @@ export const validatePassword = (password: string): ValidationResult => {
   return { success: '사용가능한 비밀번호 입니다.' };
 };
 
-export const validatePasswordConfirm = (passwordConfirm: string, password: string): ValidationResult => {
+export const validatePasswordConfirm = (
+  passwordConfirm: string,
+  password: string,
+): ValidationResult => {
   if (!passwordConfirm) {
     return { error: '비밀번호 확인을 입력해주세요.' };
   }

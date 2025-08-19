@@ -29,7 +29,7 @@ export const useCountdown = ({ initialSeconds, onComplete }: UseCountdownProps) 
 
     if (isActive && seconds > 0) {
       interval = setInterval(() => {
-        setSeconds(seconds => {
+        setSeconds((seconds) => {
           if (seconds <= 1) {
             setIsActive(false);
             onComplete?.();

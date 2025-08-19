@@ -10,8 +10,6 @@ import { ConnectionStatus } from '@/services/websocket/types';
 import type { RootState, AppDispatch } from '@/store';
 import type { UseWebSocketReturn, UseWebSocketProps } from '@/services/websocket/types';
 
-
-
 export const useWebSocket = (props: UseWebSocketProps = {}): UseWebSocketReturn => {
   const { autoConnect = false } = props;
   const dispatch = useDispatch<AppDispatch>();
@@ -25,9 +23,11 @@ export const useWebSocket = (props: UseWebSocketProps = {}): UseWebSocketReturn 
   const connect = useCallback(async () => {
     dispatch(connectWebSocket());
     // userId 없이 바로 알림 구독
-    dispatch(subscribeToAlerts({
-      userId: ''
-    }));
+    dispatch(
+      subscribeToAlerts({
+        userId: '',
+      }),
+    );
   }, [dispatch]);
 
   const disconnect = useCallback(() => {
@@ -38,15 +38,20 @@ export const useWebSocket = (props: UseWebSocketProps = {}): UseWebSocketReturn 
     dispatch(disconnectWebSocket());
     dispatch(connectWebSocket());
     // userId 없이 바로 알림 구독
-    dispatch(subscribeToAlerts({
-      userId: ''
-    }));
+    dispatch(
+      subscribeToAlerts({
+        userId: '',
+      }),
+    );
   }, [dispatch]);
 
-  const sendCommand: UseWebSocketReturn['sendCommand'] = useCallback((command, data) => {
-    dispatch(sendCommandAction({ command, data }));
-    return true;
-  }, [dispatch]);
+  const sendCommand: UseWebSocketReturn['sendCommand'] = useCallback(
+    (command, data) => {
+      dispatch(sendCommandAction({ command, data }));
+      return true;
+    },
+    [dispatch],
+  );
 
   useEffect(() => {
     if (!autoConnect) return;

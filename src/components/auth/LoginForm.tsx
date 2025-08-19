@@ -4,16 +4,14 @@ import { loginUser } from '@apis/auth';
 import type { LoginRequest, LoginResponse } from '@/types/api';
 import type { AxiosError } from 'axios';
 
-
 // 컴포넌트 Props 타입 정의
 interface LoginFormProps {
   onSuccess: (userData: LoginResponse) => void; // 로그인 성공시 콜백
-  onError: (errorMessage: string) => void;      // 로그인 실패시 콜백
-  isLoading?: boolean;                          // 로딩 상태
+  onError: (errorMessage: string) => void; // 로그인 실패시 콜백
+  isLoading?: boolean; // 로딩 상태
 }
 
-
-// 폼 상태 타입 정의 
+// 폼 상태 타입 정의
 interface FormState {
   email: string;
   password: string;
@@ -22,30 +20,29 @@ interface FormState {
 // 초기값도 타입에 맞게
 const initialFormState: FormState = {
   email: '',
-  password: ''
+  password: '',
 };
-
 
 // LoginForm 컴포넌트
 export function LoginForm({ onSuccess, onError, isLoading = false }: LoginFormProps) {
   const [formData, setFormData] = useState<FormState>(initialFormState);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  
+
   // 입력값 변경 핸들러
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    
+
     // 타입 안전성: name은 FormState의 키여야 함
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   // 폼 제출 핸들러
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     if (isSubmitting || isLoading) return;
 
     // 기본 유효성 검사
@@ -60,7 +57,7 @@ export function LoginForm({ onSuccess, onError, isLoading = false }: LoginFormPr
       // API 호출 - 타입이 자동으로 맞춰짐
       const loginData: LoginRequest = {
         email: formData.email,
-        password: formData.password
+        password: formData.password,
       };
 
       // loginUser 함수의 반환 타입이 LoginResponse로 보장됨
@@ -68,26 +65,23 @@ export function LoginForm({ onSuccess, onError, isLoading = false }: LoginFormPr
 
       // result.의 자동완성
       console.warn('로그인 성공!', result.name, result.token);
-      
+
       // 성공 콜백 호출
       onSuccess(result);
-      
+
       // 폼 초기화
       setFormData(initialFormState);
-
     } catch (error: unknown) {
       console.error('로그인 실패:', error);
-      
+
       // 에러 메시지 추출
-      const axiosError = error as AxiosError<{message?: string}>;
+      const axiosError = error as AxiosError<{ message?: string }>;
       const errorMessage = axiosError.response?.data?.message || '로그인에 실패했습니다.';
       onError(errorMessage);
-      
     } finally {
       setIsSubmitting(false);
     }
   };
-
 
   // 렌더링
 
@@ -121,11 +115,7 @@ export function LoginForm({ onSuccess, onError, isLoading = false }: LoginFormPr
         />
       </div>
 
-      <button 
-        type="submit" 
-        disabled={isSubmitting || isLoading}
-        className="submit-button"
-      >
+      <button type="submit" disabled={isSubmitting || isLoading} className="submit-button">
         {isSubmitting ? '로그인 중...' : '로그인'}
       </button>
     </form>

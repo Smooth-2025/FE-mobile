@@ -1,4 +1,4 @@
-import { createAction } from "@reduxjs/toolkit";
+import { createAction } from '@reduxjs/toolkit';
 
 export type SubscribePayload = { userId: string };
 export type UnsubscribePayload = { destination: string }; // `/user/{userId}/alert`

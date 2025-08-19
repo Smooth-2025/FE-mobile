@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 export const useSignupComplete = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   // 이전 단계에서 전달된 데이터
   const email = location.state?.email;
   const name = location.state?.name;

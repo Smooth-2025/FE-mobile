@@ -19,7 +19,7 @@ const TestButton = styled.button`
   border-radius: 8px;
   font-size: 12px;
   cursor: pointer;
-  
+
   &:hover {
     background: ${theme.colors.primary700};
   }
@@ -30,7 +30,7 @@ export default function DrivePage() {
   const testAlert = async (type: string) => {
     try {
       const latitude = 37.5665; // 서울 시청 좌표
-      const longitude = 126.9780;
+      const longitude = 126.978;
       const userId = 'test-user-123'; // JWT 토큰과 동일한 userId 사용
 
       const response = await fetch(`/api/test/${type}`, {
@@ -59,24 +59,16 @@ export default function DrivePage() {
   return (
     <main>
       <Header type="logo" bgColor={theme.colors.bg_page} />
-      
+
       <div style={{ padding: '16px' }}>
         {/* 개발용 테스트 섹션만 유지 */}
         {process.env.NODE_ENV === 'development' && (
           <TestSection>
-            <h4 style={{ margin: '0 0 12px 0', color: '#92400e' }}>
-              🧪 백엔드 API 테스트
-            </h4>
+            <h4 style={{ margin: '0 0 12px 0', color: '#92400e' }}>🧪 백엔드 API 테스트</h4>
             <div>
-              <TestButton onClick={() => testAlert('accident')}>
-                사고 알림 테스트
-              </TestButton>
-              <TestButton onClick={() => testAlert('obstacle')}>
-                장애물 알림 테스트
-              </TestButton>
-              <TestButton onClick={() => testAlert('pothole')}>
-                포트홀 알림 테스트
-              </TestButton>
+              <TestButton onClick={() => testAlert('accident')}>사고 알림 테스트</TestButton>
+              <TestButton onClick={() => testAlert('obstacle')}>장애물 알림 테스트</TestButton>
+              <TestButton onClick={() => testAlert('pothole')}>포트홀 알림 테스트</TestButton>
               <TestButton onClick={() => testAlert('simple-message')}>
                 간단 메시지 테스트
               </TestButton>

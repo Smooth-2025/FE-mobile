@@ -4,12 +4,14 @@ import alertReducer from './slices/alertSlice';
 import websocketReducer from './slices/websocketSlice';
 import websocketMiddleware from './middleware/websocketMiddleware';
 import authReducer from './slices/authSlice';
+import { vehicleApi } from './vehicle/vehicleApi';
 
 export const store = configureStore({
   reducer: {
     alert: alertReducer,
     websocket: websocketReducer,
     auth: authReducer,
+    [vehicleApi.reducerPath]: vehicleApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -22,7 +24,9 @@ export const store = configureStore({
           'websocket/ping',
         ],
       },
-    }).concat(websocketMiddleware),
+    })
+      .concat(websocketMiddleware)
+      .concat(vehicleApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

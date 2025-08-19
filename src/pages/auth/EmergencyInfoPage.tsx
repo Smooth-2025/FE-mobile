@@ -25,24 +25,19 @@ import type { RegisterRequest } from '@/types/api';
 export function EmergencyInfoPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   // 이전 단계 데이터 가져오기
   const email = location.state?.email;
   const emailVerified = location.state?.emailVerified;
   const profileData = location.state?.profileData;
   const termsData = location.state?.termsData;
-  
+
   // 로딩 상태 추가
   const [isLoading, setIsLoading] = useState(false);
-  
+
   // 커스텀 훅 사용
-  const {
-    formData,
-    formErrors,
-    handleInputChange,
-    handleBloodTypeSelect,
-    handleFieldBlur,
-  } = useEmergencyForm();
+  const { formData, formErrors, handleInputChange, handleBloodTypeSelect, handleFieldBlur } =
+    useEmergencyForm();
 
   // 이전 단계 데이터 확인
   useEffect(() => {
@@ -87,7 +82,7 @@ export function EmergencyInfoPage() {
   const handleRegister = async () => {
     try {
       setIsLoading(true);
-      
+
       // 유효성 검사 (긴급연락처가 입력된 경우에만)
       const hasErrors = Object.keys(formErrors).length > 0;
       if (hasErrors) {
@@ -101,15 +96,14 @@ export function EmergencyInfoPage() {
       // 실제 API 호출
       const result = await registerUser(signupData);
       console.warn('회원가입 성공:', result);
-      
+
       // 회원가입 완료 페이지로 이동
       navigate('/signup/complete', {
         state: {
           email,
           name: profileData.name,
-        }
+        },
       });
-      
     } catch (error) {
       console.error('회원가입 실패:', error);
       alert('회원가입에 실패했습니다. 다시 시도해주세요.');
@@ -129,15 +123,14 @@ export function EmergencyInfoPage() {
       // 실제 API 호출
       const result = await registerUser(signupData);
       console.warn('회원가입 성공:', result);
-      
+
       // 회원가입 완료 페이지로 이동
       navigate('/signup/complete', {
         state: {
           email,
           name: profileData.name,
-        }
+        },
       });
-      
     } catch (error) {
       console.error('회원가입 실패:', error);
       alert('회원가입에 실패했습니다. 다시 시도해주세요.');
@@ -152,11 +145,11 @@ export function EmergencyInfoPage() {
         <BackButton onClick={() => navigate(-1)} disabled={isLoading}>
           ←
         </BackButton>
-        
+
         <ProgressBar>
           <ProgressFill progress={100} />
         </ProgressBar>
-        
+
         <Title>응급 정보를 등록해주세요 (선택)</Title>
         <Subtitle>등록된 연락처로 사고 발생 알림 문자가 전송됩니다.</Subtitle>
       </Header>
@@ -192,7 +185,7 @@ export function EmergencyInfoPage() {
           disabled={isLoading}
           style={{
             borderColor: formErrors.emergencyContact1 ? '#ef4444' : undefined,
-            borderWidth: formErrors.emergencyContact1 ? '2px' : '1px'
+            borderWidth: formErrors.emergencyContact1 ? '2px' : '1px',
           }}
         />
         {formErrors.emergencyContact1 && (
@@ -213,7 +206,7 @@ export function EmergencyInfoPage() {
           disabled={isLoading}
           style={{
             borderColor: formErrors.emergencyContact2 ? '#ef4444' : undefined,
-            borderWidth: formErrors.emergencyContact2 ? '2px' : '1px'
+            borderWidth: formErrors.emergencyContact2 ? '2px' : '1px',
           }}
         />
         {formErrors.emergencyContact2 && (
@@ -234,7 +227,7 @@ export function EmergencyInfoPage() {
           disabled={isLoading}
           style={{
             borderColor: formErrors.emergencyContact3 ? '#ef4444' : undefined,
-            borderWidth: formErrors.emergencyContact3 ? '2px' : '1px'
+            borderWidth: formErrors.emergencyContact3 ? '2px' : '1px',
           }}
         />
         {formErrors.emergencyContact3 && (
@@ -247,7 +240,7 @@ export function EmergencyInfoPage() {
           {isLoading ? '등록 중...' : '등록'}
         </RegisterButton>
       </ButtonGroup>
-      
+
       <SkipButton onClick={handleSkip} disabled={isLoading}>
         건너뛰기
       </SkipButton>
