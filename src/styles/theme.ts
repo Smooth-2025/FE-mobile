@@ -24,8 +24,6 @@ export const theme = {
     danger200: '#FFEBEE',
     danger100: '#FEF2F2',
     danger50: '#FFFBFB',
-    Warning600: '#FFAD0D',
-    Warning200: '#FFF7E1',
     black: '#000000',
     white: '#ffffff',
     black_a60: 'rgba(0, 0, 0, 0.6)',
@@ -55,19 +53,6 @@ export const theme = {
     36: '2.25rem',
     38: '2.375rem',
     40: '2.5rem',
-  },
-  spacing: {
-    xs: 4,
-    sm: 8,
-    md: 16,
-    lg: 24,
-    xl: 32,
-    xxl: 48,
-  },
-  borderRadius: {
-    sm: 8,
-    md: 10,
-    lg: 15,
   },
 };
 
