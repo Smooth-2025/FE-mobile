@@ -38,21 +38,44 @@ const initialState: AuthState = {
 
 // 로그인 비동기 액션
 export const loginAsync = createAsyncThunk<
-  LoginResponse,
+  LoginResponse['data'],
   LoginRequest,
   { rejectValue: string }
 >(
-  'auth/login',
+'auth/login',
   async (loginData: LoginRequest, { rejectWithValue }) => {
     try {
+      console.warn('로그인 요청 데이터:', loginData);
+      
       const response = await loginUser(loginData);
       
-      // 토큰 저장
-      tokenUtils.setToken(response.token);
+      console.warn('API 원본 응답:', response);
+      console.warn('토큰 필드 확인:', response.data.token); 
+      console.warn('사용자 이름:', response.data.name);
+      console.warn('사용자 ID:', response.data.userId);
       
-      return response;
+      // 토큰이 있는지 확인
+      if (!response.data.token) {
+        console.error('토큰이 응답에 없음!');
+        return rejectWithValue('토큰을 받지 못했습니다.');
+      }
+      
+      // 토큰 저장
+      tokenUtils.setToken(response.data.token);
+      console.warn('토큰 저장 완료');
+      
+      // 저장된 토큰 재확인
+      const savedToken = tokenUtils.getToken();
+      console.warn('저장된 토큰 확인:', savedToken);
+      
+      return response.data;
     } catch (error: unknown) {
-        const axiosError = error as AxiosError<{ message?: string }>;
+      console.error('로그인 에러 상세:', error);
+      
+      const axiosError = error as AxiosError<{ message?: string }>;
+      console.error('에러 응답:', axiosError.response?.data);
+      console.error('에러 상태:', axiosError.response?.status);
+      
       const errorMessage = axiosError.response?.data?.message || axiosError.message || '로그인에 실패했습니다.';
       return rejectWithValue(errorMessage);
     }
@@ -61,7 +84,7 @@ export const loginAsync = createAsyncThunk<
 
 // 회원가입 비동기 액션
 export const registerAsync = createAsyncThunk<
-  RegisterResponse,
+  RegisterResponse['data'],
   RegisterRequest,
   { rejectValue: string }
 >(
@@ -69,18 +92,18 @@ export const registerAsync = createAsyncThunk<
   async (registerData: RegisterRequest, { rejectWithValue }) => {
     try {
       const response = await registerUser(registerData);
-      // 회원가입 후 자동 로그인되므로 토큰 저장
-      tokenUtils.setToken(response.token);
       
-      return response;
+      // 회원가입 후 자동 로그인되므로 토큰 저장
+      tokenUtils.setToken(response.data.token); 
+      
+      return response.data; 
     } catch (error: unknown) {
-        const axiosError = error as AxiosError<{ message?: string }>;
+      const axiosError = error as AxiosError<{ message?: string }>;
       const errorMessage = axiosError.response?.data?.message || axiosError.message || '회원가입에 실패했습니다.';
       return rejectWithValue(errorMessage);
     }
   }
 );
-
 // 로그아웃 비동기 액션
 export const logoutAsync = createAsyncThunk<
   void,
