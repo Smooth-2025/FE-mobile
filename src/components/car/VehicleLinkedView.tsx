@@ -1,57 +1,44 @@
-import styled from '@emotion/styled';
+import { useState } from 'react';
 import vehicleCar from '@/assets/images/vehicle-linked.png';
-import { NAV_HEIGHT } from '@/layout/BottomNav';
-import { HEADER_HEIGHT } from '@/layout/Header';
+import { useUnlinkVehicleMutation } from '@/store/vehicle/vehicleApi';
+import AlertToast from '../common/AlertToast/AlertToast';
+import * as styled from './VehicleLinkedView.styles';
+import type { BackendError, VehicleInfo } from '@/store/vehicle/type';
 
-export default function VehicleLinkedView() {
-  const ViewContainer = styled.div`
-    width: 100%;
-    height: ${`calc(100dvh - ${HEADER_HEIGHT}px - ${NAV_HEIGHT}px)`};
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    padding: 80px 38px 0;
-    text-align: left;
-    box-sizing: border-box;
-  `;
-  const Title = styled.h2`
-    margin: 12px 0;
-    font-size: ${({ theme }) => theme.fontSize[24]};
-    color: ${({ theme }) => theme.colors.neutral600};
-    font-weight: bold;
-    & span {
-      color: ${({ theme }) => theme.colors.primary600};
-      font-weight: bold;
+type VehicleLinkedViewProps = {
+  vehicle: VehicleInfo;
+};
+
+export default function VehicleLinkedView({ vehicle }: VehicleLinkedViewProps) {
+  const [toast, setToast] = useState<null | {
+    type: 'success' | 'error';
+    content: string;
+  }>(null);
+  const [unlinkVehicle, { isLoading: unlinking }] = useUnlinkVehicleMutation();
+
+  const handleUnlink = async () => {
+    try {
+      await unlinkVehicle().unwrap();
+      setToast({ type: 'success', content: '연동이 해제되었습니다.' });
+    } catch (e) {
+      const err = e as { status: number; data?: BackendError };
+      const msg = err.data?.message ?? '알 수 없는 이유로 연동 해제에 실패했습니다.';
+      setToast({ type: 'error', content: msg });
     }
-  `;
-  const LinkedAt = styled.p`
-    font-size: ${({ theme }) => theme.fontSize[16]};
-    color: ${({ theme }) => theme.colors.neutral500};
-    font-weight: 300;
-    padding: 10px 0;
-  `;
-  const Image = styled.img`
-    width: 250px;
-    height: auto;
-    margin: 30px auto;
-  `;
-  const UnlinkButton = styled.span`
-    margin: 0 auto;
-    font-size: ${({ theme }) => theme.fontSize[16]};
-    color: ${({ theme }) => theme.colors.neutral500};
-    text-decoration: underline;
-    cursor: pointer;
-  `;
+  };
 
   return (
-    <ViewContainer>
-      <Title>
-        최수인님의 <br />
-        <span>45가6847</span> 차량이 연결되었습니다
-      </Title>
-      <LinkedAt>2024.12.01 12:25</LinkedAt>
-      <Image src={vehicleCar} alt="차량 연동" />
-      <UnlinkButton>연동 해제</UnlinkButton>
-    </ViewContainer>
+    <styled.ViewContainer>
+      <styled.Title>
+        {vehicle.userName}님의 <br />
+        <span>{vehicle.plateNumber}</span> 차량이 연결되었습니다
+      </styled.Title>
+      <styled.LinkedAt>{vehicle.linkedAt}</styled.LinkedAt>
+      <styled.Image src={vehicleCar} alt="차량 연동" />
+      <styled.UnlinkButton onClick={() => handleUnlink()} disabled={unlinking}>
+        {unlinking ? '연동 해제 중...' : '연동 해제'}
+      </styled.UnlinkButton>
+      {toast && <AlertToast type={toast.type} content={toast.content} />}
+    </styled.ViewContainer>
   );
 }
