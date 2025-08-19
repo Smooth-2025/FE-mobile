@@ -2,7 +2,7 @@ import api from './index';
 import type {
   RegisterRequest,
   RegisterResponse,
-  LoginRequest, 
+  LoginRequest,
   LoginResponse,
   CommonResponse,
   ProtectedTestResponse,
@@ -10,7 +10,7 @@ import type {
   SendVerificationResponse,
   VerifyEmailRequest,
   VerifyEmailResponse,
-  CheckEmailResponse
+  CheckEmailResponse,
 } from '@/types/api';
 
 // 회원가입 API 호출
@@ -34,7 +34,9 @@ export const testProtectedEndpoint = async (): Promise<ProtectedTestResponse> =>
 };
 
 // 이메일 인증코드 발송
-export const sendVerificationCode = async (data: SendVerificationRequest): Promise<SendVerificationResponse> => {
+export const sendVerificationCode = async (
+  data: SendVerificationRequest,
+): Promise<SendVerificationResponse> => {
   return await api.post('/api/auth/send-verification', data);
 };
 

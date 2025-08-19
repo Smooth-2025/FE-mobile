@@ -29,7 +29,7 @@ export const ProgressBar = styled.div`
 `;
 
 export const ProgressFill = styled.div<{ progress: number }>`
-  width: ${props => props.progress}%;
+  width: ${(props) => props.progress}%;
   height: 100%;
   background-color: ${theme.colors.primary500};
   border-radius: 2px;
@@ -87,13 +87,12 @@ export const HiddenCheckbox = styled.input`
 `;
 
 export const CheckboxLabel = styled.span<{ isAll?: boolean }>`
-  font-size: ${props => props.isAll ? '16px' : '14px'};
-  font-weight: ${props => props.isAll ? '600' : '400'};
+  font-size: ${(props) => (props.isAll ? '16px' : '14px')};
+  font-weight: ${(props) => (props.isAll ? '600' : '400')};
   color: ${theme.colors.neutral700};
   flex: 1;
   cursor: pointer;
 `;
-
 
 export const TermsContent = styled.div`
   margin-top: 16px;
@@ -112,7 +111,7 @@ export const TermsLink = styled.span`
   color: ${theme.colors.primary500};
   text-decoration: underline;
   cursor: pointer;
-  
+
   &:hover {
     color: ${theme.colors.primary600};
   }
@@ -125,19 +124,19 @@ export const ConfirmButton = styled.button<{ disabled: boolean }>`
   border-radius: 8px;
   font-size: 16px;
   font-weight: 600;
-  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
+  cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
   transition: all 0.2s ease;
   margin-top: 32px;
-  
-  background-color: ${props => props.disabled ? '#e5e7eb' : theme.colors.primary500};
-  color: ${props => props.disabled ? '#9ca3af' : '#ffffff'};
-  
+
+  background-color: ${(props) => (props.disabled ? '#e5e7eb' : theme.colors.primary500)};
+  color: ${(props) => (props.disabled ? '#9ca3af' : '#ffffff')};
+
   &:hover {
-    background-color: ${props => props.disabled ? '#e5e7eb' : theme.colors.primary600};
+    background-color: ${(props) => (props.disabled ? '#e5e7eb' : theme.colors.primary600)};
   }
-  
+
   &:active {
-    transform: ${props => props.disabled ? 'none' : 'translateY(1px)'};
+    transform: ${(props) => (props.disabled ? 'none' : 'translateY(1px)')};
   }
 `;
 
@@ -146,19 +145,19 @@ export const CustomCheckbox = styled.div<{ checked: boolean }>`
   width: 20px;
   height: 20px;
   border-radius: 4px;
-  border: 2px solid ${props => props.checked ? theme.colors.primary600 : '#d1d5db'};
-  background-color: ${props => props.checked ? theme.colors.primary600 : '#ffffff'};
+  border: 2px solid ${(props) => (props.checked ? theme.colors.primary600 : '#d1d5db')};
+  background-color: ${(props) => (props.checked ? theme.colors.primary600 : '#ffffff')};
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
   flex-shrink: 0;
-  
+
   &:hover {
     border-color: ${theme.colors.primary600};
   }
-  
+
   // 체크 표시
   &::after {
     content: '';
@@ -167,7 +166,7 @@ export const CustomCheckbox = styled.div<{ checked: boolean }>`
     border: solid #ffffff;
     border-width: 0 2px 2px 0;
     transform: rotate(45deg);
-    opacity: ${props => props.checked ? 1 : 0};
+    opacity: ${(props) => (props.checked ? 1 : 0)};
     transition: opacity 0.2s ease;
   }
 `;

@@ -41,7 +41,7 @@ const ProgressBar = styled.div`
 `;
 
 const ProgressFill = styled.div<{ progress: number }>`
-  width: ${props => props.progress}%;
+  width: ${(props) => props.progress}%;
   height: 100%;
   background-color: ${theme.colors.primary500};
   border-radius: 2px;
@@ -80,18 +80,18 @@ const SendButton = styled.button<{ disabled: boolean }>`
   border-radius: 8px;
   font-size: 16px;
   font-weight: 600;
-  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
+  cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
   transition: all 0.2s ease;
-  
-  background-color: ${props => props.disabled ? '#e5e7eb' : theme.colors.primary500};
-  color: ${props => props.disabled ? '#9ca3af' : '#ffffff'};
-  
+
+  background-color: ${(props) => (props.disabled ? '#e5e7eb' : theme.colors.primary500)};
+  color: ${(props) => (props.disabled ? '#9ca3af' : '#ffffff')};
+
   &:hover {
-    background-color: ${props => props.disabled ? '#e5e7eb' : theme.colors.primary600};
+    background-color: ${(props) => (props.disabled ? '#e5e7eb' : theme.colors.primary600)};
   }
-  
+
   &:active {
-    transform: ${props => props.disabled ? 'none' : 'translateY(1px)'};
+    transform: ${(props) => (props.disabled ? 'none' : 'translateY(1px)')};
   }
 `;
 
@@ -116,7 +116,7 @@ export function EmailInputPage() {
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setEmail(value);
-    
+
     // 실시간 유효성 검사
     const error = validateEmail(value);
     setEmailError(error);
@@ -133,8 +133,8 @@ export function EmailInputPage() {
     const success = await sendCode(email);
     if (success) {
       // 인증 페이지로 이동
-      navigate('/signup/verification', { 
-        state: { email } 
+      navigate('/signup/verification', {
+        state: { email },
       });
     }
   };
@@ -143,58 +143,49 @@ export function EmailInputPage() {
 
   return (
     <>
-    <Container>
-      <Header>
-        <BackButton onClick={() => navigate(-1)}>
-          ←
-        </BackButton>
-        
-        <ProgressBar>
-          <ProgressFill progress={25} />
-        </ProgressBar>
-        
-        <Title>이메일을 입력해주세요</Title>
-        <Subtitle>로그인에 사용될 이메일입니다</Subtitle>
-      </Header>
+      <Container>
+        <Header>
+          <BackButton onClick={() => navigate(-1)}>←</BackButton>
 
-      <FormGroup>
-        <Label>이메일</Label>
-        <Input
-          type="email"
-          placeholder="이메일을 입력해주세요"
-          value={email}
-          onChange={handleEmailChange}
-          style={{
-      borderColor: emailError ? '#ef4444' : 
-                   email && !emailError ? '#22c55e' : 
-                   undefined,
-      borderWidth: emailError ? '2px' : '1px'
-    }}
-        />
-        {emailError && (
-    <ErrorMessage>{emailError}</ErrorMessage>
-  )}
-      </FormGroup>
+          <ProgressBar>
+            <ProgressFill progress={25} />
+          </ProgressBar>
 
-      <SendButton
-        disabled={!isEmailValid || isLoading}
-        onClick={handleSendCode}
-      >
-        {isLoading ? '발송 중...' : '인증코드 전송'}
-      </SendButton>
-    </Container>
-    {toasts && toasts.map(toast => (
-        <AlertToast
-          key={toast.id}
-          type={toast.type}
-          title={toast.title}
-          content={toast.content}
-          position={toast.position}
-          duration={toast.duration}
-        />
-      ))}
+          <Title>이메일을 입력해주세요</Title>
+          <Subtitle>로그인에 사용될 이메일입니다</Subtitle>
+        </Header>
+
+        <FormGroup>
+          <Label>이메일</Label>
+          <Input
+            type="email"
+            placeholder="이메일을 입력해주세요"
+            value={email}
+            onChange={handleEmailChange}
+            style={{
+              borderColor: emailError ? '#ef4444' : email && !emailError ? '#22c55e' : undefined,
+              borderWidth: emailError ? '2px' : '1px',
+            }}
+          />
+          {emailError && <ErrorMessage>{emailError}</ErrorMessage>}
+        </FormGroup>
+
+        <SendButton disabled={!isEmailValid || isLoading} onClick={handleSendCode}>
+          {isLoading ? '발송 중...' : '인증코드 전송'}
+        </SendButton>
+      </Container>
+      {toasts &&
+        toasts.map((toast) => (
+          <AlertToast
+            key={toast.id}
+            type={toast.type}
+            title={toast.title}
+            content={toast.content}
+            position={toast.position}
+            duration={toast.duration}
+          />
+        ))}
     </>
-    
   );
 }
 

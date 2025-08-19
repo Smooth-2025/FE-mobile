@@ -2,12 +2,12 @@ export const validateEmergencyContact = (contact: string): string => {
   if (!contact) {
     return ''; // 선택사항이므로 빈 값은 에러 없음
   }
-  
+
   const phoneRegex = /^010\d{8}$/;
   if (!phoneRegex.test(contact.replace(/-/g, ''))) {
     return '010 포함 11자리 숫자를 입력해주세요.';
   }
-  
+
   return '';
 };
 

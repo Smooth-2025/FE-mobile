@@ -14,7 +14,7 @@ export const useEmailVerification = () => {
     try {
       setIsLoading(true);
       const response = await sendVerificationCode({ email });
-      
+
       setVerificationSent(true);
       console.warn('인증코드 만료시간:', response.data.expirationTime + '초');
 
@@ -22,7 +22,7 @@ export const useEmailVerification = () => {
     } catch (error: unknown) {
       const axiosError = error as AxiosError<{ message?: string }>;
       const errorMessage = axiosError.response?.data?.message;
-      
+
       // 이미 가입된 이메일인 경우
       if (axiosError.response?.status === 409) {
         showLoginError('이미 가입된 회원입니다.');

@@ -33,9 +33,9 @@ export function Icon({ name, size = DEFAULT_ICON_SIZE, color = DEFAULT_ICON_COLO
     case 'close':
       return <CloseIcon size={size} color={color} />;
     case 'eyeClosed':
-      return <EyeClosedIcon size={size} color={color} />
+      return <EyeClosedIcon size={size} color={color} />;
     case 'eyeOpen':
-      return <EyeOpenIcon size={size} color={color} />
+      return <EyeOpenIcon size={size} color={color} />;
 
     default:
       return null;

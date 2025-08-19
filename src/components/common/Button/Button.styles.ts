@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 
 export const ButtonWrapper = styled.button<{ size: 'sm' | 'md' | 'lg' }>`
-  padding: 14px 20px;
+  padding: 16px 20px;
   border-radius: 8px;
   align-items: center;
   justify-content: center;

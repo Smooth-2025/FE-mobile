@@ -28,6 +28,20 @@ const styleMap: Record<
     icon: 'warningCircle',
     iconColor: theme.colors.danger600,
   },
+  info: {
+    bg: 'rgba(0, 0, 0, 0.7)',
+    border: 'transparent',
+    text: theme.colors.white,
+    icon: 'warningCircle',
+    iconColor: theme.colors.neutral500,
+  },
+  accident: {
+    bg: theme.colors.danger200,
+    border: theme.colors.danger700,
+    text: theme.colors.neutral600,
+    icon: 'warningCircle',
+    iconColor: theme.colors.danger700,
+  },
   'accident-nearby': {
     bg: theme.colors.danger200,
     border: theme.colors.danger700,
@@ -49,6 +63,27 @@ const styleMap: Record<
     icon: 'warningTriangle',
     iconColor: theme.colors.Warning600,
   },
+  start: {
+    bg: 'rgba(0, 0, 0, 0.7)',
+    border: 'transparent',
+    text: theme.colors.white,
+    icon: 'checkmarkCircle',
+    iconColor: theme.colors.primary600,
+  },
+  end: {
+    bg: 'rgba(0, 0, 0, 0.7)',
+    border: 'transparent',
+    text: theme.colors.white,
+    icon: 'checkmarkCircle',
+    iconColor: theme.colors.primary600,
+  },
+  unknown: {
+    bg: theme.colors.neutral50,
+    border: theme.colors.neutral500,
+    text: theme.colors.neutral600,
+    icon: 'warningTriangle',
+    iconColor: theme.colors.neutral500,
+  },
 } as const;
 
 export default function AlertToast({
@@ -58,7 +93,8 @@ export default function AlertToast({
   position = 'bottom',
   duration = 3000,
 }: ToastProps) {
-  const { bg, border, text, icon, iconColor } = styleMap[type];
+  const safeType = styleMap[type] ? type : 'unknown';
+  const { bg, border, text, icon, iconColor } = styleMap[safeType];
 
   const [visible, setVisible] = useState<boolean>(true);
   const [opacity, setOpacity] = useState<number>(1);

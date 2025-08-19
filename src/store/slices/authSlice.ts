@@ -1,12 +1,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { loginUser, registerUser, logoutUser } from '@apis/auth';
-import { tokenUtils } from '@utils/token';
-import type { 
-  LoginRequest, 
-  LoginResponse, 
-  RegisterRequest, 
+import { tokenUtils } from '@/utils/token';
+import type {
+  LoginRequest,
+  LoginResponse,
+  RegisterRequest,
   RegisterResponse,
-  User 
+  User,
 } from '@/types/api';
 import type { AxiosError } from 'axios';
 
@@ -79,7 +79,7 @@ export const loginAsync = createAsyncThunk<
       const errorMessage = axiosError.response?.data?.message || axiosError.message || '로그인에 실패했습니다.';
       return rejectWithValue(errorMessage);
     }
-  }
+  },
 );
 
 // 회원가입 비동기 액션
@@ -105,27 +105,25 @@ export const registerAsync = createAsyncThunk<
   }
 );
 // 로그아웃 비동기 액션
-export const logoutAsync = createAsyncThunk<
-  void,
-  void,
-  { rejectValue: string }
->(
+export const logoutAsync = createAsyncThunk<void, void, { rejectValue: string }>(
   'auth/logout',
   async (_, { rejectWithValue }) => {
     try {
       await logoutUser();
-      
+
       // 토큰 제거
       tokenUtils.removeToken();
-      
     } catch (error: unknown) {
       // 로그아웃은 에러가 나도 로컬 토큰 제거
       tokenUtils.removeToken();
       const axiosError = error as AxiosError<{ message?: string }>;
-      const errorMessage = axiosError.response?.data?.message || axiosError.message || '로그아웃 처리 중 오류가 발생했습니다.';
+      const errorMessage =
+        axiosError.response?.data?.message ||
+        axiosError.message ||
+        '로그아웃 처리 중 오류가 발생했습니다.';
       return rejectWithValue(errorMessage);
     }
-  }
+  },
 );
 
 // Auth Slice
@@ -137,7 +135,7 @@ const authSlice = createSlice({
     clearError: (state) => {
       state.error = null;
     },
-    
+
     // 토큰 수동 설정
     setToken: (state, action) => {
       state.token = action.payload;
@@ -148,7 +146,7 @@ const authSlice = createSlice({
         tokenUtils.removeToken();
       }
     },
-    
+
     // 즉시 로그아웃 (동기)
     logout: (state) => {
       state.user = null;
@@ -163,9 +161,9 @@ const authSlice = createSlice({
       if (state.user) {
         state.user = { ...state.user, ...action.payload };
       }
-    }
+    },
   },
-  
+
   // 비동기 액션 처리
   extraReducers: (builder) => {
     // 로그인 액션 처리
@@ -178,7 +176,7 @@ const authSlice = createSlice({
         state.isLoginLoading = false;
         state.token = action.payload.token;
         state.isAuthenticated = true;
-        
+
         // User 객체 생성
         state.user = {
           id: action.payload.userId,
@@ -194,7 +192,6 @@ const authSlice = createSlice({
         state.user = null;
       });
 
-
     // 회원가입 액션 처리
     builder
       .addCase(registerAsync.pending, (state) => {
@@ -205,7 +202,7 @@ const authSlice = createSlice({
         state.isRegisterLoading = false;
         state.token = action.payload.token;
         state.isAuthenticated = true;
-        
+
         // User 객체 생성
         state.user = {
           id: action.payload.userId,
@@ -233,7 +230,7 @@ const authSlice = createSlice({
       .addCase(logoutAsync.rejected, (state, action) => {
         state.isLogoutLoading = false;
         state.error = action.payload || '로그아웃 처리 중 오류가 발생했습니다.';
-        
+
         // 에러가 나도 로그아웃 처리
         state.user = null;
         state.token = null;
@@ -245,7 +242,6 @@ const authSlice = createSlice({
 // Export
 export const { clearError, setToken, logout, updateUser } = authSlice.actions;
 export default authSlice.reducer;
-
 
 // 셀렉터들 (상태 조회용)
 export const selectUser = (state: { auth: AuthState }) => state.auth.user;
