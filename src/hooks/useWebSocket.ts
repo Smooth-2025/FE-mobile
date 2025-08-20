@@ -5,10 +5,10 @@ import {
   disconnectWebSocket,
   subscribeToAlerts,
   sendCommand as sendCommandAction,
-} from '@/store/middleware/websocketActions';
-import { ConnectionStatus } from '@/services/websocket/types';
+} from '@/store/websocket/websocketActions';
+import { ConnectionStatus } from '@/store/websocket/types';
 import type { RootState, AppDispatch } from '@/store';
-import type { UseWebSocketReturn, UseWebSocketProps } from '@/services/websocket/types';
+import type { UseWebSocketReturn, UseWebSocketProps } from '@/store/websocket/types';
 
 export const useWebSocket = (props: UseWebSocketProps = {}): UseWebSocketReturn => {
   const { autoConnect = false } = props;
@@ -37,7 +37,6 @@ export const useWebSocket = (props: UseWebSocketProps = {}): UseWebSocketReturn 
   const reconnect = useCallback(async () => {
     dispatch(disconnectWebSocket());
     dispatch(connectWebSocket());
-    // userId 없이 바로 알림 구독
     dispatch(
       subscribeToAlerts({
         userId: '',

@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import styled from '@emotion/styled';
-import { selectAlerts, type AlertType as StoreAlertType } from '@/store/slices/alertSlice';
+import { selectAlerts } from '@/store/slices/alertSlice';
 import AlertToast from '@/components/common/AlertToast/AlertToast';
+import type { AlertType as StoreAlertType } from '@/store/websocket/types';
 
-const ALLOWED_TYPES = ['accident-nearby', 'obstacle', 'pothole'] as const;
+const ALLOWED_TYPES = ['accident-nearby', 'obstacle', 'pothole', 'accident'] as const;
 type DisplayAlertType = (typeof ALLOWED_TYPES)[number];
 
 function isDisplayType(t: StoreAlertType | string): t is DisplayAlertType {
