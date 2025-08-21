@@ -14,6 +14,7 @@ import type {
   UserProfileResponse,
   ChangePasswordRequest,
   BaseResponse,
+  UpdateEmergencyInfoRequest,
 } from '@/types/api';
 
 // 회원가입 API 호출
@@ -71,6 +72,17 @@ export const changePassword = async (data: ChangePasswordRequest): Promise<BaseR
     return response.data;
   } catch (error) {
     console.error('비밀번호 변경 API 에러:', error);
+    throw error;
+  }
+};
+
+// 응급정보 수정
+export const updateEmergencyInfo = async (data: UpdateEmergencyInfoRequest): Promise<UserProfileResponse> => {
+  try {
+    const response = await api.put<UserProfileResponse>('/api/user/emergency-info', data);
+    return response.data;
+  } catch (error) {
+    console.error('응급정보 수정 API 에러:', error);
     throw error;
   }
 };

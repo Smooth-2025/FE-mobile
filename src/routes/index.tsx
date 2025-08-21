@@ -16,7 +16,9 @@ const ProfileInputPage = lazy(() => import('@pages/auth/ProfileInputPage'));
 const TermsAgreementPage = lazy(() => import('@pages/auth/TermsAgreementPage'));
 const EmergencyInfoPage = lazy(() => import('@pages/auth/EmergencyInfoPage'));
 const SignupCompletePage = lazy(() => import('@pages/auth/SignupCompletePage'));
-const ChangePasswordPage = lazy(()=> import('@/pages/myPage/ChangePasswordPage')) ;
+const ChangePasswordPage = lazy(()=> import('@/pages/myPage/ChangePasswordPage'));
+const EmergencyPage = lazy(() => import('@/pages/myPage/EmergencyPage'));
+const EmergencyEditPage = lazy (() => import('@/pages/myPage/EmergencyEditPage'));
 
 // 권한 여부에 따른 가드 설정
 function RequireAuth({ children }: { children: ReactNode }) {
@@ -52,6 +54,8 @@ const routes: RouteObject[] = [
       { path: 'mypage', element: <MyPage /> },
       { path: 'mypage/profile', element: <ProfilePage /> },
       { path: 'mypage/ChangePasswordPage', element: <ChangePasswordPage /> },
+      { path: 'mypage/emergency', element: <EmergencyPage /> },
+      { path: 'mypage/emergency/edit', element: <EmergencyEditPage /> },
       // { path: 'mypage/:id', element: <MyPage />, handle: { hideBottomNav: true } },
     ],
   },

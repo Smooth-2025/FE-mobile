@@ -251,3 +251,11 @@ export interface ChangePasswordResponse extends BaseResponse {
     updatedAt: string;
   };
 }
+
+// 응급정보 수정 요청 타입
+export interface UpdateEmergencyInfoRequest {
+  bloodType?: 'A' | 'B' | 'O' | 'AB' | null;
+  emergencyContact1?: string | null;
+  emergencyContact2?: string | null;
+  emergencyContact3?: string | null;
+}
