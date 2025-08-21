@@ -178,7 +178,7 @@ export function LoginPage() {
   useEffect(() => {
     if (isAuthenticated && user) {
       console.warn(`${user.name}님, 환영합니다!`);
-      navigate('/dashboard');
+      navigate('/');
     }
   }, [isAuthenticated, user, navigate]);
 

@@ -18,7 +18,7 @@ export const registerUser = async (data: RegisterRequest): Promise<RegisterRespo
   return await api.post('/api/auth/register', data);
 };
 
-//로그인 API 호출
+// 로그인 API 호출 
 export const loginUser = async (data: LoginRequest): Promise<LoginResponse> => {
   return await api.post('/api/auth/login', data);
 };
@@ -45,7 +45,8 @@ export const verifyEmailCode = async (data: VerifyEmailRequest): Promise<VerifyE
   return await api.post('/api/auth/verify-email', data);
 };
 
-// 이메일 중복 체크
-export const checkEmailDuplicate = async (email: string): Promise<CheckEmailResponse> => {
-  return await api.get(`/api/auth/check-email?email=${encodeURIComponent(email)}`);
+// 이메일 중복 체크 - 응답 구조 변경에 맞춰 수정
+export const checkEmailDuplicate = async (email: string): Promise<boolean> => {
+  const response: CheckEmailResponse = await api.get(`/api/auth/check-email?email=${encodeURIComponent(email)}`);
+  return response.data.isDuplicate;
 };
