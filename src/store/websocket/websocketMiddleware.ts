@@ -4,7 +4,6 @@ import { tokenUtils } from '@/utils/token';
 import { ConnectionStatus } from './types';
 import { setConnectionStatus, setError } from '../slices/websocketSlice';
 import { addAlert } from '../slices/alertSlice';
-import { selectUser } from '../slices/authSlice';
 import {
   connectWebSocket,
   disconnectWebSocket,
@@ -78,7 +77,7 @@ function extractDisplayText(obj: unknown): string {
 }
 
 export const websocketMiddleware: Middleware =
-  ({ dispatch, getState }) =>
+  ({ dispatch }) =>
   (next) =>
   (action) => {
     const result = next(action);
@@ -93,17 +92,21 @@ export const websocketMiddleware: Middleware =
         subscriptions.clear();
       }
 
-      const socket = new SockJS(import.meta.env.VITE_API_BASE_WS_URL); // ec2 주소로 변경!
+      const socket = new SockJS(import.meta.env.VITE_API_BASE_WS_URL);
       const token = tokenUtils.getToken();
-      const user = selectUser(getState());
-      const userId = String(user?.id || 1);
+      
+      if (!token) {
+        console.error('❌ 웹소켓 연결 실패: JWT 토큰이 없습니다.');
+        dispatch(setConnectionStatus(ConnectionStatus.DISCONNECTED));
+        dispatch(setError('JWT 토큰이 없어 웹소켓 연결을 할 수 없습니다.'));
+        return result;
+      }
 
       rxStomp = new RxStomp();
       const config: RxStompConfig = {
         webSocketFactory: () => socket,
         connectHeaders: {
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          userId: userId,
+          Authorization: `Bearer ${token}`,
         },
         heartbeatIncoming: 10000,
         heartbeatOutgoing: 10000,
@@ -146,9 +149,7 @@ export const websocketMiddleware: Middleware =
     }
 
     if (subscribeToAlerts.match(action)) {
-      const user = selectUser(getState());
-      const userId = String(user?.id || 1);
-      const destination = `/user/${userId}/queue/alert`; 
+      const destination = '/user/queue/alert'; 
       if (rxStomp) {
         console.warn(`📩 토픽 구독 시도: ${destination}`);
 
