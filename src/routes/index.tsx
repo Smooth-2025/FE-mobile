@@ -8,6 +8,7 @@ const LoginPage = lazy(() => import('@pages/auth/LoginPage'));
 const DrivePage = lazy(() => import('@pages/drive/DrivePage'));
 const ReportPage = lazy(() => import('@pages/report/ReportPage'));
 const MyPage = lazy(() => import('@pages/myPage/MyPage'));
+const ProfilePage = lazy(() => import('@pages/myPage/ProfilePage'));
 const NotFoundPage = lazy(() => import('@pages/NotFoundPage'));
 const EmailInputPage = lazy(() => import('@pages/auth/EmailInputPage'));
 const EmailVerificationPage = lazy(() => import('@pages/auth/EmailVerificationPage'));
@@ -48,6 +49,7 @@ const routes: RouteObject[] = [
       { path: 'drive', element: <DrivePage /> },
       { path: 'report', element: <ReportPage /> },
       { path: 'mypage', element: <MyPage /> },
+      { path: 'mypage/profile', element: <ProfilePage /> },
       // { path: 'mypage/:id', element: <MyPage />, handle: { hideBottomNav: true } },
     ],
   },

@@ -44,6 +44,24 @@ export interface LoginResponse extends BaseResponse {
   };
 }
 
+// 사용자 프로필 조회 응답
+export interface UserProfileResponse extends BaseResponse {
+  data: {
+    id: number;
+    email: string;
+    name: string;
+    phone: string;
+    gender: 'MALE' | 'FEMALE';
+    bloodType?: 'A' | 'B' | 'AB' | 'O';
+    emergencyContact1?: string;
+    emergencyContact2?: string;
+    emergencyContact3?: string;
+    termsOfServiceAgreed: boolean;
+    privacyPolicyAgreed: boolean;
+    termsAgreedAt: string;
+  };
+}
+
 // 단순 성공/실패 응답 (로그아웃 등에서 사용)
 // export interface CommonResponse extends BaseResponse {
   // BaseResponse와 동일하지만 명시적으로 구분

@@ -11,6 +11,7 @@ import type {
   VerifyEmailRequest,
   VerifyEmailResponse,
   CheckEmailResponse,
+  UserProfileResponse,
 } from '@/types/api';
 
 // 회원가입 API 호출
@@ -26,6 +27,16 @@ export const loginUser = async (data: LoginRequest): Promise<LoginResponse> => {
 // 로그아웃 API 호출
 export const logoutUser = async (): Promise<CommonResponse> => {
   return await api.post('/api/auth/logout');
+};
+
+// 회원탈퇴 API 호출
+export const deleteAccount = async (): Promise<CommonResponse> => {
+  return await api.delete('/api/auth/account');
+};
+
+// 사용자 프로필 조회 API
+export const getUserProfile = async (): Promise<UserProfileResponse> => {
+  return await api.get('/api/user/profile');
 };
 
 // JWT 인증 테스트 API 호출
