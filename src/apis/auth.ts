@@ -12,6 +12,8 @@ import type {
   VerifyEmailResponse,
   CheckEmailResponse,
   UserProfileResponse,
+  ChangePasswordRequest,
+  BaseResponse,
 } from '@/types/api';
 
 // 회원가입 API 호출
@@ -60,4 +62,15 @@ export const verifyEmailCode = async (data: VerifyEmailRequest): Promise<VerifyE
 export const checkEmailDuplicate = async (email: string): Promise<boolean> => {
   const response: CheckEmailResponse = await api.get(`/api/auth/check-email?email=${encodeURIComponent(email)}`);
   return response.data.isDuplicate;
+};
+
+// 비밀번호 변경
+export const changePassword = async (data: ChangePasswordRequest): Promise<BaseResponse> => {
+  try {
+    const response = await api.put<BaseResponse>('/api/user/password', data);
+    return response.data;
+  } catch (error) {
+    console.error('비밀번호 변경 API 에러:', error);
+    throw error;
+  }
 };

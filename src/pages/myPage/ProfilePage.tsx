@@ -68,7 +68,7 @@ export default function ProfilePage() {
 
   // 비밀번호 변경 페이지로 이동
   const handleChangePassword = () => {
-    navigate('/mypage/change-password');
+    navigate('/mypage/ChangePasswordPage');
   };
 
   // 로그아웃 처리

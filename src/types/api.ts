@@ -236,3 +236,18 @@ export interface CompleteSignupRequest {
   emergencyContact2?: string;
   emergencyContact3?: string;
 }
+
+// 비밀번호 변경 요청 타입
+export interface ChangePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}
+
+// 비밀번호 변경 응답 타입
+export interface ChangePasswordResponse extends BaseResponse {
+  data: {
+    message: string;
+    updatedAt: string;
+  };
+}
