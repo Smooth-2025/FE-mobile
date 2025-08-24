@@ -1,5 +1,5 @@
 import * as styled from '@components/report/StampBoard.styles';
-import drivingCharacter from '@/assets/images/driving-charactar.png';
+import reportCharacter from '@/assets/images/report-charactar.png';
 import stampImg from '@/assets/images/stamp.png';
 
 export default function StampBoard() {
@@ -16,7 +16,7 @@ export default function StampBoard() {
             나만의 리포트가 생성됩니다! 🎉
           </styled.Title>
         </styled.TitleBox>
-        <styled.Character src={drivingCharacter} alt=" 캐릭터"></styled.Character>
+        <styled.Character src={reportCharacter} alt=" 캐릭터"></styled.Character>
       </styled.TopSection>
       <styled.BottomSection>
         <styled.StatusHeader>
