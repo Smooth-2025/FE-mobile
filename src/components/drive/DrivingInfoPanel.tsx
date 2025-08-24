@@ -1,6 +1,7 @@
 import * as styled from '@components/drive/DrivingInfoPanel.styles';
 import drivingCharacter from '@/assets/images/driving-charactar.png';
 import DriveStatsCard from './DriveStatsCard';
+import WeeklyDriveSummaryCard from './WeeklyDriveSummaryCard';
 
 export default function DrivingInfoPanel() {
   return (
@@ -13,6 +14,7 @@ export default function DrivingInfoPanel() {
         <styled.Character src={drivingCharacter} alt=" 캐릭터" />
       </styled.InfoBoxContainer>
       <DriveStatsCard />
+      <WeeklyDriveSummaryCard />
     </styled.TopSection>
   );
 }
