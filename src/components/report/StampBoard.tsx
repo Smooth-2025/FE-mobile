@@ -1,5 +1,6 @@
+import * as styled from '@components/report/StampBoard.styles';
 import drivingCharacter from '@/assets/images/driving-charactar.png';
-import * as styled from './StampBoard.styles';
+import stampImg from '@/assets/images/stamp.png';
 
 export default function StampBoard() {
   const stampTotal = 15;
