@@ -1,7 +1,9 @@
+import StampBoard from '@/components/report/StampBoard';
+
 export default function ReportPage() {
   return (
     <main>
-      <h1>ReportPage</h1>
+      <StampBoard />
     </main>
   );
 }
