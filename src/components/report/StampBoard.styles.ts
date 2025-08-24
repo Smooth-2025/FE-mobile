@@ -28,8 +28,7 @@ export const Badge = styled.p`
 `;
 
 export const Title = styled.h3`
-  font-size:  ${({ theme }) => `clamp(${theme.fontSize[16]}, 3.2vw, ${theme.fontSize[26]})`};
-  font-size: 
+  font-size: ${({ theme }) => `clamp(${theme.fontSize[18]}, 3.2vw, ${theme.fontSize[26]})`};
   color: ${({ theme }) => theme.colors.white};
   line-height: 1.4;
 `;
