@@ -12,6 +12,7 @@ export type IconName =
   | 'warningCircle'
   | 'checkmarkCircle'
   | 'chevronLeft'
+  | 'chevronRight'
   | 'close'
   | 'eyeClosed'
   | 'eyeOpen';
