@@ -177,7 +177,7 @@ export const websocketMiddleware: Middleware =
                   const egoUserId = ego.userId;
                   const egoPose = getAny(ego, 'pose');
                   
-                  if (typeof egoUserId === 'number' && isRecord(egoPose)) {
+                  if ((typeof egoUserId === 'number' || typeof egoUserId === 'string') && isRecord(egoPose)) {
                     const validNeighbors: NeighborData[] = neighbors
                       .filter((neighbor: unknown): neighbor is NeighborData => {
                         if (!isRecord(neighbor)) return false;
@@ -186,12 +186,12 @@ export const websocketMiddleware: Middleware =
                         const pose = neighbor.pose;
                         
                         return (
-                          typeof userId === 'number' &&
+                          (typeof userId === 'number' || typeof userId === 'string') &&
                           typeof character === 'string' &&
                           ['lion', 'dolphin', 'meerkat', 'cat'].includes(character) &&
                           isRecord(pose) &&
-                          typeof pose.x === 'number' &&
-                          typeof pose.y === 'number' &&
+                          typeof pose.latitude === 'number' &&
+                          typeof pose.longitude === 'number' &&
                           typeof pose.yaw === 'number'
                         );
                       });
@@ -202,8 +202,8 @@ export const websocketMiddleware: Middleware =
                       ego: {
                         userId: egoUserId,
                         pose: {
-                          x: egoPose.x as number,
-                          y: egoPose.y as number,
+                          latitude: egoPose.latitude as number,
+                          longitude: egoPose.longitude as number,
                           yaw: egoPose.yaw as number,
                         },
                       },

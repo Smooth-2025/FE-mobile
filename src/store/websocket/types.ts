@@ -72,13 +72,13 @@ export interface UseWebSocketProps {
 export type DrivingAnimalType = 'lion' | 'dolphin' | 'meerkat' | 'cat';
 
 export interface Pose {
-  x: number;
-  y: number;
+  latitude: number;
+  longitude: number;
   yaw: number;
 }
 
 export interface NeighborData {
-  userId: number;
+  userId: string | number;
   character: DrivingAnimalType;
   pose: Pose;
 }
@@ -87,7 +87,7 @@ export interface DrivingTendencyData {
   type: 'driving';
   timestamp: string;
   ego: {
-    userId: number;
+    userId: string | number;
     pose: Pose;
   };
   neighbors: NeighborData[];
