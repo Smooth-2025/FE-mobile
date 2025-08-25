@@ -17,7 +17,7 @@ import { updateDrivingTendency } from '../slices/drivingSlice';
 import type { Middleware } from '@reduxjs/toolkit';
 import type { Subscription } from 'rxjs';
 import type { IMessage } from '@stomp/stompjs';
-import type { AlertType , DrivingTendencyData, DrivingAnimalType } from './types';
+import type { AlertType , DrivingTendencyData, NeighborData } from './types';
 
 let rxStomp: RxStomp | null = null;
 const subscriptions: Map<string, Subscription> = new Map();
@@ -163,34 +163,60 @@ export const websocketMiddleware: Middleware =
               rawData = message.body;
             }
 
-            // 데이터 타입에 따라 분기 처리
+         
             const dataType = getString(rawData, 'type');
-            
-            // 주행 성향 데이터 처리
-            if (dataType === 'driving_tendency') {
-              const payload = getAny(rawData, 'payload');
-              if (isRecord(payload)) {
-                const userId = getString(payload, 'userId');
-                const x = payload.x;
-                const y = payload.y;
-                const animalType = getString(payload, 'animalType');
+          
+            if (dataType === 'driving') {
+              if (isRecord(rawData)) {
+                const type = getString(rawData, 'type');
+                const timestamp = getString(rawData, 'timestamp');
+                const ego = getAny(rawData, 'ego');
+                const neighbors = getAny(rawData, 'neighbors');
                 
-                if (userId && typeof x === 'number' && typeof y === 'number' && animalType) {
-                  const drivingData: DrivingTendencyData = {
-                    userId,
-                    x,
-                    y,
-                    animalType: animalType as DrivingAnimalType,
-                    timestamp: new Date().toISOString(),
-                  };
+                if (type === 'driving' && timestamp && isRecord(ego) && Array.isArray(neighbors)) {
+                  const egoUserId = ego.userId;
+                  const egoPose = getAny(ego, 'pose');
                   
-                  dispatch(updateDrivingTendency(drivingData));
-                  console.warn('🚗 주행 성향 데이터 업데이트:', drivingData);
+                  if (typeof egoUserId === 'number' && isRecord(egoPose)) {
+                    const validNeighbors: NeighborData[] = neighbors
+                      .filter((neighbor: unknown): neighbor is NeighborData => {
+                        if (!isRecord(neighbor)) return false;
+                        const userId = neighbor.userId;
+                        const character = neighbor.character;
+                        const pose = neighbor.pose;
+                        
+                        return (
+                          typeof userId === 'number' &&
+                          typeof character === 'string' &&
+                          ['lion', 'dolphin', 'meerkat', 'cat'].includes(character) &&
+                          isRecord(pose) &&
+                          typeof pose.x === 'number' &&
+                          typeof pose.y === 'number' &&
+                          typeof pose.yaw === 'number'
+                        );
+                      });
+
+                    const drivingData: DrivingTendencyData = {
+                      type: 'driving',
+                      timestamp,
+                      ego: {
+                        userId: egoUserId,
+                        pose: {
+                          x: egoPose.x as number,
+                          y: egoPose.y as number,
+                          yaw: egoPose.yaw as number,
+                        },
+                      },
+                      neighbors: validNeighbors,
+                    };
+                    
+                    dispatch(updateDrivingTendency(drivingData));
+                    console.warn('🚗 주행 성향 데이터 업데이트:', drivingData);
+                  }
                 }
               }
             }
             
-            // 알림 데이터 처리 (기존 로직)
             const display = extractDisplayText(rawData);
             const type: AlertType = parseAlertType(getAny(rawData, 'type'));
             const timestamp = (() => {

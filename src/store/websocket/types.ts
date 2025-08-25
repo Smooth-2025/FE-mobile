@@ -69,12 +69,26 @@ export interface UseWebSocketProps {
   userId?: string;
 }
 
-export type DrivingAnimalType = 'tiger' | 'turtle' | 'cat' | 'meerkat';
+export type DrivingAnimalType = 'lion' | 'dolphin' | 'meerkat' | 'cat';
 
-export interface DrivingTendencyData {
-  userId: string;
+export interface Pose {
   x: number;
   y: number;
-  animalType: DrivingAnimalType;
+  yaw: number;
+}
+
+export interface NeighborData {
+  userId: number;
+  character: DrivingAnimalType;
+  pose: Pose;
+}
+
+export interface DrivingTendencyData {
+  type: 'driving';
   timestamp: string;
+  ego: {
+    userId: number;
+    pose: Pose;
+  };
+  neighbors: NeighborData[];
 }
