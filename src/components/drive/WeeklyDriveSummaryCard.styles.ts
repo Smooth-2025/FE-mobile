@@ -15,7 +15,7 @@ export const Title = styled.p`
   margin-bottom: 18px;
 `;
 
-export const MetricsSection = styled.div`
+export const MetricsContainer = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto auto;

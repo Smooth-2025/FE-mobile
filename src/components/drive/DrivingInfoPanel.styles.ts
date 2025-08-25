@@ -1,10 +1,10 @@
 import styled from '@emotion/styled';
 
-export const TopSection = styled.section`
+export const DrivingInfoWrapper = styled.section`
   width: 100%;
   display: flex;
   flex-direction: column;
-  padding: 24px 33px;
+  padding: 24px 18px;
 `;
 export const InfoBoxContainer = styled.section`
   width: 100%;

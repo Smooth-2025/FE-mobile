@@ -4,7 +4,7 @@ import DriveStatsCard from './DriveStatsCard';
 
 export default function DrivingInfoPanel() {
   return (
-    <styled.TopSection>
+    <styled.DrivingInfoWrapper>
       <styled.InfoBoxContainer>
         <styled.InfoBox>
           <styled.Title>오늘의 주행, 한눈에보기 👀</styled.Title>
@@ -13,6 +13,6 @@ export default function DrivingInfoPanel() {
         <styled.Character src={drivingCharacter} alt=" 캐릭터" />
       </styled.InfoBoxContainer>
       <DriveStatsCard />
-    </styled.TopSection>
+    </styled.DrivingInfoWrapper>
   );
 }

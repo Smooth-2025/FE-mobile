@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-export const CharacterCardContainer = styled.div`
+export const CharacterCardWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -9,6 +9,7 @@ export const CharacterCardContainer = styled.div`
   border: 1px solid ${({ theme }) => theme.colors.neutral300};
   padding: 24px 20px;
   border-radius: 10px;
+  margin-bottom: 30px;
 `;
 
 export const Header = styled.div`

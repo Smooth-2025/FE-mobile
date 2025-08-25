@@ -27,7 +27,7 @@ export default function DriveCharacterResultCard() {
   const characterImage = characterImages[personaName] ?? drivingCharactarEmpty;
 
   return (
-    <styled.CharacterCardContainer>
+    <styled.CharacterCardWrapper>
       <styled.Header>
         <styled.Subtitle>100km 주행 분석 결과</styled.Subtitle>
         <styled.Title>
@@ -64,6 +64,6 @@ export default function DriveCharacterResultCard() {
           <span>{maxLabel}</span>
         </styled.ProgressScale>
       </styled.ProgressSection>
-    </styled.CharacterCardContainer>
+    </styled.CharacterCardWrapper>
   );
 }
