@@ -1,9 +1,10 @@
 import styled from '@emotion/styled';
 
 export const SummaryWrapper = styled.div`
-  margin-top: 18px;
   background: ${({ theme }) => theme.colors.white};
+  border: 1px solid ${({ theme }) => theme.colors.neutral300};
   padding: 24px 20px;
+  margin: 18px;
   border-radius: 10px;
 `;
 
