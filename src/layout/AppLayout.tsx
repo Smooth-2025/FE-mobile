@@ -9,6 +9,7 @@ import DriveOverlayPage from '@/pages/driveOverlay/DriveOverlayPage';
 import { selectIsAuthenticated } from '@/store/slices/authSlice';
 import { ConnectionStatus } from '@/store/websocket/types';
 import { useWebSocket } from '@/hooks/useWebSocket';
+import { useGetLinkStatusQuery } from '@/store/vehicle/vehicleApi';
 import BottomNav, { NAV_HEIGHT } from './BottomNav';
 
 const Shell = styled.div`
@@ -82,9 +83,12 @@ export default function AppLayout() {
   }, [alert, drivingActive]);
 
   const isAuthenticated = useSelector(selectIsAuthenticated);
+  const { data: linkStatus } = useGetLinkStatusQuery(undefined, {
+    skip: !isAuthenticated,
+  });
 
   const { connectionStatus } = useWebSocket({
-    autoConnect: isAuthenticated,
+    autoConnect: isAuthenticated && linkStatus?.linked === true,
   });
 
   return (
