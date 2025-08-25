@@ -1,10 +1,9 @@
 import { RxStomp, RxStompState, type RxStompConfig } from '@stomp/rx-stomp';
 import SockJS from 'sockjs-client';
-import { ConnectionStatus } from '@/services/websocket/types';
 import { tokenUtils } from '@/utils/token';
+import { ConnectionStatus } from './types';
 import { setConnectionStatus, setError } from '../slices/websocketSlice';
 import { addAlert } from '../slices/alertSlice';
-import { selectUser } from '../slices/authSlice';
 import {
   connectWebSocket,
   disconnectWebSocket,
@@ -14,10 +13,11 @@ import {
   pingWebSocket,
   sendCommand,
 } from './websocketActions';
+import { updateDrivingTendency } from '../slices/drivingSlice';
 import type { Middleware } from '@reduxjs/toolkit';
 import type { Subscription } from 'rxjs';
 import type { IMessage } from '@stomp/stompjs';
-import type { AlertType } from '../slices/alertSlice';
+import type { AlertType , DrivingTendencyData, NeighborData } from './types';
 
 let rxStomp: RxStomp | null = null;
 const subscriptions: Map<string, Subscription> = new Map();
@@ -51,12 +51,24 @@ function parseAlertType(v: unknown): AlertType {
 function extractDisplayText(obj: unknown): string {
   if (obj === null) return '';
   if (typeof obj === 'string') return obj;
+  
+  // payload 내부 확인
+  const payload = getAny(obj, 'payload');
+  if (payload) {
+    const content = getString(payload, 'content');
+    if (content) return content;
+    const title = getString(payload, 'title');
+    if (title) return title;
+  }
+  
+  // 최상위 레벨 확인
   const message = getString(obj, 'message');
   if (message) return message;
   const content = getString(obj, 'content');
   if (content) return content;
   const title = getString(obj, 'title');
   if (title) return title;
+  
   try {
     return JSON.stringify(obj);
   } catch {
@@ -65,7 +77,7 @@ function extractDisplayText(obj: unknown): string {
 }
 
 export const websocketMiddleware: Middleware =
-  ({ dispatch, getState }) =>
+  ({ dispatch }) =>
   (next) =>
   (action) => {
     const result = next(action);
@@ -80,17 +92,21 @@ export const websocketMiddleware: Middleware =
         subscriptions.clear();
       }
 
-      const socket = new SockJS('/ws'); // ec2 주소로 변경!
+      const socket = new SockJS(import.meta.env.VITE_API_BASE_WS_URL);
       const token = tokenUtils.getToken();
-      const user = selectUser(getState());
-      const userId = String(user?.id || 1);
+      
+      if (!token) {
+        console.error('❌ 웹소켓 연결 실패: JWT 토큰이 없습니다.');
+        dispatch(setConnectionStatus(ConnectionStatus.DISCONNECTED));
+        dispatch(setError('JWT 토큰이 없어 웹소켓 연결을 할 수 없습니다.'));
+        return result;
+      }
 
       rxStomp = new RxStomp();
       const config: RxStompConfig = {
         webSocketFactory: () => socket,
         connectHeaders: {
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          userId: userId,
+          Authorization: `Bearer ${token}`,
         },
         heartbeatIncoming: 10000,
         heartbeatOutgoing: 10000,
@@ -133,21 +149,74 @@ export const websocketMiddleware: Middleware =
     }
 
     if (subscribeToAlerts.match(action)) {
-      const user = selectUser(getState());
-      const userId = String(user?.id || 1);
-      const destination = `/user/${userId}/queue/alert`;
+      const destination = '/user/queue/alert'; 
       if (rxStomp) {
-        console.warn(`📩 알림 토픽 구독 시도: ${destination}`);
+        console.warn(`📩 토픽 구독 시도: ${destination}`);
 
         const handleReceivedData = (message: IMessage) => {
           try {
             let rawData: unknown;
             try {
               rawData = JSON.parse(message.body);
+              console.warn(rawData);
             } catch {
               rawData = message.body;
             }
 
+         
+            const dataType = getString(rawData, 'type');
+          
+            if (dataType === 'driving') {
+              if (isRecord(rawData)) {
+                const type = getString(rawData, 'type');
+                const timestamp = getString(rawData, 'timestamp');
+                const ego = getAny(rawData, 'ego');
+                const neighbors = getAny(rawData, 'neighbors');
+                
+                if (type === 'driving' && timestamp && isRecord(ego) && Array.isArray(neighbors)) {
+                  const egoUserId = ego.userId;
+                  const egoPose = getAny(ego, 'pose');
+                  
+                  if (typeof egoUserId === 'number' && isRecord(egoPose)) {
+                    const validNeighbors: NeighborData[] = neighbors
+                      .filter((neighbor: unknown): neighbor is NeighborData => {
+                        if (!isRecord(neighbor)) return false;
+                        const userId = neighbor.userId;
+                        const character = neighbor.character;
+                        const pose = neighbor.pose;
+                        
+                        return (
+                          typeof userId === 'number' &&
+                          typeof character === 'string' &&
+                          ['lion', 'dolphin', 'meerkat', 'cat'].includes(character) &&
+                          isRecord(pose) &&
+                          typeof pose.x === 'number' &&
+                          typeof pose.y === 'number' &&
+                          typeof pose.yaw === 'number'
+                        );
+                      });
+
+                    const drivingData: DrivingTendencyData = {
+                      type: 'driving',
+                      timestamp,
+                      ego: {
+                        userId: egoUserId,
+                        pose: {
+                          x: egoPose.x as number,
+                          y: egoPose.y as number,
+                          yaw: egoPose.yaw as number,
+                        },
+                      },
+                      neighbors: validNeighbors,
+                    };
+                    
+                    dispatch(updateDrivingTendency(drivingData));
+                    console.warn('🚗 주행 성향 데이터 업데이트:', drivingData);
+                  }
+                }
+              }
+            }
+            
             const display = extractDisplayText(rawData);
             const type: AlertType = parseAlertType(getAny(rawData, 'type'));
             const timestamp = (() => {
@@ -163,8 +232,9 @@ export const websocketMiddleware: Middleware =
               (globalThis.crypto?.randomUUID?.()
                 ? globalThis.crypto.randomUUID()
                 : String(Date.now()));
-            const title = getString(rawData, 'title');
-            const content = getString(rawData, 'content');
+            const payload = getAny(rawData, 'payload');
+            const title = getString(payload, 'title');
+            const content = getString(payload, 'content');
 
             dispatch(
               addAlert({
@@ -178,6 +248,7 @@ export const websocketMiddleware: Middleware =
                 isRead: false,
               }),
             );
+            console.warn('📢 알림 데이터:', type);
 
             if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
               new Notification(title || '📢 알림', { body: display, icon: '/favicon.ico' });

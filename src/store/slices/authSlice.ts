@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { loginUser, registerUser, logoutUser } from '@apis/auth';
+import { loginUser, registerUser, logoutUser, deleteAccount } from '@apis/auth';
 import { tokenUtils } from '@/utils/token';
 import type {
   LoginRequest,
@@ -19,6 +19,7 @@ interface AuthState {
   isLoginLoading: boolean;
   isRegisterLoading: boolean;
   isLogoutLoading: boolean;
+  isDeleteAccountLoading: boolean;
   // 에러 상태
   error: string | null;
   // 인증 여부
@@ -32,25 +33,52 @@ const initialState: AuthState = {
   isLoginLoading: false,
   isRegisterLoading: false,
   isLogoutLoading: false,
+  isDeleteAccountLoading: false,
   error: null,
   isAuthenticated: !!tokenUtils.getToken(),
 };
 
 // 로그인 비동기 액션
-export const loginAsync = createAsyncThunk<LoginResponse, LoginRequest, { rejectValue: string }>(
-  'auth/login',
+export const loginAsync = createAsyncThunk<
+  LoginResponse['data'],
+  LoginRequest,
+  { rejectValue: string }
+>(
+'auth/login',
   async (loginData: LoginRequest, { rejectWithValue }) => {
     try {
+      console.warn('로그인 요청 데이터:', loginData);
+      
       const response = await loginUser(loginData);
-
+      
+      console.warn('API 원본 응답:', response);
+      console.warn('토큰 필드 확인:', response.data.token); 
+      console.warn('사용자 이름:', response.data.name);
+      console.warn('사용자 ID:', response.data.userId);
+      
+      // 토큰이 있는지 확인
+      if (!response.data.token) {
+        console.error('토큰이 응답에 없음!');
+        return rejectWithValue('토큰을 받지 못했습니다.');
+      }
+      
       // 토큰 저장
-      tokenUtils.setToken(response.token);
-
-      return response;
+      tokenUtils.setToken(response.data.token);
+      console.warn('토큰 저장 완료');
+      
+      // 저장된 토큰 재확인
+      const savedToken = tokenUtils.getToken();
+      console.warn('저장된 토큰 확인:', savedToken);
+      
+      return response.data;
     } catch (error: unknown) {
+      console.error('로그인 에러 상세:', error);
+      
       const axiosError = error as AxiosError<{ message?: string }>;
-      const errorMessage =
-        axiosError.response?.data?.message || axiosError.message || '로그인에 실패했습니다.';
+      console.error('에러 응답:', axiosError.response?.data);
+      console.error('에러 상태:', axiosError.response?.status);
+      
+      const errorMessage = axiosError.response?.data?.message || axiosError.message || '로그인에 실패했습니다.';
       return rejectWithValue(errorMessage);
     }
   },
@@ -58,24 +86,26 @@ export const loginAsync = createAsyncThunk<LoginResponse, LoginRequest, { reject
 
 // 회원가입 비동기 액션
 export const registerAsync = createAsyncThunk<
-  RegisterResponse,
+  RegisterResponse['data'],
   RegisterRequest,
   { rejectValue: string }
->('auth/register', async (registerData: RegisterRequest, { rejectWithValue }) => {
-  try {
-    const response = await registerUser(registerData);
-    // 회원가입 후 자동 로그인되므로 토큰 저장
-    tokenUtils.setToken(response.token);
-
-    return response;
-  } catch (error: unknown) {
-    const axiosError = error as AxiosError<{ message?: string }>;
-    const errorMessage =
-      axiosError.response?.data?.message || axiosError.message || '회원가입에 실패했습니다.';
-    return rejectWithValue(errorMessage);
+>(
+  'auth/register',
+  async (registerData: RegisterRequest, { rejectWithValue }) => {
+    try {
+      const response = await registerUser(registerData);
+      
+      // 회원가입 후 자동 로그인되므로 토큰 저장
+      tokenUtils.setToken(response.data.token); 
+      
+      return response.data; 
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<{ message?: string }>;
+      const errorMessage = axiosError.response?.data?.message || axiosError.message || '회원가입에 실패했습니다.';
+      return rejectWithValue(errorMessage);
+    }
   }
-});
-
+);
 // 로그아웃 비동기 액션
 export const logoutAsync = createAsyncThunk<void, void, { rejectValue: string }>(
   'auth/logout',
@@ -93,6 +123,25 @@ export const logoutAsync = createAsyncThunk<void, void, { rejectValue: string }>
         axiosError.response?.data?.message ||
         axiosError.message ||
         '로그아웃 처리 중 오류가 발생했습니다.';
+      return rejectWithValue(errorMessage);
+    }
+  },
+);
+
+// 회원탈퇴 비동기 액션
+export const deleteAccountAsync = createAsyncThunk<void, void, { rejectValue: string }>(
+  'auth/deleteAccount',
+  async (_, { rejectWithValue }) => {
+    try {
+      await deleteAccount();
+      tokenUtils.removeToken();
+    } catch (error: unknown) {
+      tokenUtils.removeToken(); // 에러가 나도 로컬 토큰 제거
+      const axiosError = error as AxiosError<{ message?: string }>;
+      const errorMessage =
+        axiosError.response?.data?.message ||
+        axiosError.message ||
+        '회원탈퇴 처리 중 오류가 발생했습니다.';
       return rejectWithValue(errorMessage);
     }
   },
@@ -208,6 +257,27 @@ const authSlice = createSlice({
         state.token = null;
         state.isAuthenticated = false;
       });
+
+      // 회원탈퇴 액션 처리
+    builder
+      .addCase(deleteAccountAsync.pending, (state) => {
+        state.isDeleteAccountLoading = true;
+      })
+      .addCase(deleteAccountAsync.fulfilled, (state) => {
+        state.isDeleteAccountLoading = false;
+        state.user = null;
+        state.token = null;
+        state.isAuthenticated = false;
+        state.error = null;
+      })
+      .addCase(deleteAccountAsync.rejected, (state, action) => {
+        state.isDeleteAccountLoading = false;
+        state.error = action.payload || '회원탈퇴 처리 중 오류가 발생했습니다.';
+        // 에러가 나도 로그아웃 처리
+        state.user = null;
+        state.token = null;
+        state.isAuthenticated = false;
+      });
   },
 });
 
@@ -222,6 +292,7 @@ export const selectIsAuthenticated = (state: { auth: AuthState }) => state.auth.
 export const selectIsLoginLoading = (state: { auth: AuthState }) => state.auth.isLoginLoading;
 export const selectIsRegisterLoading = (state: { auth: AuthState }) => state.auth.isRegisterLoading;
 export const selectIsLogoutLoading = (state: { auth: AuthState }) => state.auth.isLogoutLoading;
+export const selectIsDeleteAccountLoading = (state: { auth: AuthState }) => state.auth.isDeleteAccountLoading;
 export const selectAuthError = (state: { auth: AuthState }) => state.auth.error;
 
 /*

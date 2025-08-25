@@ -28,8 +28,6 @@ export interface AlertRawMessage extends AlertMessageBase {
 
 export type AlertMessage = AlertTextMessage | AlertTimestampMessage | AlertRawMessage;
 
-// ===== WebSocket 관련 타입들 =====
-
 export const ConnectionStatus = {
   DISCONNECTED: 'DISCONNECTED',
   CONNECTING: 'CONNECTING',
@@ -69,4 +67,28 @@ export interface UseWebSocketReturn {
 export interface UseWebSocketProps {
   autoConnect?: boolean;
   userId?: string;
+}
+
+export type DrivingAnimalType = 'lion' | 'dolphin' | 'meerkat' | 'cat';
+
+export interface Pose {
+  x: number;
+  y: number;
+  yaw: number;
+}
+
+export interface NeighborData {
+  userId: number;
+  character: DrivingAnimalType;
+  pose: Pose;
+}
+
+export interface DrivingTendencyData {
+  type: 'driving';
+  timestamp: string;
+  ego: {
+    userId: number;
+    pose: Pose;
+  };
+  neighbors: NeighborData[];
 }

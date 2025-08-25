@@ -28,21 +28,43 @@ export interface BaseResponse {
 
 // 회원가입 응답 (RegisterResponseDto와 매칭)
 export interface RegisterResponse extends BaseResponse {
-  userId: number;
-  name: string;
-  token: string;
+  data: {
+    userId: number;
+    name: string;
+    token: string;
+  };
 }
 
 // 로그인 응답 (LoginResponseDto와 매칭)
 export interface LoginResponse extends BaseResponse {
-  userId: number;
-  name: string;
-  token: string;
+  data: {
+    userId: number;
+    name: string;
+    token: string;
+  };
+}
+
+// 사용자 프로필 조회 응답
+export interface UserProfileResponse extends BaseResponse {
+  data: {
+    id: number;
+    email: string;
+    name: string;
+    phone: string;
+    gender: 'MALE' | 'FEMALE';
+    bloodType?: 'A' | 'B' | 'AB' | 'O';
+    emergencyContact1?: string;
+    emergencyContact2?: string;
+    emergencyContact3?: string;
+    termsOfServiceAgreed: boolean;
+    privacyPolicyAgreed: boolean;
+    termsAgreedAt: string;
+  };
 }
 
 // 단순 성공/실패 응답 (로그아웃 등에서 사용)
 // export interface CommonResponse extends BaseResponse {
-//   // BaseResponse와 동일하지만 명시적으로 구분
+  // BaseResponse와 동일하지만 명시적으로 구분
 // }
 
 export type CommonResponse = BaseResponse;
@@ -86,8 +108,10 @@ export interface SendVerificationRequest {
 
 // 이메일 인증코드 발송 응답
 export interface SendVerificationResponse extends BaseResponse {
-  email: string;
-  expirationTime: number; // 만료시간 (초)
+  data: {
+    email: string;
+    expirationTime: number; // 만료시간 (초)
+  };
 }
 
 // 이메일 인증코드 검증 요청
@@ -98,13 +122,17 @@ export interface VerifyEmailRequest {
 
 // 이메일 인증코드 검증 응답
 export interface VerifyEmailResponse extends BaseResponse {
-  email: string;
-  verified: boolean;
+  data: {
+    email: string;
+    verified: boolean;
+  };
 }
 
 // 이메일 중복 체크 응답
 export interface CheckEmailResponse {
-  isDuplicate: boolean;
+  data: {
+    isDuplicate: boolean;
+  };
 }
 
 // 회원가입 단계 타입 (4단계)
@@ -207,4 +235,27 @@ export interface CompleteSignupRequest {
   emergencyContact1?: string;
   emergencyContact2?: string;
   emergencyContact3?: string;
+}
+
+// 비밀번호 변경 요청 타입
+export interface ChangePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}
+
+// 비밀번호 변경 응답 타입
+export interface ChangePasswordResponse extends BaseResponse {
+  data: {
+    message: string;
+    updatedAt: string;
+  };
+}
+
+// 응급정보 수정 요청 타입
+export interface UpdateEmergencyInfoRequest {
+  bloodType?: 'A' | 'B' | 'O' | 'AB' | null;
+  emergencyContact1?: string | null;
+  emergencyContact2?: string | null;
+  emergencyContact3?: string | null;
 }
