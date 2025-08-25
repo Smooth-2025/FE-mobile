@@ -5,7 +5,7 @@ export default function WeeklyDriveSummaryCard() {
   return (
     <styled.SummaryWrapper>
       <styled.Title>최근 7일 주행 요약</styled.Title>
-      <styled.MetricsSection>
+      <styled.MetricsContainer>
         <styled.MetricItem>
           <styled.Dot color={theme.colors.accent_orange} />
           <styled.MetricLabel>평균주행시간</styled.MetricLabel>
@@ -26,7 +26,7 @@ export default function WeeklyDriveSummaryCard() {
           <styled.MetricLabel>급제동 횟수</styled.MetricLabel>
           <styled.MetricValue>0회</styled.MetricValue>
         </styled.MetricItem>
-      </styled.MetricsSection>
+      </styled.MetricsContainer>
     </styled.SummaryWrapper>
   );
 }
