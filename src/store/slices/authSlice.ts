@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { loginUser, registerUser, logoutUser } from '@apis/auth';
+import { loginUser, registerUser, logoutUser, deleteAccount } from '@apis/auth';
 import { tokenUtils } from '@/utils/token';
 import type {
   LoginRequest,
@@ -19,6 +19,7 @@ interface AuthState {
   isLoginLoading: boolean;
   isRegisterLoading: boolean;
   isLogoutLoading: boolean;
+  isDeleteAccountLoading: boolean;
   // 에러 상태
   error: string | null;
   // 인증 여부
@@ -32,6 +33,7 @@ const initialState: AuthState = {
   isLoginLoading: false,
   isRegisterLoading: false,
   isLogoutLoading: false,
+  isDeleteAccountLoading: false,
   error: null,
   isAuthenticated: !!tokenUtils.getToken(),
 };
@@ -121,6 +123,25 @@ export const logoutAsync = createAsyncThunk<void, void, { rejectValue: string }>
         axiosError.response?.data?.message ||
         axiosError.message ||
         '로그아웃 처리 중 오류가 발생했습니다.';
+      return rejectWithValue(errorMessage);
+    }
+  },
+);
+
+// 회원탈퇴 비동기 액션
+export const deleteAccountAsync = createAsyncThunk<void, void, { rejectValue: string }>(
+  'auth/deleteAccount',
+  async (_, { rejectWithValue }) => {
+    try {
+      await deleteAccount();
+      tokenUtils.removeToken();
+    } catch (error: unknown) {
+      tokenUtils.removeToken(); // 에러가 나도 로컬 토큰 제거
+      const axiosError = error as AxiosError<{ message?: string }>;
+      const errorMessage =
+        axiosError.response?.data?.message ||
+        axiosError.message ||
+        '회원탈퇴 처리 중 오류가 발생했습니다.';
       return rejectWithValue(errorMessage);
     }
   },
@@ -236,6 +257,27 @@ const authSlice = createSlice({
         state.token = null;
         state.isAuthenticated = false;
       });
+
+      // 회원탈퇴 액션 처리
+    builder
+      .addCase(deleteAccountAsync.pending, (state) => {
+        state.isDeleteAccountLoading = true;
+      })
+      .addCase(deleteAccountAsync.fulfilled, (state) => {
+        state.isDeleteAccountLoading = false;
+        state.user = null;
+        state.token = null;
+        state.isAuthenticated = false;
+        state.error = null;
+      })
+      .addCase(deleteAccountAsync.rejected, (state, action) => {
+        state.isDeleteAccountLoading = false;
+        state.error = action.payload || '회원탈퇴 처리 중 오류가 발생했습니다.';
+        // 에러가 나도 로그아웃 처리
+        state.user = null;
+        state.token = null;
+        state.isAuthenticated = false;
+      });
   },
 });
 
@@ -250,6 +292,7 @@ export const selectIsAuthenticated = (state: { auth: AuthState }) => state.auth.
 export const selectIsLoginLoading = (state: { auth: AuthState }) => state.auth.isLoginLoading;
 export const selectIsRegisterLoading = (state: { auth: AuthState }) => state.auth.isRegisterLoading;
 export const selectIsLogoutLoading = (state: { auth: AuthState }) => state.auth.isLogoutLoading;
+export const selectIsDeleteAccountLoading = (state: { auth: AuthState }) => state.auth.isDeleteAccountLoading;
 export const selectAuthError = (state: { auth: AuthState }) => state.auth.error;
 
 /*

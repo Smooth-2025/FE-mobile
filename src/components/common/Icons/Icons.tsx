@@ -7,6 +7,7 @@ import { UserIcon } from './UserIcon';
 import WarningCircleIcon from './WarningCircleIcon';
 import WarningTriangleIcon from './WarningTriangleIcon';
 import ChevronLeftIcon from './ChevronLeftIcon';
+import ChevronRightIcon from './ChevronRightIcon';
 import CloseIcon from './CloseIcon';
 import { EyeClosedIcon } from './EyeClosedIcon';
 import { EyeOpenIcon } from './EyeOpenIcon';
@@ -30,6 +31,8 @@ export function Icon({ name, size = DEFAULT_ICON_SIZE, color = DEFAULT_ICON_COLO
       return <WarningTriangleIcon size={size} color={color} />;
     case 'chevronLeft':
       return <ChevronLeftIcon size={size} color={color} />;
+    case 'chevronRight':
+      return <ChevronRightIcon size={size} color={color} />;
     case 'close':
       return <CloseIcon size={size} color={color} />;
     case 'eyeClosed':
