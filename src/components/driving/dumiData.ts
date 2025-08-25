@@ -23,6 +23,16 @@ export const DUMI: DrivingFrame[] = [
         character: 'lion',
         pose: { x: -67, y: 28, yaw: 0.01 },
       },
+      {
+        userId: 3,
+        character: 'dolphin',
+        pose: { x: -66.84, y: 28.0, yaw: 0.01 },
+      },
+      {
+        userId: 4,
+        character: 'dolphin',
+        pose: { x: -63.69, y: 28, yaw: 0.1 },
+      },
     ],
   },
   {
