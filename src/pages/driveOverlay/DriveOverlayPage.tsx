@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import styled from '@emotion/styled';
 import { selectAlerts, type AlertType as StoreAlertType } from '@/store/slices/alertSlice';
 import AlertToast from '@/components/common/AlertToast/AlertToast';
+import DrivingSimulation from '@/components/driving/DrivingSimulation';
 
 const ALLOWED_TYPES = ['accident-nearby', 'obstacle', 'pothole'] as const;
 type DisplayAlertType = (typeof ALLOWED_TYPES)[number];
@@ -90,6 +91,7 @@ export default function DriveOverlayPage() {
           />
         </div>
       ))}
+      <DrivingSimulation />
     </OverlayContainer>
   );
 }
