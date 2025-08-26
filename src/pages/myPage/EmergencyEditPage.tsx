@@ -134,8 +134,6 @@ export default function EmergencyEditPage() {
         emergencyContact3: formData.emergencyContact3 ? formData.emergencyContact3.replace(/-/g, '') : null,
       };
 
-      console.warn('응급정보 수정 요청 데이터:', requestData); // 디버깅용
-
       await updateEmergencyInfo(requestData);
 
       showSuccess('응급정보가 성공적으로 수정되었습니다.');

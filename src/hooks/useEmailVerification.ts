@@ -13,10 +13,9 @@ export const useEmailVerification = () => {
   const sendCode = async (email: string): Promise<boolean> => {
     try {
       setIsLoading(true);
-      const response = await sendVerificationCode({ email });
+      await sendVerificationCode({ email });
 
       setVerificationSent(true);
-      console.warn('인증코드 만료시간:', response.data.expirationTime + '초');
 
       return true;
     } catch (error: unknown) {
@@ -40,20 +39,12 @@ const verifyCode = async (email: string, code: string): Promise<boolean> => {
   try {
     setIsLoading(true);
     
-    console.warn('인증 요청 데이터:', { email, code });
-    
     const response = await verifyEmailCode({ email, code });
     
-    console.warn('API 응답 전체:', response);
-    console.warn('verified 필드:', response.data.verified);
-    console.warn('success 필드:', response.success);
-    
     if (response.data.verified) { 
-      console.warn('인증 성공!');
       setVerifiedEmail(email);
       return true;
     } else {
-      console.warn('인증 실패:', response.message);
       showLoginError('인증번호를 확인해 주세요');
       return false;
     }
