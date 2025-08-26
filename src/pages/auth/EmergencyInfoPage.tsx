@@ -86,16 +86,13 @@ export function EmergencyInfoPage() {
       // 유효성 검사 (긴급연락처가 입력된 경우에만)
       const hasErrors = Object.keys(formErrors).length > 0;
       if (hasErrors) {
-        console.warn('유효성 검사 실패');
         return;
       }
 
       const signupData = createSignupData(true);
-      console.warn('회원가입 데이터 (응급정보 포함):', signupData);
 
       // 실제 API 호출
-      const result = await registerUser(signupData);
-      console.warn('회원가입 성공:', result);
+      await registerUser(signupData);
 
       // 회원가입 완료 페이지로 이동
       navigate('/signup/complete', {
@@ -118,11 +115,9 @@ export function EmergencyInfoPage() {
       setIsLoading(true);
 
       const signupData = createSignupData(false);
-      console.warn('회원가입 데이터 (응급정보 제외):', signupData);
 
       // 실제 API 호출
-      const result = await registerUser(signupData);
-      console.warn('회원가입 성공:', result);
+      await registerUser(signupData);
 
       // 회원가입 완료 페이지로 이동
       navigate('/signup/complete', {

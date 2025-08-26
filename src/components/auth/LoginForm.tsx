@@ -63,9 +63,6 @@ export function LoginForm({ onSuccess, onError, isLoading = false }: LoginFormPr
       // loginUser 함수의 반환 타입이 LoginResponse로 보장됨
       const result: LoginResponse = await loginUser(loginData);
 
-      // result.의 자동완성
-      console.warn('로그인 성공!', result.name, result.token);
-
       // 성공 콜백 호출
       onSuccess(result);
 
@@ -128,7 +125,6 @@ export function LoginForm({ onSuccess, onError, isLoading = false }: LoginFormPr
 
 export function LoginPage() {
   const handleLoginSuccess = (userData: LoginResponse) => {
-    console.log('로그인된 사용자:', userData.name);
     // 토큰 저장, 리다이렉트 등
   };
 
