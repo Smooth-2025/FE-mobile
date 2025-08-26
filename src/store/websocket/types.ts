@@ -82,15 +82,16 @@ export interface NeighborData {
   character: DrivingAnimalType;
   pose: Pose;
 }
+export interface EgoData {
+  userId: string | number;
+  pose: Pose;
+}
 
 export interface DrivingTendencyData {
   type: 'driving';
   payload: {
     timestamp: string;
-    ego: {
-      userId: string | number;
-      pose: Pose;
-    };
+    ego: EgoData;
     neighbors: NeighborData[];
   };
 }
