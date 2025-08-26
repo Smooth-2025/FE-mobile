@@ -85,10 +85,12 @@ export interface NeighborData {
 
 export interface DrivingTendencyData {
   type: 'driving';
-  timestamp: string;
-  ego: {
-    userId: string | number;
-    pose: Pose;
+  payload: {
+    timestamp: string;
+    ego: {
+      userId: string | number;
+      pose: Pose;
+    };
+    neighbors: NeighborData[];
   };
-  neighbors: NeighborData[];
 }
