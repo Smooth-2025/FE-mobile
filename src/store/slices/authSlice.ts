@@ -14,7 +14,7 @@ interface AuthState {
   // 사용자 정보
   user: User | null;
   // JWT 토큰
-  token: string | null;
+  accessToken: string | null;
   // 로딩 상태들
   isLoginLoading: boolean;
   isRegisterLoading: boolean;
@@ -29,13 +29,13 @@ interface AuthState {
 // 초기 상태
 const initialState: AuthState = {
   user: null,
-  token: tokenUtils.getToken(), // 페이지 새로고침시 토큰 복원
+  accessToken: tokenUtils.getAccessToken(), // 페이지 새로고침시 토큰 복원
   isLoginLoading: false,
   isRegisterLoading: false,
   isLogoutLoading: false,
   isDeleteAccountLoading: false,
   error: null,
-  isAuthenticated: !!tokenUtils.getToken(),
+  isAuthenticated: !!tokenUtils.getAccessToken(),
 };
 
 // 로그인 비동기 액션
@@ -47,36 +47,19 @@ export const loginAsync = createAsyncThunk<
 'auth/login',
   async (loginData: LoginRequest, { rejectWithValue }) => {
     try {
-      console.warn('로그인 요청 데이터:', loginData);
-      
       const response = await loginUser(loginData);
-      
-      console.warn('API 원본 응답:', response);
-      console.warn('토큰 필드 확인:', response.data.token); 
-      console.warn('사용자 이름:', response.data.name);
-      console.warn('사용자 ID:', response.data.userId);
       
       // 토큰이 있는지 확인
       if (!response.data.token) {
-        console.error('토큰이 응답에 없음!');
         return rejectWithValue('토큰을 받지 못했습니다.');
       }
       
       // 토큰 저장
       tokenUtils.setToken(response.data.token);
-      console.warn('토큰 저장 완료');
-      
-      // 저장된 토큰 재확인
-      const savedToken = tokenUtils.getToken();
-      console.warn('저장된 토큰 확인:', savedToken);
       
       return response.data;
     } catch (error: unknown) {
-      console.error('로그인 에러 상세:', error);
-      
       const axiosError = error as AxiosError<{ message?: string }>;
-      console.error('에러 응답:', axiosError.response?.data);
-      console.error('에러 상태:', axiosError.response?.status);
       
       const errorMessage = axiosError.response?.data?.message || axiosError.message || '로그인에 실패했습니다.';
       return rejectWithValue(errorMessage);
@@ -152,29 +135,28 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    // 에러 클리어
     clearError: (state) => {
       state.error = null;
     },
 
-    // 토큰 수동 설정
-    setToken: (state, action) => {
-      state.token = action.payload;
+    // Access Token 설정
+    setAccessToken: (state, action) => {
+      state.accessToken = action.payload;
       state.isAuthenticated = !!action.payload;
       if (action.payload) {
-        tokenUtils.setToken(action.payload);
+        tokenUtils.setAccessToken(action.payload);
       } else {
-        tokenUtils.removeToken();
+        tokenUtils.removeAccessToken();
       }
     },
 
     // 즉시 로그아웃 (동기)
     logout: (state) => {
       state.user = null;
-      state.token = null;
+      state.accessToken = null;
       state.isAuthenticated = false;
       state.error = null;
-      tokenUtils.removeToken();
+      tokenUtils.clearAllTokens();
     },
 
     // 사용자 정보 업데이트
@@ -186,30 +168,25 @@ const authSlice = createSlice({
   },
 
   // 비동기 액션 처리
-  extraReducers: (builder) => {
-    // 로그인 액션 처리
+extraReducers: (builder) => {
+    // 로그인 성공 처리
     builder
-      .addCase(loginAsync.pending, (state) => {
-        state.isLoginLoading = true;
-        state.error = null;
-      })
       .addCase(loginAsync.fulfilled, (state, action) => {
         state.isLoginLoading = false;
-        state.token = action.payload.token;
+        state.accessToken = action.payload.token; // (백엔드 응답)
         state.isAuthenticated = true;
 
-        // User 객체 생성
         state.user = {
           id: action.payload.userId,
           name: action.payload.name,
-          email: '', // API에서 제공하지 않으므로 빈 값
+          email: '',
         } as User;
       })
       .addCase(loginAsync.rejected, (state, action) => {
         state.isLoginLoading = false;
         state.error = action.payload || '로그인에 실패했습니다.';
         state.isAuthenticated = false;
-        state.token = null;
+        state.accessToken = null;
         state.user = null;
       });
 
@@ -221,7 +198,7 @@ const authSlice = createSlice({
       })
       .addCase(registerAsync.fulfilled, (state, action) => {
         state.isRegisterLoading = false;
-        state.token = action.payload.token;
+        state.accessToken = action.payload.token;
         state.isAuthenticated = true;
 
         // User 객체 생성
@@ -244,7 +221,7 @@ const authSlice = createSlice({
       .addCase(logoutAsync.fulfilled, (state) => {
         state.isLogoutLoading = false;
         state.user = null;
-        state.token = null;
+        state.accessToken = null;
         state.isAuthenticated = false;
         state.error = null;
       })
@@ -254,7 +231,7 @@ const authSlice = createSlice({
 
         // 에러가 나도 로그아웃 처리
         state.user = null;
-        state.token = null;
+        state.accessToken = null;
         state.isAuthenticated = false;
       });
 
@@ -266,7 +243,7 @@ const authSlice = createSlice({
       .addCase(deleteAccountAsync.fulfilled, (state) => {
         state.isDeleteAccountLoading = false;
         state.user = null;
-        state.token = null;
+        state.accessToken = null;
         state.isAuthenticated = false;
         state.error = null;
       })
@@ -275,19 +252,19 @@ const authSlice = createSlice({
         state.error = action.payload || '회원탈퇴 처리 중 오류가 발생했습니다.';
         // 에러가 나도 로그아웃 처리
         state.user = null;
-        state.token = null;
+        state.accessToken = null;
         state.isAuthenticated = false;
       });
   },
 });
 
 // Export
-export const { clearError, setToken, logout, updateUser } = authSlice.actions;
+export const { clearError, setAccessToken, logout, updateUser } = authSlice.actions;
 export default authSlice.reducer;
 
 // 셀렉터들 (상태 조회용)
 export const selectUser = (state: { auth: AuthState }) => state.auth.user;
-export const selectToken = (state: { auth: AuthState }) => state.auth.token;
+export const selectAccessToken = (state: { auth: AuthState }) => state.auth.accessToken;
 export const selectIsAuthenticated = (state: { auth: AuthState }) => state.auth.isAuthenticated;
 export const selectIsLoginLoading = (state: { auth: AuthState }) => state.auth.isLoginLoading;
 export const selectIsRegisterLoading = (state: { auth: AuthState }) => state.auth.isRegisterLoading;

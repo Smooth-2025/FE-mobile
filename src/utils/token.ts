@@ -1,24 +1,47 @@
-const TOKEN_KEY = 'smooth_token';
+const ACCESS_TOKEN_KEY = 'smooth_access_token';
 
 export const tokenUtils = {
-  // 토큰 저장
+  // Access Token 저장 (sessionStorage)
+  setAccessToken: (token: string): void => {
+    sessionStorage.setItem(ACCESS_TOKEN_KEY, token);
+  },
+
+  // Access Token 조회
+  getAccessToken: (): string | null => {
+    return sessionStorage.getItem(ACCESS_TOKEN_KEY);
+  },
+
+  // Access Token 삭제
+  removeAccessToken: (): void => {
+    sessionStorage.removeItem(ACCESS_TOKEN_KEY);
+  },
+
+  // 모든 토큰 정리
+  clearAllTokens: (): void => {
+    sessionStorage.removeItem(ACCESS_TOKEN_KEY);
+    // Refresh Token은 쿠키이므로 서버에서 삭제 (로그아웃 API 호출)
+  },
+
+  // Access Token 존재 여부 확인
+  hasAccessToken: (): boolean => {
+    return !!sessionStorage.getItem(ACCESS_TOKEN_KEY);
+  },
+
+  // 기존 메소드들 (호환성 유지)
   setToken: (token: string): void => {
-    localStorage.setItem(TOKEN_KEY, token);
+    tokenUtils.setAccessToken(token);
   },
 
-  // 토큰 조회
   getToken: (): string | null => {
-    return localStorage.getItem(TOKEN_KEY);
+    return tokenUtils.getAccessToken();
   },
 
-  // 토큰 삭제
   removeToken: (): void => {
-    localStorage.removeItem(TOKEN_KEY);
+    tokenUtils.removeAccessToken();
   },
 
-  // 토큰 존재 여부 확인
   hasToken: (): boolean => {
-    return !!localStorage.getItem(TOKEN_KEY);
+    return tokenUtils.hasAccessToken();
   },
 
   // 토큰이 필요 없는 경로들
@@ -27,9 +50,9 @@ export const tokenUtils = {
       '/api/auth/login',
       '/api/auth/register',
       '/api/auth/send-verification',
-      '/api/auth/verify-email',
+      '/api/auth/verify-email', 
       '/api/auth/check-email',
-      '/api/auth/forgot-password', //나중에 비밀번호 찾기
+      '/api/auth/refresh', 
       '/api/public',
     ];
 
