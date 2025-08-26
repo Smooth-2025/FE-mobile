@@ -28,7 +28,7 @@ export const axiosBaseQuery =
 
       const isLinkStatusGet = (method ?? 'GET').toUpperCase() === 'GET' && url === '/vehicle';
 
-      if (code === 4010 && isLinkStatusGet) {
+      if (code === 1601 && isLinkStatusGet) {
         return { data: { linked: false, vehicle: null } };
       }
 
