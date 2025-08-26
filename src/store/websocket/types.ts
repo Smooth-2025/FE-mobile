@@ -74,7 +74,6 @@ export type DrivingAnimalType = 'lion' | 'dolphin' | 'meerkat' | 'cat';
 export interface Pose {
   latitude: number;
   longitude: number;
-  yaw: number;
 }
 
 export interface NeighborData {
