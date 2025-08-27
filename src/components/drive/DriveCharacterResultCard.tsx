@@ -1,10 +1,10 @@
 import drivingProgress from '@/assets/images/driving-progress.png';
 import drivingCharactarEmpty from '@/assets/images/driving-charactarEmpty.png';
-import lion from '@/assets/images/charactars/lion.png';
-import dolphin from '@/assets/images/charactars/dolphin.png';
-import cat from '@/assets/images/charactars/cat.png';
-import meerkat from '@/assets/images/charactars/meerkat.png';
 import * as styled from '@/components/drive/DriveCharacterResultCard.styles';
+import lion from '@/assets/images/characters/lion.png';
+import dolphin from '@/assets/images/characters/dolphin.png';
+import cat from '@/assets/images/characters/cat.png';
+import meerkat from '@/assets/images/characters/meerkat.png';
 
 export default function DriveCharacterResultCard() {
   const personaStyle = '안전 운전형';
