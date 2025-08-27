@@ -3,7 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   connectWebSocket,
   disconnectWebSocket,
-  subscribeToAlerts,
+  subscribeToDriving,
+  subscribeToIncident,
   sendCommand as sendCommandAction,
 } from '@/store/websocket/websocketActions';
 import { ConnectionStatus } from '@/store/websocket/types';
@@ -33,7 +34,8 @@ export const useWebSocket = (props: UseWebSocketProps = {}): UseWebSocketReturn 
     
     dispatch(connectWebSocket());
     
-    dispatch(subscribeToAlerts());
+    dispatch(subscribeToDriving());
+    dispatch(subscribeToIncident());
   }, [dispatch, isAuthenticated]);
 
   const disconnect = useCallback(() => {
@@ -49,7 +51,8 @@ export const useWebSocket = (props: UseWebSocketProps = {}): UseWebSocketReturn 
     
     dispatch(disconnectWebSocket());
     dispatch(connectWebSocket());
-    dispatch(subscribeToAlerts());
+    dispatch(subscribeToDriving());
+    dispatch(subscribeToIncident());
   }, [dispatch, isAuthenticated]);
 
   const sendCommand: UseWebSocketReturn['sendCommand'] = useCallback(
