@@ -3,6 +3,9 @@ import { useSelector } from 'react-redux';
 import styled from '@emotion/styled';
 import { selectAlerts } from '@/store/slices/alertSlice';
 import AlertToast from '@/components/common/AlertToast/AlertToast';
+import { useEmergencyHandler } from '@/hooks/useEmergencyHandler';
+import EmergencyCallAlert from '@/components/emergency/EmergencyCallAlert';
+import EmergencyReportedAlert from '@/components/emergency/EmergencyReportedAlert';
 import type { AlertType as StoreAlertType } from '@/store/websocket/types';
 
 const ALLOWED_TYPES = ['accident-nearby', 'obstacle', 'pothole', 'accident'] as const;
@@ -35,6 +38,16 @@ type ActiveItem = AlertDisplay & { alertId: string; createdAt: number };
 
 export default function DriveOverlayPage() {
   const alert = useSelector(selectAlerts);
+  const {
+    isEmergencyModalOpen,
+    isReportedModalOpen,
+    isTimeout,
+    openEmergencyModal,
+    handleManualEmergencyCall,
+    handleTimeoutEmergencyCall,
+    handleEmergencyModalClose,
+    handleReportedModalClose,
+  } = useEmergencyHandler();
 
   const DISPLAY_MS = 3500;
 
@@ -52,6 +65,11 @@ export default function DriveOverlayPage() {
 
     setActive((prev) => [alertItem, ...prev]);
 
+    // 'accident' 타입이고 내 사고일 때 119 신고 모달 표시
+    if (type === 'accident') {
+      openEmergencyModal(alertId);
+    }
+
     // 개별 타이머: DISPLAY_MS 후 알림 제거 및 타이머 정리
     const timerId = window.setTimeout(() => {
       setActive((prev) => prev.filter((x) => x.alertId !== alertId));
@@ -61,7 +79,7 @@ export default function DriveOverlayPage() {
     }, DISPLAY_MS);
 
     timersRef.current[alertId] = timerId;
-  }, [alert]);
+  }, [alert, openEmergencyModal]);
 
   useEffect(() => {
     return () => {
@@ -69,6 +87,7 @@ export default function DriveOverlayPage() {
       timersRef.current = {};
     };
   }, []);
+
 
   return (
     <OverlayContainer>
@@ -91,6 +110,20 @@ export default function DriveOverlayPage() {
           />
         </div>
       ))}
+      
+      <EmergencyCallAlert
+        isOpen={isEmergencyModalOpen}
+        onClose={handleEmergencyModalClose}
+        onEmergencyCall={handleTimeoutEmergencyCall}
+        onManualEmergencyCall={handleManualEmergencyCall}
+        countdownSeconds={30}
+      />
+      
+      <EmergencyReportedAlert
+        isOpen={isReportedModalOpen}
+        onClose={handleReportedModalClose}
+        isTimeout={isTimeout}
+      />
     </OverlayContainer>
   );
 }
