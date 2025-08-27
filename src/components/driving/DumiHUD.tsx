@@ -1,10 +1,10 @@
-import type { DrivingFrame } from './dumiData';
+import type { EgoData, NeighborData } from '@/store/websocket/types';
 
 type Props = {
   currentIndex: number; // 현재 프레임 번호
   total: number; // 전체 프레임 수
-  ego: DrivingFrame['ego'] | null;
-  neighbors: DrivingFrame['neighbors'];
+  ego: EgoData;
+  neighbors: NeighborData[];
   timestamp: string | null;
   humanTime: (iso: string) => string;
 };
