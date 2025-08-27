@@ -74,7 +74,6 @@ export type DrivingAnimalType = 'lion' | 'dolphin' | 'meerkat' | 'cat';
 export interface Pose {
   latitude: number;
   longitude: number;
-  yaw: number;
 }
 
 export interface NeighborData {
@@ -82,13 +81,16 @@ export interface NeighborData {
   character: DrivingAnimalType;
   pose: Pose;
 }
+export interface EgoData {
+  userId: string | number;
+  pose: Pose;
+}
 
 export interface DrivingTendencyData {
   type: 'driving';
-  timestamp: string;
-  ego: {
-    userId: string | number;
-    pose: Pose;
+  payload: {
+    timestamp: string;
+    ego: EgoData;
+    neighbors: NeighborData[];
   };
-  neighbors: NeighborData[];
 }
