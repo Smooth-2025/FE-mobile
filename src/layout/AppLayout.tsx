@@ -99,7 +99,7 @@ export default function AppLayout() {
         </Content>
         {!hideBottomNav && <BottomNav />}
       </Shell>
-      {!drivingActive && (
+      {drivingActive && (
         <DrivePortal>
           <DriveOverlayPage />
         </DrivePortal>
