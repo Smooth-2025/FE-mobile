@@ -7,8 +7,10 @@ import { addAlert } from '../slices/alertSlice';
 import {
   connectWebSocket,
   disconnectWebSocket,
-  subscribeToAlerts,
-  unsubscribeFromAlerts,
+  subscribeToDriving,
+  unsubscribeFromDriving,
+  subscribeToIncident,
+  unsubscribeFromIncident,
   sendTestAlert,
   pingWebSocket,
   sendCommand,
@@ -121,7 +123,7 @@ export const websocketMiddleware: Middleware =
           dispatch(setConnectionStatus(ConnectionStatus.CONNECTED));
           console.warn('✅ STOMP 연결 성공!');
           // 원하면 여기서 자동 재구독
-          // dispatch(subscribeToAlerts());
+          // 자동 구독은 useWebSocket에서 처리
         } else if (state === RxStompState.CLOSED) {
           dispatch(setConnectionStatus(ConnectionStatus.DISCONNECTED));
           subscriptions.clear();
@@ -148,12 +150,13 @@ export const websocketMiddleware: Middleware =
       return result;
     }
 
-    if (subscribeToAlerts.match(action)) {
-      const destination = '/user/queue/alert'; 
-      if (rxStomp) {
-        console.warn(`📩 토픽 구독 시도: ${destination}`);
 
-        const handleReceivedData = (message: IMessage) => {
+    if (subscribeToDriving.match(action)) {
+      const destination = '/user/queue/driving';
+      if (rxStomp) {
+        console.warn(`📩 주행 성향 토픽 구독 시도: ${destination}`);
+
+        const handleDrivingData = (message: IMessage) => {
           try {
             let rawData: unknown;
             try {
@@ -163,17 +166,29 @@ export const websocketMiddleware: Middleware =
               rawData = message.body;
             }
 
-         
-            const dataType = getString(rawData, 'type');
-          
-            if (dataType === 'driving') {
-              if (isRecord(rawData)) {
-                const type = getString(rawData, 'type');
-                const timestamp = getString(rawData, 'timestamp');
-                const ego = getAny(rawData, 'ego');
-                const neighbors = getAny(rawData, 'neighbors');
+            if (isRecord(rawData)) {
+              const eventType = getString(rawData, 'eventType');
+              if (eventType === 'start' || eventType === 'end') {
+                dispatch(addAlert({
+                  id: String(Date.now()),
+                  type: eventType,
+                  message: eventType === 'start' ? '주행 시작' : '주행 종료',
+                  timestamp: getString(rawData, 'timestamp') || new Date().toISOString(),
+                  raw: rawData,
+                  isRead: false,
+                }));
+                return;
+              }
+              
+              const type = getString(rawData, 'type');
+              const payload = getAny(rawData, 'payload');
+              
+              if (type === 'driving' && isRecord(payload)) {
+                const timestamp = getString(payload, 'timestamp');
+                const ego = getAny(payload, 'ego');
+                const neighbors = getAny(payload, 'neighbors');
                 
-                if (type === 'driving' && timestamp && isRecord(ego) && Array.isArray(neighbors)) {
+                if (timestamp && isRecord(ego) && Array.isArray(neighbors)) {
                   const egoUserId = ego.userId;
                   const egoPose = getAny(ego, 'pose');
                   
@@ -191,23 +206,23 @@ export const websocketMiddleware: Middleware =
                           ['lion', 'dolphin', 'meerkat', 'cat'].includes(character) &&
                           isRecord(pose) &&
                           typeof pose.latitude === 'number' &&
-                          typeof pose.longitude === 'number' &&
-                          typeof pose.yaw === 'number'
+                          typeof pose.longitude === 'number'
                         );
                       });
 
                     const drivingData: DrivingTendencyData = {
                       type: 'driving',
-                      timestamp,
-                      ego: {
-                        userId: egoUserId,
-                        pose: {
-                          latitude: egoPose.latitude as number,
-                          longitude: egoPose.longitude as number,
-                          yaw: egoPose.yaw as number,
+                      payload: {
+                        timestamp,
+                        ego: {
+                          userId: egoUserId,
+                          pose: {
+                            latitude: egoPose.latitude as number,
+                            longitude: egoPose.longitude as number,
+                          },
                         },
+                        neighbors: validNeighbors,
                       },
-                      neighbors: validNeighbors,
                     };
                     
                     dispatch(updateDrivingTendency(drivingData));
@@ -215,6 +230,33 @@ export const websocketMiddleware: Middleware =
                   }
                 }
               }
+            }
+          } catch (error) {
+            console.error('❌ 주행 데이터 처리 오류:', error);
+            dispatch(setError((error as Error)?.message ?? 'driving data handling error'));
+          }
+        };
+
+        const sub = rxStomp.watch(destination).subscribe(handleDrivingData);
+        subscriptions.set(destination, sub);
+        console.warn('✅ 주행 성향 토픽 구독 완료');
+      }
+      return result;
+    }
+
+    if (subscribeToIncident.match(action)) {
+      const destination = '/user/queue/incident';
+      if (rxStomp) {
+        console.warn(`📩 사고 알림 토픽 구독 시도: ${destination}`);
+
+        const handleIncidentData = (message: IMessage) => {
+          try {
+            let rawData: unknown;
+            try {
+              rawData = JSON.parse(message.body);
+              console.warn(rawData);
+            } catch {
+              rawData = message.body;
             }
             
             const display = extractDisplayText(rawData);
@@ -224,8 +266,33 @@ export const websocketMiddleware: Middleware =
               return typeof ts === 'string' ? ts : new Date().toISOString();
             })();
             const idFromServer = (() => {
+              // 먼저 id 필드 확인
               const v = getAny(rawData, 'id');
-              return typeof v === 'string' ? v : undefined;
+              if (typeof v === 'string') return v;
+              
+              // payload에서 여러 필드 확인
+              const payload = getAny(rawData, 'payload');
+              if (isRecord(payload)) {
+                // accidentId 확인
+                const accidentId = getAny(payload, 'accidentId');
+                if (typeof accidentId === 'string') return accidentId;
+                
+                // id 확인
+                const payloadId = getAny(payload, 'id');
+                if (typeof payloadId === 'string') return payloadId;
+              }
+              
+              // 최상위에서 accidentId 확인
+              const accidentId = getAny(rawData, 'accidentId');
+              if (typeof accidentId === 'string') return accidentId;
+              
+              // accident 타입인 경우 하드코딩된 ID 사용 (임시)
+              if (type === 'accident') {
+                console.warn('🚨 accident 타입이지만 accidentId를 찾을 수 없음, 하드코딩 사용');
+                return '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d';
+              }
+              
+              return undefined;
             })();
             const id =
               idFromServer ??
@@ -248,31 +315,46 @@ export const websocketMiddleware: Middleware =
                 isRead: false,
               }),
             );
-            console.warn('📢 알림 데이터:', type);
+            console.warn('🚨 사고 알림 데이터:', type);
+            console.warn('🚨 웹소켓 Raw Data:', JSON.stringify(rawData, null, 2));
+            console.warn('🚨 추출된 ID:', id);
+            console.warn('🚨 서버에서 온 ID:', idFromServer);
 
             if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
-              new Notification(title || '📢 알림', { body: display, icon: '/favicon.ico' });
+              new Notification(title || '🚨 사고 알림', { body: display, icon: '/favicon.ico' });
             }
           } catch (error) {
-            console.error('❌ 메시지 처리 오류:', error);
-            dispatch(setError((error as Error)?.message ?? 'message handling error'));
+            console.error('❌ 사고 알림 처리 오류:', error);
+            dispatch(setError((error as Error)?.message ?? 'incident handling error'));
           }
         };
 
-        const sub = rxStomp.watch(destination).subscribe(handleReceivedData);
+        const sub = rxStomp.watch(destination).subscribe(handleIncidentData);
         subscriptions.set(destination, sub);
-        console.warn('✅ 알림 토픽 구독 완료');
+        console.warn('✅ 사고 알림 토픽 구독 완료');
       }
       return result;
     }
 
-    if (unsubscribeFromAlerts.match(action)) {
+
+    if (unsubscribeFromDriving.match(action)) {
       const { destination } = action.payload;
       const sub = subscriptions.get(destination);
       if (sub) {
         sub.unsubscribe();
         subscriptions.delete(destination);
-        console.warn(`🔕 구독 해제: ${destination}`);
+        console.warn(`🔕 주행 성향 구독 해제: ${destination}`);
+      }
+      return result;
+    }
+
+    if (unsubscribeFromIncident.match(action)) {
+      const { destination } = action.payload;
+      const sub = subscriptions.get(destination);
+      if (sub) {
+        sub.unsubscribe();
+        subscriptions.delete(destination);
+        console.warn(`🔕 사고 알림 구독 해제: ${destination}`);
       }
       return result;
     }
