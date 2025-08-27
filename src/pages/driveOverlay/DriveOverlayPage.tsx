@@ -54,12 +54,20 @@ export default function DriveOverlayPage() {
 
   const [active, setActive] = useState<ActiveItem[]>([]);
   const timersRef = useRef<Record<string, number>>({});
+  const lastAlertIdRef = useRef<string>('');
 
   useEffect(() => {
-    if (!alert) return;
+    if (!alert || alert.id === lastAlertIdRef.current) return;
+    lastAlertIdRef.current = alert.id;
+    
     const { type, title, content } = alert;
 
-    if (!isDisplayType(type)) return;
+    console.warn('🚨 DriveOverlayPage alert received:', { type, title, content });
+
+    if (!isDisplayType(type)) {
+      console.warn('❌ Type not in ALLOWED_TYPES:', type);
+      return;
+    }
 
     const alertId = `${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
     const alertItem: ActiveItem = { alertId, type, title, content, createdAt: Date.now() };
@@ -68,7 +76,12 @@ export default function DriveOverlayPage() {
 
     // 'accident' 타입이고 내 사고일 때 119 신고 모달 표시
     if (type === 'accident') {
-      openEmergencyModal(alertId);
+      console.warn('🚨 Opening emergency modal for accidentId:', alert.id);
+      console.warn('🚨 Generated alertId for UI:', alertId);
+      console.warn('🚨 Alert raw data:', alert.raw);
+      openEmergencyModal(alert.id); // 실제 백엔드 accidentId 사용
+    } else {
+      console.warn('🚨 Not accident type, type is:', type);
     }
 
     // 개별 타이머: DISPLAY_MS 후 알림 제거 및 타이머 정리
