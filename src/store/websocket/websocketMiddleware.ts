@@ -193,23 +193,23 @@ export const websocketMiddleware: Middleware =
                           ['lion', 'dolphin', 'meerkat', 'cat'].includes(character) &&
                           isRecord(pose) &&
                           typeof pose.latitude === 'number' &&
-                          typeof pose.longitude === 'number' &&
-                          typeof pose.yaw === 'number'
+                          typeof pose.longitude === 'number'
                         );
                       });
 
                     const drivingData: DrivingTendencyData = {
                       type: 'driving',
-                      timestamp,
-                      ego: {
-                        userId: egoUserId,
-                        pose: {
-                          latitude: egoPose.latitude as number,
-                          longitude: egoPose.longitude as number,
-                          yaw: egoPose.yaw as number,
+                      payload: {
+                        timestamp,
+                        ego: {
+                          userId: egoUserId,
+                          pose: {
+                            latitude: egoPose.latitude as number,
+                            longitude: egoPose.longitude as number,
+                          },
                         },
+                        neighbors: validNeighbors,
                       },
-                      neighbors: validNeighbors,
                     };
                     
                     dispatch(updateDrivingTendency(drivingData));
