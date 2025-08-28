@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-export const CharacterCardWrapper = styled.div`
+export const CharacterTraitsContainer = styled.section`
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -9,7 +9,6 @@ export const CharacterCardWrapper = styled.div`
   border: 1px solid ${({ theme }) => theme.colors.neutral300};
   padding: 24px 20px;
   border-radius: 10px;
-  margin-bottom: 30px;
 `;
 
 export const Header = styled.div`
@@ -119,4 +118,61 @@ export const ProgressScale = styled.div`
   align-items: center;
   font-size: ${({ theme }) => theme.fontSize[12]};
   color: ${({ theme }) => theme.colors.neutral500};
+`;
+
+// == Placeholder ==
+export const P_Container = styled.div`
+  display: flex;
+  gap: 20px;
+  flex-direction: column;
+  background: ${({ theme }) => theme.colors.white};
+  border: 1px solid ${({ theme }) => theme.colors.neutral300};
+  margin: 0px 18px;
+  padding: 24px 20px;
+  border-radius: 10px;
+`;
+export const P_TitleBox = styled.div`
+  width: 100%;
+  height: 70px;
+  min-height: 60px;
+  max-height: 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-start
+  margin-bottom: 18px;
+`;
+
+export const P_ImageWrapper = styled.div`
+  width: 150px;
+  height: 150px;
+  margin: 0 auto;
+`;
+export const P_DescriptionBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  height: 80px;
+  margin: 0 auto;
+  padding: 14px 16px;
+  background: ${({ theme }) => theme.colors.neutral100};
+  border-radius: 10px;
+`;
+export const P_ProgressBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  height: 150px;
+  padding: 14px 24px;
+  margin: 0 auto;
+  border: 1px solid ${({ theme }) => theme.colors.neutral200};
+  border-radius: 10px;
+`;
+export const P_ScaleBox = styled.div`
+  width: 100%;
+  height: 20%;
+  display: flex;
+  justify-content: space-between;
 `;

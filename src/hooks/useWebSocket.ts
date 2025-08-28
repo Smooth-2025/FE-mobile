@@ -3,47 +3,57 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   connectWebSocket,
   disconnectWebSocket,
-  subscribeToAlerts,
+  subscribeToDriving,
+  subscribeToIncident,
   sendCommand as sendCommandAction,
-} from '@/store/middleware/websocketActions';
-import { ConnectionStatus } from '@/services/websocket/types';
+} from '@/store/websocket/websocketActions';
+import { ConnectionStatus } from '@/store/websocket/types';
+import { selectIsAuthenticated } from '@/store/slices/authSlice';
+import { tokenUtils } from '@/utils/token';
 import type { RootState, AppDispatch } from '@/store';
-import type { UseWebSocketReturn, UseWebSocketProps } from '@/services/websocket/types';
+import type { UseWebSocketReturn, UseWebSocketProps } from '@/store/websocket/types';
 
 export const useWebSocket = (props: UseWebSocketProps = {}): UseWebSocketReturn => {
   const { autoConnect = false } = props;
   const dispatch = useDispatch<AppDispatch>();
 
   const connectionStatus = useSelector((s: RootState) => s.websocket.connectionStatus);
+  const isAuthenticated = useSelector(selectIsAuthenticated);
+  
   const isConnected = useMemo(
     () => connectionStatus === ConnectionStatus.CONNECTED,
     [connectionStatus],
   );
 
   const connect = useCallback(async () => {
+    const token = tokenUtils.getToken();
+    if (!token || !isAuthenticated) {
+      console.error('❌ 웹소켓 연결 실패: 인증 토큰이 없습니다.');
+      return;
+    }
+    
     dispatch(connectWebSocket());
-    // userId 없이 바로 알림 구독
-    dispatch(
-      subscribeToAlerts({
-        userId: '',
-      }),
-    );
-  }, [dispatch]);
+    
+    dispatch(subscribeToDriving());
+    dispatch(subscribeToIncident());
+  }, [dispatch, isAuthenticated]);
 
   const disconnect = useCallback(() => {
     dispatch(disconnectWebSocket());
   }, [dispatch]);
 
   const reconnect = useCallback(async () => {
+    const token = tokenUtils.getToken();
+    if (!token || !isAuthenticated) {
+      console.error('❌ 웹소켓 재연결 실패: 인증 토큰이 없습니다.');
+      return;
+    }
+    
     dispatch(disconnectWebSocket());
     dispatch(connectWebSocket());
-    // userId 없이 바로 알림 구독
-    dispatch(
-      subscribeToAlerts({
-        userId: '',
-      }),
-    );
-  }, [dispatch]);
+    dispatch(subscribeToDriving());
+    dispatch(subscribeToIncident());
+  }, [dispatch, isAuthenticated]);
 
   const sendCommand: UseWebSocketReturn['sendCommand'] = useCallback(
     (command, data) => {

@@ -4,6 +4,7 @@ import { defineConfig } from 'vite';
 
 // https://vite.dev/config/
 export default defineConfig({
+  assetsInclude: ['**/*.glb', '**/*.gltf'],
   plugins: [
     react({
       babel: {
@@ -17,12 +18,12 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:8080', // ec2 주소로 변경
+        target: process.env.VITE_API_BASE_URL,// ec2 주소로 변경
         changeOrigin: true,
         secure: false,
       },
       '/ws': {
-        target: 'http://localhost:8080', // ec2 주소로 변경
+        target: process.env.VITE_API_BASE_URL, // ec2 주소로 변경
         changeOrigin: true,
         secure: false,
         ws: true,

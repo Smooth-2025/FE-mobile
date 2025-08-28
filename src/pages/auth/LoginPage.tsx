@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styled from '@emotion/styled';
 import { useAppDispatch, useAppSelector } from '@hooks/useAppRedux';
 import { theme } from '@styles/theme';
 import { Icon } from '@components/common/Icons';
@@ -15,142 +14,25 @@ import {
   selectUser,
 } from '@store/slices/authSlice';
 import { useToast } from '@/hooks/useToast';
+import {
+  PageContainer,
+  LoginContainer,
+  BrandTitle,
+  Form,
+  PasswordWrapper,
+  PasswordToggleButton,
+  LoginButton,
+  ErrorMessage,
+  SignupLink,
+  LinkButton,
+} from '@/components/auth/LoginPage.styles';
+import {
+  validateLoginForm,
+  type LoginFormErrors,
+} from '@/utils/validation/authValidation';
 import type { LoginRequest } from '@/types/api';
 
-// 스타일드 컴포넌트들
-const PageContainer = styled.div`
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #f8f9fa;
-  padding: 20px;
-`;
 
-const LoginContainer = styled.div`
-  width: 100%;
-  max-width: 400px;
-  background: white;
-  border-radius: 24px;
-  padding: 40px 32px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-`;
-
-const BrandTitle = styled.h1`
-  font-size: 32px;
-  font-weight: 700;
-  color: #1a1a1a;
-  margin: 0 0 40px 0;
-  text-align: left;
-`;
-
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  gap: 8px; // 기존 Input의 margin-bottom과 맞춤
-`;
-
-const PasswordWrapper = styled.div`
-  position: relative;
-`;
-
-const PasswordToggleButton = styled.button`
-  position: absolute;
-  right: 16px;
-  top: 70%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 8px; // 클릭 영역 확보
-  border-radius: 4px;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  &:hover {
-    background-color: ${theme.colors.neutral100};
-  }
-
-  &:focus {
-    outline: none;
-    background-color: ${theme.colors.neutral100};
-  }
-`;
-
-const LoginButton = styled.button<{ isLoading: boolean }>`
-  width: 100%;
-  padding: 16px;
-  background: ${(props) => (props.isLoading ? '#93c5fd' : '#3b82f6')};
-  color: white;
-  border: none;
-  border-radius: 12px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: ${(props) => (props.isLoading ? 'not-allowed' : 'pointer')};
-  transition: all 0.2s ease;
-  margin-top: 24px;
-
-  &:hover {
-    background: ${(props) => (props.isLoading ? '#93c5fd' : '#2563eb')};
-  }
-
-  &:active {
-    transform: ${(props) => (props.isLoading ? 'none' : 'translateY(1px)')};
-  }
-`;
-
-const ErrorMessage = styled.p`
-  color: #ef4444;
-  font-size: 12px;
-  margin: 4px 0 0 0;
-  line-height: 1.4;
-`;
-
-const SignupLink = styled.div`
-  text-align: center;
-  margin-top: 24px;
-  color: #6b7280;
-  font-size: 14px;
-`;
-
-const LinkButton = styled.button`
-  background: none;
-  border: none;
-  color: #3b82f6;
-  cursor: pointer;
-  font-size: 14px;
-  text-decoration: underline;
-
-  &:hover {
-    color: #2563eb;
-  }
-`;
-
-// 폼 유효성 검사
-interface FormErrors {
-  email?: string;
-  password?: string;
-}
-
-const validateForm = (email: string, password: string): FormErrors => {
-  const errors: FormErrors = {};
-  // 이메일 유효성 검사
-  if (!email) {
-    errors.email = '이메일을 입력해주세요.';
-  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    errors.email = '이메일을 다시 확인해주세요';
-  }
-  // 비밀번호 유효성 검사
-  if (!password) {
-    errors.password = '비밀번호를 입력해주세요.';
-  } else if (password.length < 8) {
-    errors.password = '비밀번호 8~16자를 입력해주세요.';
-  }
-
-  return errors;
-};
 
 // LoginPage 컴포넌트
 export function LoginPage() {
@@ -169,7 +51,7 @@ export function LoginPage() {
     email: '',
     password: '',
   });
-  const [formErrors, setFormErrors] = useState<FormErrors>({});
+  const [formErrors, setFormErrors] = useState<LoginFormErrors>({});
   const [touchedFields, setTouchedFields] = useState<Record<string, boolean>>({});
   const [showPassword, setShowPassword] = useState(false);
 
@@ -177,7 +59,6 @@ export function LoginPage() {
   // 이미 로그인된 경우 리다이렉트
   useEffect(() => {
     if (isAuthenticated && user) {
-      console.warn(`${user.name}님, 환영합니다!`);
       navigate('/');
     }
   }, [isAuthenticated, user, navigate]);
@@ -207,7 +88,7 @@ export function LoginPage() {
 
       // 실시간 유효성 검사 (터치된 필드만)
       if (touchedFields[field]) {
-        const errors = validateForm(
+        const errors = validateLoginForm(
           field === 'email' ? value : formData.email,
           field === 'password' ? value : formData.password,
         );
@@ -220,7 +101,7 @@ export function LoginPage() {
     setTouchedFields((prev) => ({ ...prev, [field]: true }));
 
     // 터치된 필드의 유효성 검사
-    const errors = validateForm(formData.email, formData.password);
+    const errors = validateLoginForm(formData.email, formData.password);
     setFormErrors(errors);
   };
 
@@ -237,7 +118,7 @@ export function LoginPage() {
     setTouchedFields({ email: true, password: true });
 
     // 유효성 검사
-    const errors = validateForm(formData.email, formData.password);
+    const errors = validateLoginForm(formData.email, formData.password);
     setFormErrors(errors);
 
     if (Object.keys(errors).length > 0) {

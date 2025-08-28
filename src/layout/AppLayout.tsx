@@ -7,8 +7,9 @@ import { theme } from '@/styles/theme';
 import DrivePortal from '@/components/DrivePortal';
 import DriveOverlayPage from '@/pages/driveOverlay/DriveOverlayPage';
 import { selectIsAuthenticated } from '@/store/slices/authSlice';
-import { ConnectionStatus } from '@/services/websocket/types';
+import { ConnectionStatus } from '@/store/websocket/types';
 import { useWebSocket } from '@/hooks/useWebSocket';
+import { useGetLinkStatusQuery } from '@/store/vehicle/vehicleApi';
 import BottomNav, { NAV_HEIGHT } from './BottomNav';
 
 const Shell = styled.div`
@@ -24,7 +25,7 @@ const Content = styled.div<{ $hasBottomNav: boolean }>`
   box-sizing: border-box;
 `;
 
-// WebSocket 상태 표시를 위한 스타일드 컴포넌트 (개발용)
+// WebSocket 상태 표시 컴포넌트 (개발용)
 const WSStatus = styled.div`
   position: fixed;
   top: 10px;
@@ -81,12 +82,13 @@ export default function AppLayout() {
     }
   }, [alert, drivingActive]);
 
-  // 웹소켓 전역 설정
   const isAuthenticated = useSelector(selectIsAuthenticated);
+  const { data: linkStatus } = useGetLinkStatusQuery(undefined, {
+    skip: !isAuthenticated,
+  });
 
-  //인증된 사용자 웹소켓 자동 연결
   const { connectionStatus } = useWebSocket({
-    autoConnect: isAuthenticated,
+    autoConnect: isAuthenticated && linkStatus?.linked === true,
   });
 
   return (

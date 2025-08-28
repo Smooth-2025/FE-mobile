@@ -1,25 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { ConnectionStatus } from '../../services/websocket/types';
+import { ConnectionStatus, type AlertType } from '../websocket/types';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
-// ==== 알림 타입 ====
-export type AlertType =
-  | 'accident'
-  | 'accident-nearby'
-  | 'obstacle'
-  | 'pothole'
-  | 'start'
-  | 'end'
-  | 'unknown';
-
-// 백엔드 원문 message/raw를 포함
 export interface AlertMessage {
   id: string;
   type: AlertType;
-  // ✅ 화면에 그대로 보여줄 텍스트(백엔드 원문 우선)
   message: string;
 
-  // 옵션: 서버가 보낼 수도 있는 보조 필드
   title?: string;
   content?: string;
 
@@ -81,7 +68,6 @@ export const { addAlert, markAsRead, markAllAsRead, clearAlerts, setConnectionSt
 
 export default alertSlice.reducer;
 
-// 셀렉터들
 export const selectAlerts = (state: { alert: AlertState }) => state.alert.alerts[0] ?? null;
 export const selectUnreadCount = (state: { alert: AlertState }) => state.alert.unreadCount;
 export const selectAlertConnectionStatus = (state: { alert: AlertState }) =>
