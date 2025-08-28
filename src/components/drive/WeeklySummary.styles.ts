@@ -1,10 +1,10 @@
 import styled from '@emotion/styled';
 
-export const SummaryWrapper = styled.div`
+export const WeeklySummaryContainer = styled.section`
   background: ${({ theme }) => theme.colors.white};
   border: 1px solid ${({ theme }) => theme.colors.neutral300};
   padding: 24px 20px;
-  margin: 18px;
+  margin: 0px 18px;
   border-radius: 10px;
 `;
 
@@ -15,7 +15,25 @@ export const Title = styled.p`
   margin-bottom: 18px;
 `;
 
-export const MetricsContainer = styled.div`
+// == Placeholder ==
+export const P_Container = styled.div`
+  background: ${({ theme }) => theme.colors.white};
+  border: 1px solid ${({ theme }) => theme.colors.neutral300};
+  margin: 0px 18px;
+  padding: 24px 20px;
+  border-radius: 10px;
+`;
+
+export const P_TitleBox = styled.div`
+  width: 100%;
+  height: 20px;
+  min-height: 30px;
+  max-height: 50px;
+  align-items: center;
+  margin-bottom: 18px;
+`;
+
+export const P_MetricWrapper = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto auto;
@@ -28,27 +46,10 @@ export const MetricsContainer = styled.div`
   }
 `;
 
-export const MetricItem = styled.div`
+export const P_MetricItem = styled.div`
+  min-height: 15px;
+  height: 20px;
   display: flex;
   align-items: center;
-  color: ${({ theme }) => theme.colors.neutral600};
-`;
-
-export const Dot = styled.span<{ color: string }>`
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: ${(props) => props.color};
-  display: inline-block;
-  margin-right: 6px;
-`;
-
-export const MetricLabel = styled.span`
-  flex: 1;
-  font-size: ${({ theme }) => theme.fontSize[14]};
-`;
-
-export const MetricValue = styled.span`
-  font-size: ${({ theme }) => theme.fontSize[14]};
-  margin-left: auto;
+  justify-content: space-between;
 `;
