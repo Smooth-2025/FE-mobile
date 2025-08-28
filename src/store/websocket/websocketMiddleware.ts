@@ -167,6 +167,19 @@ export const websocketMiddleware: Middleware =
             }
 
             if (isRecord(rawData)) {
+              const eventType = getString(rawData, 'eventType');
+              if (eventType === 'start' || eventType === 'end') {
+                dispatch(addAlert({
+                  id: String(Date.now()),
+                  type: eventType,
+                  message: eventType === 'start' ? '주행 시작' : '주행 종료',
+                  timestamp: getString(rawData, 'timestamp') || new Date().toISOString(),
+                  raw: rawData,
+                  isRead: false,
+                }));
+                return;
+              }
+              
               const type = getString(rawData, 'type');
               const payload = getAny(rawData, 'payload');
               
@@ -253,8 +266,33 @@ export const websocketMiddleware: Middleware =
               return typeof ts === 'string' ? ts : new Date().toISOString();
             })();
             const idFromServer = (() => {
+              // 먼저 id 필드 확인
               const v = getAny(rawData, 'id');
-              return typeof v === 'string' ? v : undefined;
+              if (typeof v === 'string') return v;
+              
+              // payload에서 여러 필드 확인
+              const payload = getAny(rawData, 'payload');
+              if (isRecord(payload)) {
+                // accidentId 확인
+                const accidentId = getAny(payload, 'accidentId');
+                if (typeof accidentId === 'string') return accidentId;
+                
+                // id 확인
+                const payloadId = getAny(payload, 'id');
+                if (typeof payloadId === 'string') return payloadId;
+              }
+              
+              // 최상위에서 accidentId 확인
+              const accidentId = getAny(rawData, 'accidentId');
+              if (typeof accidentId === 'string') return accidentId;
+              
+              // accident 타입인 경우 하드코딩된 ID 사용 (임시)
+              if (type === 'accident') {
+                console.warn('🚨 accident 타입이지만 accidentId를 찾을 수 없음, 하드코딩 사용');
+                return '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d';
+              }
+              
+              return undefined;
             })();
             const id =
               idFromServer ??
@@ -278,6 +316,9 @@ export const websocketMiddleware: Middleware =
               }),
             );
             console.warn('🚨 사고 알림 데이터:', type);
+            console.warn('🚨 웹소켓 Raw Data:', JSON.stringify(rawData, null, 2));
+            console.warn('🚨 추출된 ID:', id);
+            console.warn('🚨 서버에서 온 ID:', idFromServer);
 
             if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
               new Notification(title || '🚨 사고 알림', { body: display, icon: '/favicon.ico' });
