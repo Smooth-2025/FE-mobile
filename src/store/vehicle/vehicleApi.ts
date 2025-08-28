@@ -4,7 +4,7 @@ import type { LinkStatus, LinkVehicleReq } from './type';
 
 export const vehicleApi = createApi({
   reducerPath: 'vehicleApi',
-  baseQuery: axiosBaseQuery({ baseUrl: '/api' }),
+  baseQuery: axiosBaseQuery({ baseUrl: '/api/users' }),
   tagTypes: ['VehicleLink'],
   endpoints: (builder) => ({
     //-- 차량 연동정보 조회 --
