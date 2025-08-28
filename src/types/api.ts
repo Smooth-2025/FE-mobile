@@ -259,3 +259,22 @@ export interface UpdateEmergencyInfoRequest {
   emergencyContact2?: string | null;
   emergencyContact3?: string | null;
 }
+
+// 응급신고 요청 타입 (EmergencyRequestDto와 매칭)
+export interface EmergencyRequestDto {
+  accidentId: string;
+  chooseReport?: boolean;
+  timeout: boolean;
+}
+
+// 응급신고 처리 결과 타입
+export interface EmergencyReportResult {
+  reportId?: number;
+  status: string;
+  message: string;
+}
+
+// 응급신고 처리 응답 타입
+export interface EmergencyDecisionResponse extends BaseResponse {
+  data: EmergencyReportResult;
+}
