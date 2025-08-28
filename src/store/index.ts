@@ -4,16 +4,18 @@ import alertReducer from './slices/alertSlice';
 import websocketReducer from './slices/websocketSlice';
 import websocketMiddleware from './websocket/websocketMiddleware';
 import authReducer from './slices/authSlice';
-import drivingReducer from './slices/drivingSlice'; 
+import drivingReducer from './slices/drivingSlice';
 import { vehicleApi } from './vehicle/vehicleApi';
+import { drivingApi } from './driving/drivingApi';
 
 export const store = configureStore({
   reducer: {
     alert: alertReducer,
     websocket: websocketReducer,
     auth: authReducer,
-    driving: drivingReducer, 
+    driving: drivingReducer,
     [vehicleApi.reducerPath]: vehicleApi.reducer,
+    [drivingApi.reducerPath]: drivingApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -28,7 +30,8 @@ export const store = configureStore({
       },
     })
       .concat(websocketMiddleware)
-      .concat(vehicleApi.middleware),
+      .concat(vehicleApi.middleware)
+      .concat(drivingApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
