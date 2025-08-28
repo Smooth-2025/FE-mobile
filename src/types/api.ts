@@ -70,7 +70,7 @@ export interface UserProfileResponse extends BaseResponse {
 export type CommonResponse = BaseResponse;
 
 // 테스트 API 응답
-// /api/test/protected 응답
+// /api/users/test/protected 응답
 export interface ProtectedTestResponse {
   success: boolean;
   message: string;
