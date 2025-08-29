@@ -72,7 +72,7 @@ api.interceptors.response.use(
 
       try {
         // 토큰 갱신 시도
-        const refreshResponse = await api.post('/api/auth/refresh');
+        const refreshResponse = await api.post('/api/users/auth/refresh');
         const newAccessToken = refreshResponse.data.accessToken;
         
         // 새 토큰 저장
