@@ -1,10 +1,20 @@
 import * as styled from '@components/report/StampBoard.styles';
 import reportCharacter from '@/assets/images/report-charactar.png';
 import stampImg from '@/assets/images/stamp.png';
+import { useGetDrivingProgressQuery } from '@/store/report/reportApi';
 
 export default function StampBoard() {
-  const stampTotal = 15;
-  const count = 1;
+  const { data, isLoading, isError } = useGetDrivingProgressQuery();
+  const stampTotal = data?.threshold ?? 15;
+  const count = data?.currentCycleCount ?? 0;
+
+  if (isLoading) {
+    return <>isLoading...</>;
+  }
+
+  if (isError) {
+    return;
+  }
 
   return (
     <styled.Wrapper>
