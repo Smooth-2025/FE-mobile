@@ -4,17 +4,17 @@ import { theme } from '@/styles/theme';
 export const ModalBackdrop = styled.div`
   @keyframes emergencyBlink {
     0%, 50% {
-      background: ${theme.colors.danger700}CC;
+      background: ${theme.colors.danger700};
     }
     51%, 100% {
-      background: ${theme.colors.black_a60};
+      background: ${theme.colors.black};
     }
   }
 
   position: fixed;
   inset: 0;
-  background: ${theme.colors.danger700}CC;
-  z-index: 9999;
+  background: ${theme.colors.danger700};
+  z-index: 99999;
   display: flex;
   align-items: center;
   justify-content: center;

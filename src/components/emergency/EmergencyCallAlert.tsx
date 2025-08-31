@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { theme } from '@/styles/theme';
 import { Button } from '@/components/common/Button';
@@ -22,11 +22,13 @@ export default function EmergencyCallAlert({
 }: EmergencyCallAlertProps) {
   const [remainingTime, setRemainingTime] = useState(countdownSeconds);
   const [mounted, setMounted] = useState(false);
+  const hasCalledTimeoutRef = useRef(false);
 
   useEffect(() => {
     if (!isOpen) {
       setRemainingTime(countdownSeconds);
       setMounted(false);
+      hasCalledTimeoutRef.current = false;
       return;
     }
 
@@ -34,11 +36,12 @@ export default function EmergencyCallAlert({
 
     const timer = setInterval(() => {
       setRemainingTime((prev) => {
-        if (prev <= 1) {
+        if (prev === 1 && !hasCalledTimeoutRef.current) {
+          hasCalledTimeoutRef.current = true;
           onEmergencyCall?.();
           return 0;
         }
-        return prev - 1;
+        return prev > 0 ? prev - 1 : 0;
       });
     }, 1000);
 
