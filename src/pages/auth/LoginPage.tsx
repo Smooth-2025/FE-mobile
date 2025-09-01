@@ -159,15 +159,6 @@ export function LoginPage() {
                 onChange={handleInputChange('email')}
                 onBlur={handleFieldBlur('email')}
                 disabled={isLoginLoading}
-                required
-                style={{
-                  borderColor:
-                    touchedFields.email && formErrors.email
-                      ? '#ef4444'
-                      : touchedFields.email && !formErrors.email && formData.email
-                        ? '#22c55e'
-                        : undefined,
-                }}
               />
               {touchedFields.email && formErrors.email && (
                 <ErrorMessage>{formErrors.email}</ErrorMessage>
@@ -186,15 +177,7 @@ export function LoginPage() {
                   onBlur={handleFieldBlur('password')}
                   disabled={isLoginLoading}
                   required
-                  style={{
-                    borderColor:
-                      touchedFields.password && formErrors.password
-                        ? '#ef4444'
-                        : touchedFields.password && !formErrors.password && formData.password
-                          ? '#22c55e'
-                          : undefined,
-                    paddingRight: '60px', // 버튼 공간 확보
-                  }}
+                  style={{ paddingRight: '60px' }}
                 />
                 <PasswordToggleButton
                   type="button"

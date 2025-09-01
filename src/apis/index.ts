@@ -49,11 +49,48 @@ api.interceptors.request.use(
 
 //응답 인터셉터
 api.interceptors.response.use(
-  (response: AxiosResponse) => response.data,
+  async (response: AxiosResponse) => {
+    // 토큰 재발급 헤더 체크
+    if (response.headers['x-token-refresh-needed'] === 'true') {
+      console.warn('토큰 재발급 필요 - 자동 갱신 중...');
+      
+      if (isRefreshing) {
+        // 이미 갱신 중이면 현재 응답 그대로 반환
+        return response.data;
+      }
+
+      isRefreshing = true;
+
+      try {
+        // refresh API 호출 (쿠키의 refresh token 사용)
+        const refreshResponse = await api.post('/api/users/auth/refresh');
+        const newToken = refreshResponse.data.accessToken;
+        
+        // 새로운 access token 저장
+        tokenUtils.setAccessToken(newToken);
+        
+        // Authorization 헤더 업데이트
+        api.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
+        
+        console.warn('토큰 재발급 완료!');
+      } catch (error) {
+        console.error('토큰 재발급 실패:', error);
+        // 재발급 실패 시 로그아웃 처리
+        tokenUtils.clearAllTokens();
+        if (window.location.pathname !== '/login') {
+          window.location.href = '/login';
+        }
+      } finally {
+        isRefreshing = false;
+      }
+    }
+
+    return response.data;
+  },
   async (error) => {
     const originalRequest = error.config;
 
-    // 401 에러 처리
+    // 401 에러 처리 (기존 로직 유지 - fallback)
     if (error.response?.status === 401 && !originalRequest._retry) {
       if (isRefreshing) {
         // 이미 갱신 중이면 대기열에 추가
