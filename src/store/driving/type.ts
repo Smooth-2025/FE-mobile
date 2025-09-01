@@ -9,8 +9,8 @@ export type CharacterType = 'NONE' | 'LION' | 'MEERKAT' | 'CAT' | 'DOLPHIN';
 
 // 유저 성향 조회
 export type CharacterTraits = {
-  character_type: CharacterType; //캐릭터 종류
-  character_trait: string; //캐릭터 성향 이름
+  characterType: CharacterType; //캐릭터 종류
+  characterTrait: string; //캐릭터 성향 이름
   description: string; //성향 설명
   currentDistance: number; // 현재 주행한 거리
   remainingDistance: number; // 앞으로 주행해야 하는 거리
