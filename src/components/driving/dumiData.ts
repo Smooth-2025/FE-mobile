@@ -181,7 +181,7 @@ export const DUMI: DrivingTendencyData[] = Array.from({ length: pairLen }, (_, i
       neighbors: [
         {
           userId: 2,
-          character: 'lion',
+          character: 'LION',
           pose: {
             latitude: calcLat(neighborY as number),
             longitude: calcLon(neighborX as number),
