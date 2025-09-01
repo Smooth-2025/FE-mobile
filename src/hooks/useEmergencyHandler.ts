@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { AxiosError } from 'axios';
 import { sendEmergencyDecision } from '@/apis/emergency';
 import { tokenUtils } from '@/utils/token';
@@ -16,7 +16,7 @@ export const useEmergencyHandler = () => {
     setIsEmergencyModalOpen(true);
   };
 
-  const handleEmergencyCall = async (timeout: boolean) => {
+  const handleEmergencyCall = useCallback(async (timeout: boolean) => {
     try {
       const requestData: EmergencyRequestDto = {
         accidentId: currentAccidentId,
@@ -44,15 +44,16 @@ export const useEmergencyHandler = () => {
           console.error("알 수 없는 오류:", error);
         }
       }
-  };
+  }, [currentAccidentId]);
 
-  const handleManualEmergencyCall = () => {
+  const handleManualEmergencyCall = useCallback(() => {
     handleEmergencyCall(false);
-  };
+  }, [handleEmergencyCall]);
 
-  const handleTimeoutEmergencyCall = () => {
+  const handleTimeoutEmergencyCall = useCallback(() => {
+    console.warn('🚨 useEmergencyHandler: handleTimeoutEmergencyCall called');
     handleEmergencyCall(true);
-  };
+  }, [handleEmergencyCall]);
 
   const handleEmergencyModalClose = () => {
     setIsEmergencyModalOpen(false);
