@@ -128,6 +128,17 @@ export const websocketMiddleware: Middleware =
           dispatch(setConnectionStatus(ConnectionStatus.DISCONNECTED));
           subscriptions.clear();
           console.error('❌ STOMP 연결 종료');
+          
+          // // 토큰 확인 후 재연결 시도
+          // const token = tokenUtils.getToken();
+          // if (token && !tokenUtils.isTokenExpired()) {
+          //   console.warn('🔄 연결 끊김 - 재연결 시도');
+          //   setTimeout(() => {
+          //     dispatch(connectWebSocket());
+          //   }, 3000); // 3초 후 재연결
+          // } else {
+          //   console.warn('❌ 토큰 만료 또는 없음 - 재연결 중단');
+          // }
         } else if (state === RxStompState.CONNECTING) {
           dispatch(setConnectionStatus(ConnectionStatus.CONNECTING));
         }
@@ -167,7 +178,7 @@ export const websocketMiddleware: Middleware =
             }
 
             if (isRecord(rawData)) {
-              const eventType = getString(rawData, 'eventType');
+              const eventType = getString(rawData, 'type');
               if (eventType === 'start' || eventType === 'end') {
                 dispatch(addAlert({
                   id: String(Date.now()),
@@ -192,7 +203,10 @@ export const websocketMiddleware: Middleware =
                   const egoUserId = ego.userId;
                   const egoPose = getAny(ego, 'pose');
                   
-                  if ((typeof egoUserId === 'number' || typeof egoUserId === 'string') && isRecord(egoPose)) {
+                  if ((typeof egoUserId === 'number' || typeof egoUserId === 'string') && 
+                      isRecord(egoPose) && 
+                      typeof egoPose.latitude === 'number' && 
+                      typeof egoPose.longitude === 'number') {
                     const validNeighbors: NeighborData[] = neighbors
                       .filter((neighbor: unknown): neighbor is NeighborData => {
                         if (!isRecord(neighbor)) return false;
@@ -203,7 +217,7 @@ export const websocketMiddleware: Middleware =
                         return (
                           (typeof userId === 'number' || typeof userId === 'string') &&
                           typeof character === 'string' &&
-                          ['lion', 'dolphin', 'meerkat', 'cat'].includes(character) &&
+                          ['LION', 'DOLPHIN', 'MEERKAT', 'CAT'].includes(character) &&
                           isRecord(pose) &&
                           typeof pose.latitude === 'number' &&
                           typeof pose.longitude === 'number'
@@ -217,8 +231,8 @@ export const websocketMiddleware: Middleware =
                         ego: {
                           userId: egoUserId,
                           pose: {
-                            latitude: egoPose.latitude as number,
-                            longitude: egoPose.longitude as number,
+                            latitude: egoPose.latitude,
+                            longitude: egoPose.longitude,
                           },
                         },
                         neighbors: validNeighbors,
@@ -285,12 +299,6 @@ export const websocketMiddleware: Middleware =
               // 최상위에서 accidentId 확인
               const accidentId = getAny(rawData, 'accidentId');
               if (typeof accidentId === 'string') return accidentId;
-              
-              // accident 타입인 경우 하드코딩된 ID 사용 (임시)
-              if (type === 'accident') {
-                console.warn('🚨 accident 타입이지만 accidentId를 찾을 수 없음, 하드코딩 사용');
-                return '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d';
-              }
               
               return undefined;
             })();

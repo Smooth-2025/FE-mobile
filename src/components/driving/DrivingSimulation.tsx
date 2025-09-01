@@ -20,10 +20,10 @@ import SimulationGround from '@/components/driving/SimulationGround';
 // import useDumiPlayback from '@/components/driving/useDumiPlayback';
 
 const CHARACTER_IMG = {
-  lion,
-  dolphin,
-  meerkat,
-  cat,
+  LION: lion,
+  DOLPHIN: dolphin,
+  MEERKAT: meerkat,
+  CAT: cat,
 } as const;
 
 type CharacterKey = keyof typeof CHARACTER_IMG;
