@@ -2,7 +2,7 @@ import { useGetTodaySummaryQuery } from '@/store/driving/drivingApi';
 import drivingCharacter from '@/assets/images/driving-charactar.png';
 import { formatMinutes } from '@/utils/timeUtils';
 import { Skeleton } from '@/components/common/Skeleton';
-import * as styled from '@/components/drive/TodaySummary.styles';
+import * as styled from '@/components/summary/TodaySummary.styles';
 
 function Placeholder() {
   return (

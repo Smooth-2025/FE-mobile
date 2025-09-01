@@ -4,7 +4,7 @@ import lionImg from '@/assets/images/characters/lion.png';
 import dolphinImg from '@/assets/images/characters/dolphin.png';
 import catImg from '@/assets/images/characters/cat.png';
 import meerkatImg from '@/assets/images/characters/meerkat.png';
-import * as styled from '@/components/drive/CharacterTraits.styles';
+import * as styled from '@/components/summary/CharacterTraits.styles';
 import { useGetCharacterTraitsQuery } from '@/store/driving/drivingApi';
 import { Skeleton } from '@/components/common/Skeleton';
 import type { CharacterType } from '@/store/driving/type';
