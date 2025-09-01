@@ -4,7 +4,7 @@ import { Outlet, useMatches } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { selectAlerts } from '@/store/slices/alertSlice';
 import { theme } from '@/styles/theme';
-import DrivePortal from '@/components/DrivePortal';
+import DrivePortal from '@/components/portal/DrivePortal';
 import DriveOverlayPage from '@/pages/driveOverlay/DriveOverlayPage';
 import { selectIsAuthenticated } from '@/store/slices/authSlice';
 import { ConnectionStatus } from '@/store/websocket/types';

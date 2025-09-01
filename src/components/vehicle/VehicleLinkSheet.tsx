@@ -1,5 +1,5 @@
 import { useLinkVehicleMutation } from '@/store/vehicle/vehicleApi';
-import BottomSheetPortal from '@/components/BottomSheetPortal';
+import BottomSheetPortal from '@/components/portal/BottomSheetPortal';
 import VehicleLinkForm from './VehicleLinkForm';
 import * as styled from './VehicleLinkSheet.styles';
 

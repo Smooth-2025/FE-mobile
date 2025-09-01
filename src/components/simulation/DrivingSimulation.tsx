@@ -4,7 +4,7 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { Environment, Html } from '@react-three/drei';
 import { selectCurrentDrivingData } from '@/store/slices/drivingSlice';
-import * as styled from '@/components/driving/DrivingSimulation.styles';
+import * as styled from '@/components/simulation/DrivingSimulation.styles';
 import lion from '@/assets/images/characters/lion.png';
 import dolphin from '@/assets/images/characters/dolphin.png';
 import cat from '@/assets/images/characters/cat.png';
@@ -14,9 +14,9 @@ import {
   origin_longitude,
   meters_per_lat_degree,
   meters_per_lon_degree,
-} from '@/components/driving/dumiData';
-import SimulationCar from '@/components/driving/SimulationCar';
-import SimulationGround from '@/components/driving/SimulationGround';
+} from '@/components/simulation/dumiData';
+import SimulationCar from '@/components/simulation/SimulationCar';
+import SimulationGround from '@/components/simulation/SimulationGround';
 // import useDumiPlayback from '@/components/driving/useDumiPlayback';
 
 const CHARACTER_IMG = {
