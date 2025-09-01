@@ -28,20 +28,26 @@ export const TabButton = styled.button<{ $active?: boolean }>`
   border-radius: 10px;
 `;
 
-export const TabIndicator = styled.span<{ $index: number }>`
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  height: 2px;
-  width: calc(100% / 3);
-  background: ${({ theme }) => theme.colors.primary600};
-  transform: translateX(${({ $index }) => $index * 100}%);
-  transition: transform 200ms ease;
-`;
-
 export const DateTitle = styled.p`
   font-size: ${({ theme }) => theme.fontSize[14]};
   color: ${({ theme }) => theme.colors.neutral500};
   margin-bottom: 10px;
   font-weight: 500;
+`;
+
+export const EmptyState = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50vh;
+  color: ${({ theme }) => theme.colors.neutral500};
+  font-size: 14px;
+  text-align: center;
+`;
+
+export const LoadMore = styled.div`
+  margin-top: 20px;
+  text-align: center;
+  color: ${({ theme }) => theme.colors.neutral500};
+  font-size: ${({ theme }) => theme.fontSize[16]};
 `;

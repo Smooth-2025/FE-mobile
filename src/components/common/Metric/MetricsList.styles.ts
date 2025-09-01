@@ -1,16 +1,6 @@
 import styled from '@emotion/styled';
 
-export const DrivingCardContainer = styled.div`
-  background: ${({ theme }) => theme.colors.white};
-  border: 1px solid ${({ theme }) => theme.colors.neutral300};
-  border-radius: 10px;
-  padding: 24px 20px;
-  margin-bottom: 10px;
-  display: flex;
-  flex-direction: column;
-`;
-
-export const MetricsSection = styled.div`
+export const MetricContainer = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto auto;
@@ -46,9 +36,4 @@ export const MetricLabel = styled.span`
 export const MetricValue = styled.span`
   font-size: ${({ theme }) => theme.fontSize[14]};
   margin-left: auto;
-`;
-export const TimeRow = styled.span`
-  margin-top: 20px;
-  font-size: ${({ theme }) => theme.fontSize[14]};
-  color: ${({ theme }) => theme.colors.neutral500};
 `;
