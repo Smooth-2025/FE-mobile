@@ -69,7 +69,7 @@ export interface UseWebSocketProps {
   userId?: string;
 }
 
-export type DrivingAnimalType = 'lion' | 'dolphin' | 'meerkat' | 'cat';
+export type DrivingAnimalType = 'LION' | 'DOLPHIN' | 'MEERKAT' | 'CAT';
 
 export interface Pose {
   latitude: number;
