@@ -1,4 +1,4 @@
-import * as styled from '@components/report/StampBoard.styles';
+import * as styled from '@/components/history/StampBoard.styles';
 import reportCharacter from '@/assets/images/report-charactar.png';
 import stampImg from '@/assets/images/stamp.png';
 import { useGetDrivingProgressQuery } from '@/store/report/reportApi';
