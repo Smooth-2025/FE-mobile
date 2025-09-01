@@ -1,7 +1,7 @@
 import { useGetWeeklySummaryQuery } from '@/store/driving/drivingApi';
 import { theme } from '@/styles/theme';
 import { formatMinutes } from '@/utils/timeUtils';
-import * as styled from '@/components/drive/WeeklySummary.styles';
+import * as styled from '@/components/summary/WeeklySummary.styles';
 import { Skeleton } from '@/components/common/Skeleton';
 import { MetricsList } from '@/components/common/Metric';
 

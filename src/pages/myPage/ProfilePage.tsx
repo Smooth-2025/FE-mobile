@@ -1,12 +1,18 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '@/hooks/useAppRedux';
-import { selectUser, logoutAsync, deleteAccountAsync, selectIsLogoutLoading, selectIsDeleteAccountLoading } from '@/store/slices/authSlice';
+import {
+  selectUser,
+  logoutAsync,
+  deleteAccountAsync,
+  selectIsLogoutLoading,
+  selectIsDeleteAccountLoading,
+} from '@/store/slices/authSlice';
 import { useToast } from '@/hooks/useToast';
 import { getUserProfile } from '@/apis/auth';
 import { theme } from '@/styles/theme';
 import { Icon } from '@/components/common';
-import BottomSheetPortal from '@/components/BottomSheetPortal';
+import BottomSheetPortal from '@/components/portal/BottomSheetPortal';
 import AlertToast from '@/components/common/AlertToast/AlertToast';
 import * as S from '@/components/myPage/ProfilePage.styles';
 import type { UserProfileResponse } from '@/types/api';
@@ -20,7 +26,7 @@ export default function ProfilePage() {
   const isLogoutLoading = useAppSelector(selectIsLogoutLoading);
   const isDeleteAccountLoading = useAppSelector(selectIsDeleteAccountLoading);
   const { showSuccess, showError, toasts } = useToast();
-  
+
   // 사용자 프로필 상태 관리
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [isProfileLoading, setIsProfileLoading] = useState(true);
@@ -28,7 +34,7 @@ export default function ProfilePage() {
   // BottomSheet 상태 관리
   const [isLogoutSheetOpen, setIsLogoutSheetOpen] = useState(false);
   const [isDeleteAccountSheetOpen, setIsDeleteAccountSheetOpen] = useState(false);
-  
+
   // showError를 useCallback으로 memoization
   const showErrorCallback = useCallback(showError, [showError]);
 
@@ -78,7 +84,7 @@ export default function ProfilePage() {
       showSuccess('로그아웃이 완료되었습니다.');
       setIsLogoutSheetOpen(false);
       navigate('/login');
-    } catch{
+    } catch {
       showError('로그아웃 처리 중 오류가 발생했습니다.');
     }
   };
@@ -90,7 +96,7 @@ export default function ProfilePage() {
       showSuccess('회원탈퇴가 완료되었습니다.');
       setIsDeleteAccountSheetOpen(false);
       navigate('/login');
-    } catch{
+    } catch {
       showError('회원탈퇴 처리 중 오류가 발생했습니다.');
     }
   };
@@ -162,18 +168,12 @@ export default function ProfilePage() {
         </S.InfoSection>
 
         {/* 비밀번호 변경 버튼 */}
-        <S.ActionButton onClick={handleChangePassword}>
-          비밀번호 변경
-        </S.ActionButton>
+        <S.ActionButton onClick={handleChangePassword}>비밀번호 변경</S.ActionButton>
 
         {/* 하단 버튼들 */}
         <S.BottomActions>
-          <S.TextButton onClick={() => setIsLogoutSheetOpen(true)}>
-            로그아웃
-          </S.TextButton>
-          <S.TextButton onClick={() => setIsDeleteAccountSheetOpen(true)}>
-            회원탈퇴
-          </S.TextButton>
+          <S.TextButton onClick={() => setIsLogoutSheetOpen(true)}>로그아웃</S.TextButton>
+          <S.TextButton onClick={() => setIsDeleteAccountSheetOpen(true)}>회원탈퇴</S.TextButton>
         </S.BottomActions>
       </S.Container>
 
@@ -188,20 +188,15 @@ export default function ProfilePage() {
           <S.SheetContent>
             <S.SheetTitle>로그아웃 하시겠어요?</S.SheetTitle>
             <S.SheetDescription>
-              현재 기기에서 로그아웃 됩니다.<br />
+              현재 기기에서 로그아웃 됩니다.
+              <br />
               다시 로그인하려면 이메일/비밀번호가 필요합니다.
             </S.SheetDescription>
             <S.SheetButtonGroup>
-              <S.SheetPrimaryButton 
-                onClick={handleLogout}
-                disabled={isLogoutLoading}
-              >
+              <S.SheetPrimaryButton onClick={handleLogout} disabled={isLogoutLoading}>
                 {isLogoutLoading ? '로그아웃 중...' : '로그아웃'}
               </S.SheetPrimaryButton>
-              <S.SheetSecondaryButton 
-                onClick={requestClose}
-                disabled={isLogoutLoading}
-              >
+              <S.SheetSecondaryButton onClick={requestClose} disabled={isLogoutLoading}>
                 취소
               </S.SheetSecondaryButton>
             </S.SheetButtonGroup>
@@ -220,20 +215,15 @@ export default function ProfilePage() {
           <S.SheetContent>
             <S.SheetTitle>정말로 계정을 탈퇴하시겠습니까?</S.SheetTitle>
             <S.SheetDescription>
-              모든 개인정보가 영구적으로 삭제되며,<br />
+              모든 개인정보가 영구적으로 삭제되며,
+              <br />
               복구가 불가능합니다.
             </S.SheetDescription>
             <S.SheetButtonGroup>
-              <S.SheetPrimaryButton 
-                onClick={handleDeleteAccount}
-                disabled={isDeleteAccountLoading}
-              >
+              <S.SheetPrimaryButton onClick={handleDeleteAccount} disabled={isDeleteAccountLoading}>
                 {isDeleteAccountLoading ? '탈퇴 처리중...' : '회원탈퇴'}
               </S.SheetPrimaryButton>
-              <S.SheetSecondaryButton 
-                onClick={requestClose}
-                disabled={isDeleteAccountLoading}
-              >
+              <S.SheetSecondaryButton onClick={requestClose} disabled={isDeleteAccountLoading}>
                 취소
               </S.SheetSecondaryButton>
             </S.SheetButtonGroup>

@@ -1,9 +1,9 @@
 import styled from '@emotion/styled';
 import Header from '@/layout/Header';
 import { theme } from '@/styles/theme';
-import CharacterTraits from '@/components/drive/CharacterTraits';
-import TodaySummary from '@/components/drive/TodaySummary';
-import WeeklySummary from '@/components/drive/WeeklySummary';
+import TodaySummary from '@/components/summary/TodaySummary';
+import WeeklySummary from '@/components/summary/WeeklySummary';
+import CharacterTraits from '@/components/summary/CharacterTraits';
 
 const Base = styled.div`
   display: flex;
