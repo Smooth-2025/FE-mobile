@@ -14,7 +14,7 @@ export const drivingApi = createApi({
     }),
     // 유저 성향 조회
     getCharacterTraits: build.query<CharacterTraits, void>({
-      query: () => ({ url: '/character', method: 'GET' }),
+      query: () => ({ url: '/my/character', method: 'GET' }),
       providesTags: ['CharacterTraits'],
     }),
     //최근 7일 주행 요약
