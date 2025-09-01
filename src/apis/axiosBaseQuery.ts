@@ -26,7 +26,7 @@ export const axiosBaseQuery =
   async ({ url, method = 'GET', data, params, headers }) => {
     try {
       const result = await api({ url: baseUrl + url, method, data, params, headers });
-      return { data: result };
+      return { data: result.data };
     } catch (err) {
       const e = err as AxiosError<BackendError>;
       const code = e.response?.data?.code;
