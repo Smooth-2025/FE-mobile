@@ -59,7 +59,7 @@ export default function CharacterTraits() {
     return;
   }
 
-  const characterImage = characterImages[data?.character_type ?? 'NONE'];
+  const characterImage = characterImages[data?.characterType ?? 'NONE'];
 
   return (
     <styled.CharacterTraitsContainer>
@@ -68,12 +68,12 @@ export default function CharacterTraits() {
         <styled.Title>
           당신의 운전 성향은 &nbsp;
           <strong>
-            [{data?.character_trait}] {data?.character_type}
+            [{data?.characterTrait}] {data?.characterType}
           </strong>
           입니다.
         </styled.Title>
       </styled.Header>
-      <styled.Character src={characterImage} alt={`${data?.character_type} 캐릭터`} />
+      <styled.Character src={characterImage} alt={`${data?.characterType} 캐릭터`} />
       <styled.Description>{data?.description}</styled.Description>
 
       <styled.ProgressSection>
