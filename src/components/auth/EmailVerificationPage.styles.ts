@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { theme } from '@styles/theme';
 
 export const ErrorMessage = styled.p`
-  color: #ef4444;
+  color: ${theme.colors.danger700};
   font-size: 12px;
   margin: 4px 0 0 0;
   line-height: 1.4;
@@ -30,7 +30,7 @@ export const BackButton = styled.button`
 export const ProgressBar = styled.div`
   width: 100%;
   height: 4px;
-  background-color: #e5e7eb;
+  background-color: ${theme.colors.neutral300};
   border-radius: 2px;
   margin-bottom: 24px;
 `;
@@ -38,7 +38,7 @@ export const ProgressBar = styled.div`
 export const ProgressFill = styled.div<{ progress: number }>`
   width: ${(props) => props.progress}%;
   height: 100%;
-  background-color: ${theme.colors.primary500};
+  background-color: ${theme.colors.primary700};
   border-radius: 2px;
   transition: width 0.3s ease;
 `;

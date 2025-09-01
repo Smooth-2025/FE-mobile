@@ -15,10 +15,9 @@ export const StyledLabel = styled.label`
 export const StyledInput = styled.input`
   width: 100%;
   box-sizing: border-box;
-  background-color: ${theme.colors.neutral50};
+  background-color: ${theme.colors.neutral100};
   color: ${theme.colors.neutral600};
   font-size: 16px;
-  border: 1px solid ${theme.colors.neutral200};
   border-radius: ${theme.borderRadius.md}px;
   padding: 12px 16px;
   outline: none;
@@ -28,8 +27,10 @@ export const StyledInput = styled.input`
   }
 
   &:focus {
-    border-color: ${theme.colors.primary500};
-    box-shadow: 0 0 0 3px ${theme.colors.primary50};
+    border-color: ${({ theme }) => theme.colors.primary700};
+    background-color: ${({ theme }) => theme.colors.white};
+    box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.primary600};
+    outline: none;
   }
 
   /* 텍스트 데코/폰트 패딩은 웹 기본값이 적절하므로 제거 */
