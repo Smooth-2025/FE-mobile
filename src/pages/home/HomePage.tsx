@@ -1,5 +1,5 @@
-import VehicleLinkedView from '@/components/car/VehicleLinkedView';
-import VehicleUnlinkedView from '@/components/car/VehicleUnlinkedView';
+import VehicleLinkedView from '@/components/vehicle/VehicleLinkedView';
+import VehicleUnlinkedView from '@/components/vehicle/VehicleUnlinkedView';
 import Header from '@/layout/Header';
 import { useGetLinkStatusQuery } from '@/store/vehicle/vehicleApi';
 import { theme } from '@/styles/theme';

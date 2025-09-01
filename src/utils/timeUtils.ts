@@ -16,3 +16,16 @@ export function formatMinutes(minutes: number): string {
     return `${remain} 분`;
   }
 }
+
+/**
+ * ISO 문자열을 받아 "HH:mm" 24시간 형식으로 변환하는 함수
+ *
+ * @param iso ISO 형식의 날짜/시간 문자열
+ * @returns "HH:mm" 형태의 문자열
+ */
+export function formatHM(iso: string): string {
+  const d = new Date(iso);
+  const hh = String(d.getHours()).padStart(2, '0');
+  const mm = String(d.getMinutes()).padStart(2, '0');
+  return `${hh}:${mm}`;
+}

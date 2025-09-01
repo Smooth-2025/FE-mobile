@@ -1,5 +1,5 @@
-import DrivingHistory from '@/components/report/DrivingHistory';
-import StampBoard from '@/components/report/StampBoard';
+import DrivingHistory from '@/components/history/DrivingHistory';
+import StampBoard from '@/components/history/StampBoard';
 import Header from '@/layout/Header';
 import { theme } from '@/styles/theme';
 

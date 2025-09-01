@@ -6,7 +6,7 @@ import AlertToast from '@/components/common/AlertToast/AlertToast';
 import { useEmergencyHandler } from '@/hooks/useEmergencyHandler';
 import EmergencyCallAlert from '@/components/emergency/EmergencyCallAlert';
 import EmergencyReportedAlert from '@/components/emergency/EmergencyReportedAlert';
-import DrivingSimulation from '@/components/driving/DrivingSimulation';
+import DrivingSimulation from '@/components/simulation/DrivingSimulation';
 import type { AlertType as StoreAlertType } from '@/store/websocket/types';
 
 const ALLOWED_TYPES = ['accident-nearby', 'obstacle', 'pothole', 'accident'] as const;
@@ -59,7 +59,7 @@ export default function DriveOverlayPage() {
   useEffect(() => {
     if (!alert || alert.id === lastAlertIdRef.current) return;
     lastAlertIdRef.current = alert.id;
-    
+
     const { type, title, content } = alert;
 
     console.warn('🚨 DriveOverlayPage alert received:', { type, title, content });
@@ -102,7 +102,6 @@ export default function DriveOverlayPage() {
     };
   }, []);
 
-
   return (
     <OverlayContainer>
       {active.map((item, idx) => (
@@ -124,7 +123,7 @@ export default function DriveOverlayPage() {
           />
         </div>
       ))}
-  
+
       <EmergencyCallAlert
         isOpen={isEmergencyModalOpen}
         onClose={handleEmergencyModalClose}
@@ -132,7 +131,7 @@ export default function DriveOverlayPage() {
         onManualEmergencyCall={handleManualEmergencyCall}
         countdownSeconds={30}
       />
-      
+
       <EmergencyReportedAlert
         isOpen={isReportedModalOpen}
         onClose={handleReportedModalClose}
