@@ -15,7 +15,7 @@ export const StyledLabel = styled.label`
 export const StyledInput = styled.input`
   width: 100%;
   box-sizing: border-box;
-  background-color: ${theme.colors.neutral100};
+  background-color: ${({ theme }) => theme.colors.neutral100};
   color: ${theme.colors.neutral600};
   font-size: 16px;
   border-radius: ${theme.borderRadius.md}px;
