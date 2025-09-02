@@ -126,7 +126,7 @@ export const websocketMiddleware: Middleware =
         },
         heartbeatIncoming: 30000,
         heartbeatOutgoing: 30000,
-        reconnectDelay: 3000,
+        reconnectDelay: 0, 
         debug: (str) => console.warn('🔍 STOMP Debug:', str),
       };
       rxStomp.configure(config);
