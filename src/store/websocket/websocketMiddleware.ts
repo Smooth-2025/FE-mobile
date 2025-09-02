@@ -110,8 +110,8 @@ export const websocketMiddleware: Middleware =
         connectHeaders: {
           Authorization: `Bearer ${token}`,
         },
-        heartbeatIncoming: 10000,
-        heartbeatOutgoing: 10000,
+        heartbeatIncoming: 30000,
+        heartbeatOutgoing: 30000,
         reconnectDelay: 3000,
         debug: (str) => console.warn('🔍 STOMP Debug:', str),
       };
