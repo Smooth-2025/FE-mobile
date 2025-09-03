@@ -34,12 +34,12 @@ export const logoutUser = async (): Promise<CommonResponse> => {
 
 // 회원탈퇴 API 호출
 export const deleteAccount = async (): Promise<CommonResponse> => {
-  return await api.delete('/api/users/auth/account');
+  return await api.delete('/api/users/account');
 };
 
 // 사용자 프로필 조회 API
 export const getUserProfile = async (): Promise<UserProfileResponse> => {
-  return await api.get('/api/users/profile/profile');
+  return await api.get('/api/users/profile');
 };
 
 // JWT 인증 테스트 API 호출
@@ -68,7 +68,7 @@ export const checkEmailDuplicate = async (email: string): Promise<boolean> => {
 // 비밀번호 변경
 export const changePassword = async (data: ChangePasswordRequest): Promise<BaseResponse> => {
   try {
-    const response = await api.put<BaseResponse>('/api/users/profile/password', data);
+    const response = await api.put<BaseResponse>('/api/users/password', data);
     return response.data;
   } catch (error) {
     console.error('비밀번호 변경 API 에러:', error);
@@ -79,7 +79,7 @@ export const changePassword = async (data: ChangePasswordRequest): Promise<BaseR
 // 응급정보 수정
 export const updateEmergencyInfo = async (data: UpdateEmergencyInfoRequest): Promise<UserProfileResponse> => {
   try {
-    const response = await api.put<UserProfileResponse>('/api/users/profile/emergency-info', data);
+    const response = await api.put<UserProfileResponse>('/api/users/emergency-info', data);
     return response.data;
   } catch (error) {
     console.error('응급정보 수정 API 에러:', error);

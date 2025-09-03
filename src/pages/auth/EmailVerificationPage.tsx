@@ -18,15 +18,14 @@ import {
   ProgressFill,
   Title,
   Subtitle,
-  EmailDisplay,
   FormGroup,
   Label,
-  TimerDisplay,
   VerifyButton,
   ResendText,
   ResendLink,
+  CodeInputWrapper,
+  CodeTimerDisplay,
 } from '@/components/auth/EmailVerificationPage.styles';
-
 
 export function EmailVerificationPage() {
   const navigate = useNavigate();
@@ -60,7 +59,6 @@ export function EmailVerificationPage() {
     // 타이머 시작
     startTimer();
   }, [email, navigate, startTimer]);
-
 
   // 인증번호 입력 처리
   const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -116,7 +114,6 @@ export function EmailVerificationPage() {
       <Container>
         <Header>
           <BackButton onClick={() => navigate(-1)}>←</BackButton>
-
           <ProgressBar>
             <ProgressFill progress={25} />
           </ProgressBar>
@@ -129,25 +126,33 @@ export function EmailVerificationPage() {
           </Subtitle>
         </Header>
 
-        <EmailDisplay>{email}</EmailDisplay>
+        {/* 이메일을 disabled Input으로 변경 */}
+        <FormGroup>
+          <Label>이메일</Label>
+          <Input
+            type="email"
+            value={email}
+            disabled
+          />
+        </FormGroup>
 
+        {/* 인증코드 입력 - 타이머를 input 안에 표시 */}
         <FormGroup>
           <Label>인증코드</Label>
-          <Input
-            type="text"
-            placeholder="인증코드 5자리"
-            value={verificationCode}
-            onChange={handleCodeChange}
-            maxLength={5}
-            style={{
-              borderColor: codeError ? '#ef4444' : undefined,
-              borderWidth: codeError ? '2px' : '1px',
-            }}
-          />
+          <CodeInputWrapper>
+            <Input
+              type="text"
+              placeholder="인증코드 5자리"
+              value={verificationCode}
+              onChange={handleCodeChange}
+              maxLength={5}
+            />
+            {!isExpired && (
+              <CodeTimerDisplay>{formattedTime}</CodeTimerDisplay>
+            )}
+          </CodeInputWrapper>
+          
           {codeError && <ErrorMessage>{codeError}</ErrorMessage>}
-
-          {!isExpired && !codeError && <TimerDisplay>{formattedTime}</TimerDisplay>}
-
           {isExpired && <ErrorMessage>인증 시간이 만료되었습니다.</ErrorMessage>}
         </FormGroup>
 

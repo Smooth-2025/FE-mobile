@@ -6,23 +6,21 @@ export const PageContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #f8f9fa;
+  background-color: ${theme.colors.white};
   padding: 20px;
 `;
 
 export const LoginContainer = styled.div`
   width: 100%;
-  max-width: 400px;
-  background: white;
+  max-width: 500px;
+  background: ${theme.colors.white};
   border-radius: 24px;
-  padding: 40px 32px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 `;
 
 export const BrandTitle = styled.h1`
   font-size: 32px;
   font-weight: 700;
-  color: #1a1a1a;
+  color: ${theme.colors.neutral700};
   margin: 0 0 40px 0;
   text-align: left;
 `;
@@ -65,8 +63,8 @@ export const PasswordToggleButton = styled.button`
 export const LoginButton = styled.button<{ isLoading: boolean }>`
   width: 100%;
   padding: 16px;
-  background: ${(props) => (props.isLoading ? '#93c5fd' : '#3b82f6')};
-  color: white;
+  background: ${(props) => (props.isLoading ? theme.colors.primary400 : theme.colors.primary600)};
+  color: ${theme.colors.white};
   border: none;
   border-radius: 12px;
   font-size: 16px;
@@ -76,7 +74,7 @@ export const LoginButton = styled.button<{ isLoading: boolean }>`
   margin-top: 24px;
 
   &:hover {
-    background: ${(props) => (props.isLoading ? '#93c5fd' : '#2563eb')};
+    background: ${(props) => (props.isLoading ? theme.colors.primary400 : theme.colors.primary600)};
   }
 
   &:active {
@@ -85,7 +83,7 @@ export const LoginButton = styled.button<{ isLoading: boolean }>`
 `;
 
 export const ErrorMessage = styled.p`
-  color: #ef4444;
+  color: ${theme.colors.danger700};
   font-size: 12px;
   margin: 4px 0 0 0;
   line-height: 1.4;
@@ -94,19 +92,18 @@ export const ErrorMessage = styled.p`
 export const SignupLink = styled.div`
   text-align: center;
   margin-top: 24px;
-  color: #6b7280;
+  color: ${theme.colors.neutral500}
   font-size: 14px;
 `;
 
 export const LinkButton = styled.button`
   background: none;
   border: none;
-  color: #3b82f6;
+  color: ${theme.colors.neutral500};
   cursor: pointer;
   font-size: 14px;
-  text-decoration: underline;
 
   &:hover {
-    color: #2563eb;
+    color: ${theme.colors.primary700};
   }
 `;

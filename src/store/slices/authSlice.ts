@@ -78,8 +78,6 @@ export const registerAsync = createAsyncThunk<
     try {
       const response = await registerUser(registerData);
       
-      // 회원가입 후 자동 로그인되므로 토큰 저장
-      tokenUtils.setToken(response.data.token); 
       
       return response.data; 
     } catch (error: unknown) {
@@ -196,17 +194,14 @@ extraReducers: (builder) => {
         state.isRegisterLoading = true;
         state.error = null;
       })
-      .addCase(registerAsync.fulfilled, (state, action) => {
+      .addCase(registerAsync.fulfilled, (state) => {
         state.isRegisterLoading = false;
-        state.accessToken = action.payload.token;
-        state.isAuthenticated = true;
-
-        // User 객체 생성
-        state.user = {
-          id: action.payload.userId,
-          name: action.payload.name,
-          email: '', // 필요시 registerData에서 가져오기
-        } as User;
+        // 회원가입 후에는 인증 상태로 만들지 않음
+        state.accessToken = null;
+        state.isAuthenticated = false;
+        state.user = null;
+        // 회원가입 성공 시 에러 상태만 초기화
+        state.error = null;
       })
       .addCase(registerAsync.rejected, (state, action) => {
         state.isRegisterLoading = false;
