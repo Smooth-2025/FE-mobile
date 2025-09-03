@@ -63,7 +63,7 @@ export const PasswordToggleButton = styled.button`
 export const LoginButton = styled.button<{ isLoading: boolean }>`
   width: 100%;
   padding: 16px;
-  background: ${(props) => (props.isLoading ? theme.colors.primary400 : theme.colors.primary700)};
+  background: ${(props) => (props.isLoading ? theme.colors.primary400 : theme.colors.primary600)};
   color: ${theme.colors.white};
   border: none;
   border-radius: 12px;
@@ -74,7 +74,7 @@ export const LoginButton = styled.button<{ isLoading: boolean }>`
   margin-top: 24px;
 
   &:hover {
-    background: ${(props) => (props.isLoading ? theme.colors.primary400 : theme.colors.primary700)};
+    background: ${(props) => (props.isLoading ? theme.colors.primary400 : theme.colors.primary600)};
   }
 
   &:active {

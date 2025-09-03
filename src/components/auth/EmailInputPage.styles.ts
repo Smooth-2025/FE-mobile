@@ -12,6 +12,8 @@ export const Container = styled.div`
   padding: 20px;
   max-width: 500px;
   margin: 0 auto;
+  height: 100%;
+  background-color: ${theme.colors.white};
 `;
 
 export const Header = styled.div`
@@ -38,7 +40,7 @@ export const ProgressBar = styled.div`
 export const ProgressFill = styled.div<{ progress: number }>`
   width: ${(props) => props.progress}%;
   height: 100%;
-  background-color: ${theme.colors.primary700};
+  background-color: ${theme.colors.primary600};
   border-radius: 2px;
   transition: width 0.3s ease;
 `;
@@ -77,11 +79,11 @@ export const SendButton = styled.button<{ disabled: boolean }>`
   cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
   transition: all 0.2s ease;
 
-  background-color: ${(props) => (props.disabled ? theme.colors.neutral300 : theme.colors.primary600)};
+  background-color: ${(props) => (props.disabled ? theme.colors.neutral200 : theme.colors.primary600)};
   color: ${(props) => (props.disabled ? theme.colors.neutral500 : theme.colors.white )};
 
   &:hover {
-    background-color: ${(props) => (props.disabled ? theme.colors.neutral300 : theme.colors.primary600)};
+    background-color: ${(props) => (props.disabled ? theme.colors.neutral200 : theme.colors.primary600)};
   }
 
   &:active {
