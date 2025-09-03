@@ -7,14 +7,14 @@ type CarGLTF = { scene: Group };
 
 type Props = {
   variant?: 'ego' | 'neighbor';
-  yawFix?: number;
+  _yawFix?: number;
 };
 
 const BASE = import.meta.env.BASE_URL || '/';
 const EGO_CAR_URL = `${BASE}models/egoCar.glb`;
 const NEIGHBOR_CAR_URL = `${BASE}models/neighborsCar.glb`;
 
-export default function SimulationCar({ variant = 'neighbor', yawFix = Math.PI }: Props) {
+export default function SimulationCar({ variant = 'neighbor', _yawFix = Math.PI }: Props) {
   const modelUrl = useMemo(() => (variant === 'ego' ? EGO_CAR_URL : NEIGHBOR_CAR_URL), [variant]);
 
   const { scene } = useGLTF(modelUrl) as CarGLTF;
@@ -46,7 +46,7 @@ export default function SimulationCar({ variant = 'neighbor', yawFix = Math.PI }
   }, [scene]);
 
   return (
-    <group scale={autoScale} rotation={[0, yawFix, 0]}>
+    <group scale={autoScale} rotation={[0, 0, 0]}>
       <Clone object={scene} />
     </group>
   );
