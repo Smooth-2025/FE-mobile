@@ -56,7 +56,7 @@ const ERROR_MESSAGES = {
   },
 } as const;
 
-//오류 유형 감지
+//오류 유형을 감지
 function detectErrorType(error: Error): keyof typeof ERROR_MESSAGES {
   const errorMessage = error.message.toLowerCase();
   const errorStack = error.stack?.toLowerCase() || '';
