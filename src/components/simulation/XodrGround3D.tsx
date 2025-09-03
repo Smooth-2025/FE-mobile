@@ -9,18 +9,18 @@ import lion from '@/assets/images/characters/lion.png';
 import dolphin from '@/assets/images/characters/dolphin.png';
 import cat from '@/assets/images/characters/cat.png';
 import meerkat from '@/assets/images/characters/meerkat.png';
-import { sampleRoadGeometry } from './GeometrySampler';
-import SimulationCar from './SimulationCar';
-import { calculateLaneBoundaries } from './LaneBoundaryCalculator';
-import { ErrorBoundary } from './ErrorBoundary';
+import SimulationCar from '@/components/simulation/SimulationCar';
 import {
   DUMI,
   meters_per_lat_degree,
   meters_per_lon_degree,
   origin_latitude,
   origin_longitude,
-} from './mock/dumiData';
-import useDumiPlayback from './mock/useDumiPlayback';
+} from '@/components/simulation/mock/dumiData';
+import useDumiPlayback from '@/components/simulation/mock/useDumiPlayback';
+import { calculateLaneBoundaries } from '@/utils/laneBoundaryUtils';
+import { sampleRoadGeometry } from '@/components/simulation/GeometrySampler';
+import { ErrorBoundary } from '@/components/simulation/ErrorBoundary';
 import * as Styled from './XodrGround3D.styles';
 import type { OpenDriveData, LaneBoundaryData } from './types';
 

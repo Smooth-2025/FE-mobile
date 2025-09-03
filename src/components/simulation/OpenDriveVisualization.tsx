@@ -2,19 +2,18 @@ import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import * as Styled from '@/components/simulation/OpenDriveVisualization.styles';
 import LoadingIndicator from '@/components/simulation/LoadingIndicator';
 import ErrorDisplay from '@/components/simulation/ErrorDisplay';
-import { calculateLaneBoundaries } from '@/components/simulation/LaneBoundaryCalculator';
-import { sampleRoadGeometry } from '@/components/simulation/GeometrySampler';
-import { ErrorBoundary } from '@/components/simulation/ErrorBoundary';
-import { parseXodrFile } from '@/components/simulation/XodrParser';
-import { FallbackRenderer, Simple2DFallback } from '@/components/simulation/FallbackRenderer';
-import { XodrGround3D } from '@/components/simulation/XodrGround3D';
 import {
   PerformanceMonitor,
   FPSMonitor,
   LODManager,
   PERFORMANCE_THRESHOLDS,
   type PerformanceMetrics,
-} from '@/components/simulation/PerformanceMonitor';
+} from '@/utils/simulationPerformance';
+import { sampleRoadGeometry } from '@/components/simulation/GeometrySampler';
+import ErrorBoundary from '@/components/simulation/ErrorBoundary';
+import { parseXodrFile } from '@/components/simulation/XodrParser';
+import FallbackRenderer, { Simple2DFallback } from '@/components/simulation/FallbackRenderer';
+import { XodrGround3D } from '@/components/simulation/XodrGround3D';
 import {
   validateOpenDriveData,
   checkWebGLSupport,
@@ -23,6 +22,7 @@ import {
   createUserFriendlyError,
   type UserFriendlyError,
 } from '@/components/simulation/ErrorHandling';
+import { calculateLaneBoundaries } from '@/utils/laneBoundaryUtils';
 import type { OpenDriveData, LaneBoundaryData, Road, Point2D } from '@/components/simulation/types';
 
 interface OpenDriveVisualizationProps {
