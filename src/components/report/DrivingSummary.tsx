@@ -20,7 +20,7 @@ export default function DrivingSummary() {
       {/* == 주행 차트 ==  */}
       <Styled.SummaryBox>
         <Styled.SummaryTitle>
-          15회 운전 기간동안 총 <b>{data?.totalDistanceKm}km</b>를 <br /> 운전했어요!
+          15회 운전 기간동안 총 <b>{data?.totalDistanceKm ?? 0}km</b>를 <br /> 운전했어요!
         </Styled.SummaryTitle>
         <Styled.DateText>
           {data?.periodStart} - {data?.periodEnd}
@@ -32,15 +32,15 @@ export default function DrivingSummary() {
           </li>
           <li>
             <span>평균 주행 거리</span>
-            <span>{data?.averageDistanceKm}km</span>
+            <span>{data?.averageDistanceKm ?? 0}km</span>
           </li>
           <li>
             <span>평균 속도</span>
-            <span>{data?.averageSpeedKmh}km/h</span>
+            <span>{data?.averageSpeedKmh ?? 0}km/h</span>
           </li>
           <li>
             <span>정속 주행률</span>
-            <span>{data?.averageCruiseRatio}%</span>
+            <span>{data?.averageCruiseRatio ?? 0}%</span>
           </li>
         </Styled.InfoList>
       </Styled.SummaryBox>
