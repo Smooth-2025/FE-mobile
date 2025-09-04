@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { useParams } from 'react-router-dom';
 // import AccidentResponse from '@/components/report/AccidentResponse';
 import DrivingBehavior from '@/components/report/DrivingBehavior';
 // import DrivingDNA from '@/components/report/DrivingDNA';
@@ -12,12 +13,14 @@ const Container = styled.div`
 `;
 
 export default function ReportDetailPage() {
+  const { reportId } = useParams<{ reportId: string }>();
+  const id = Number(reportId);
   return (
     <>
-      <Header type="close" onLeftClick={() => {}} />
+      <Header type="close" onLeftClick={() => {}} title="주행 리포트" />
       <Container>
-        <DrivingSummary />
-        <DrivingBehavior />
+        <DrivingSummary reportId={id} />
+        <DrivingBehavior reportId={id} />
         {/* <AccidentResponse />
         <DrivingDNA /> */}
       </Container>

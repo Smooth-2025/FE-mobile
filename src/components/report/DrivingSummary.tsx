@@ -1,13 +1,10 @@
-import { useParams } from 'react-router-dom';
 import * as Styled from '@/components/report/DrivingSummary.styles';
 import { useGetDrivingSummaryQuery } from '@/store/report/reportApi';
 import { formatDuration } from '@/utils/timeUtils';
 
 //주행정보
-export default function DrivingSummary() {
-  const { reportId } = useParams<{ reportId: string }>();
-  const id = Number(reportId);
-  const { data, isLoading, isError } = useGetDrivingSummaryQuery({ reportId: id });
+export default function DrivingSummary({ reportId }: { reportId: number }) {
+  const { data, isLoading, isError } = useGetDrivingSummaryQuery({ reportId });
 
   if (isLoading) return <>isLoading...</>;
   if (isError) {
