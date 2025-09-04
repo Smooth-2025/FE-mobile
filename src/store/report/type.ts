@@ -75,3 +75,25 @@ export type DrivingBehavior = {
   drivingPattern: DrivingPattern;
   compare: DrivingCompare;
 };
+
+// 벤치마크 차트 데이터
+export type BenchmarkChart = {
+  labels: string[]; // 비교 대상 라벨
+  valuesSec: number[]; // 반응 시간 (초)
+};
+
+// 벤치마크 정보
+type Benchmark = {
+  deltaSec: number; // 내 반응 속도가 평균 대비 몇 초 차이 나는지 (+ 빠름, - 느림)
+  chart: BenchmarkChart;
+};
+
+//리포트 상세3_사고 알림 반응 분석
+export type AccidentResponse = {
+  reportId: string; // 리포트 식별자
+  receivedAlertCount: number; // 수신한 사고 알림 수
+  avgReactionSec: number; // 내 평균 반응 시간 (초)
+  brakeOrStopRatio: number; // 감속/정지 반응 비율 (%)
+  avoidRatio: number; // 우회 반응 비율 (%)
+  benchmark: Benchmark; // 벤치마크 데이터
+};

@@ -15,13 +15,16 @@ export const SectionTitle = styled.h2`
   color: ${({ theme }) => theme.colors.neutral500};
 `;
 
-export const SummaryBox = styled.div``;
+export const AccidentWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 35px;
+`;
 
-export const SummaryTitle = styled.h3`
+export const AccidentTitle = styled.h3`
   font-size: ${({ theme }) => theme.fontSize[18]};
   font-weight: 700;
   color: ${({ theme }) => theme.colors.neutral600};
-  margin-bottom: 10px;
   line-height: 1.4;
 
   & b {
@@ -29,13 +32,13 @@ export const SummaryTitle = styled.h3`
   }
 `;
 
-export const DateText = styled.p`
-  font-size: ${({ theme }) => theme.fontSize[16]};
+export const AccidentSubTitle = styled.p`
+  font-size: ${({ theme }) => theme.fontSize[12]};
   color: ${({ theme }) => theme.colors.neutral500};
-  margin-bottom: 20px;
+  margin: 8px 0px 20px;
 `;
 
-export const InfoList = styled.ul`
+export const AccidentInfoList = styled.ul`
   padding: 20px;
   background-color: ${({ theme }) => theme.colors.neutral50};
   list-style: none;

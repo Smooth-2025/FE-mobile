@@ -1,6 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { axiosBaseQuery } from '@/apis/axiosBaseQuery';
 import type {
+  AccidentResponse,
   DrivingBehavior,
   DrivingProgress,
   DrivingSummary,
@@ -10,7 +11,7 @@ import type {
 export const reportApi = createApi({
   reducerPath: 'reportApi',
   baseQuery: axiosBaseQuery({ baseUrl: '/api/driving-analysis' }),
-  tagTypes: ['DrivingProgress', 'DrivingSummary', 'DrivingBehavior'],
+  tagTypes: ['DrivingProgress', 'DrivingSummary', 'DrivingBehavior', 'AccidentResponse'],
   endpoints: (build) => ({
     //주행 현황 조회(n/15)
     getDrivingProgress: build.query<DrivingProgress, void>({
@@ -27,8 +28,17 @@ export const reportApi = createApi({
       query: ({ reportId }) => ({ url: `reports/${reportId}/behavior`, method: 'GET' }),
       providesTags: ['DrivingBehavior'],
     }),
+    //리포트 상세3_사고 알림 반응 분석
+    getAccidentResponse: build.query<AccidentResponse, ReportArg>({
+      query: ({ reportId }) => ({ url: `reports/${reportId}/accident-response`, method: 'GET' }),
+      providesTags: ['AccidentResponse'],
+    }),
   }),
 });
 
-export const { useGetDrivingProgressQuery, useGetDrivingSummaryQuery, useGetDrivingBehaviorQuery } =
-  reportApi;
+export const {
+  useGetDrivingProgressQuery,
+  useGetDrivingSummaryQuery,
+  useGetDrivingBehaviorQuery,
+  useGetAccidentResponseQuery,
+} = reportApi;

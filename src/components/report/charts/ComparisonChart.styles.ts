@@ -59,7 +59,7 @@ export const Bar = styled.div<BarProps>`
 export const Value = styled.span`
   font-size: ${({ theme }) => theme.fontSize[14]};
   font-weight: 600;
-  color: #111827;
+  color: ${({ theme }) => theme.colors.neutral600};
   min-width: 40px;
   text-align: right;
 `;
