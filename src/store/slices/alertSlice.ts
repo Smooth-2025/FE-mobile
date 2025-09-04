@@ -13,18 +13,17 @@ export interface AlertMessage {
   timestamp: string;
   isRead: boolean;
 
-  // 원문 전체
   raw?: unknown;
 }
 
 interface AlertState {
-  alerts: AlertMessage[];
+  alerts: AlertMessage | null;
   unreadCount: number;
   connectionStatus: ConnectionStatus;
 }
 
 const initialState: AlertState = {
-  alerts: [],
+  alerts: null,
   unreadCount: 0,
   connectionStatus: ConnectionStatus.DISCONNECTED,
 };
@@ -34,27 +33,27 @@ const alertSlice = createSlice({
   initialState,
   reducers: {
     addAlert: (state, action: PayloadAction<AlertMessage>) => {
-      // 최신이 위로 오도록 앞에 추가
-      state.alerts.unshift(action.payload);
+      state.alerts = action.payload;
       if (!action.payload.isRead) {
-        state.unreadCount += 1;
+        state.unreadCount = 1;
+      } else {
+        state.unreadCount = 0;
       }
     },
     markAsRead: (state, action: PayloadAction<string>) => {
-      const alert = state.alerts.find((a) => a.id === action.payload);
-      if (alert && !alert.isRead) {
-        alert.isRead = true;
-        state.unreadCount = Math.max(0, state.unreadCount - 1);
+      if (state.alerts && state.alerts.id === action.payload && !state.alerts.isRead) {
+        state.alerts.isRead = true;
+        state.unreadCount = 0;
       }
     },
     markAllAsRead: (state) => {
-      state.alerts.forEach((a) => {
-        a.isRead = true;
-      });
+      if (state.alerts) {
+        state.alerts.isRead = true;
+      }
       state.unreadCount = 0;
     },
     clearAlerts: (state) => {
-      state.alerts = [];
+      state.alerts = null;
       state.unreadCount = 0;
     },
     setConnectionStatus: (state, action: PayloadAction<ConnectionStatus>) => {
@@ -68,7 +67,7 @@ export const { addAlert, markAsRead, markAllAsRead, clearAlerts, setConnectionSt
 
 export default alertSlice.reducer;
 
-export const selectAlerts = (state: { alert: AlertState }) => state.alert.alerts[0] ?? null;
+export const selectAlerts = (state: { alert: AlertState }) => state.alert.alerts;
 export const selectUnreadCount = (state: { alert: AlertState }) => state.alert.unreadCount;
 export const selectAlertConnectionStatus = (state: { alert: AlertState }) =>
   state.alert.connectionStatus;

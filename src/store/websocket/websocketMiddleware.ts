@@ -356,9 +356,6 @@ export const websocketMiddleware: Middleware =
             console.warn('🚨 추출된 ID:', id);
             console.warn('🚨 서버에서 온 ID:', idFromServer);
 
-            if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
-              new Notification(title || '🚨 사고 알림', { body: display, icon: '/favicon.ico' });
-            }
           } catch (error) {
             console.error('❌ 사고 알림 처리 오류:', error);
             dispatch(setError((error as Error)?.message ?? 'incident handling error'));
