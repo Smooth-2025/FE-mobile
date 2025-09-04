@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { theme } from '@/styles/theme';
 
 export const Wrapper = styled.div`
   position: absolute;
@@ -20,8 +21,8 @@ export const Wrapper = styled.div`
 export const Spinner = styled.div`
   width: 40px;
   height: 40px;
-  border: 4px solid ${({ theme }) => theme.colors.white};
-  border-top: 4px solid ${({ theme }) => theme.colors.primary600};
+  border: 4px solid ${theme.colors.white};
+  border-top: 4px solid ${theme.colors.primary600};
   border-radius: 50%;
   animation: spin 1s linear infinite;
 
@@ -36,5 +37,5 @@ export const Spinner = styled.div`
 `;
 
 export const Text = styled.div`
-  font-size: ${({ theme }) => theme.fontSize[14]};
+  font-size: ${theme.fontSize[14]};
 `;

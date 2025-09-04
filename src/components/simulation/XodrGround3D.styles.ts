@@ -1,10 +1,11 @@
 import styled from '@emotion/styled';
+import { theme } from '@/styles/theme';
 
 export const Character = styled.div`
   width: 36px;
   height: 36px;
   border-radius: 999px;
-  background: ${({ theme }) => theme.colors.neutral500};
+  background: ${theme.colors.neutral500};
   padding: 4px;
   display: flex;
   align-items: center;

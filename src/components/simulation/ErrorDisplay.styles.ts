@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { theme } from '@/styles/theme';
 
 export const Wrapper = styled.div`
   position: absolute;
@@ -36,13 +37,13 @@ export const Message = styled.div`
 export const RetryButton = styled.button`
   padding: 8px 16px;
   background-color: white;
-  color: ${({ theme }) => theme.colors.danger600};
+  color: ${theme.colors.danger600};
   border: none;
   border-radius: 4px;
   cursor: pointer;
   font-weight: bold;
 
   &:hover {
-    background-color: ${({ theme }) => theme.colors.accent_pink};
+    background-color: ${theme.colors.accent_pink};
   }
 `;

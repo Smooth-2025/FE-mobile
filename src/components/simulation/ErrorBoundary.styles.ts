@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import { theme } from '@/styles/theme';
 
 export const FallbackContainer = styled.div`
   position: relative;
@@ -18,9 +19,9 @@ export const Wrapper = styled.div`
   align-items: center;
   gap: 16px;
   padding: 32px;
-  background-color: ${({ theme }) => theme.colors.danger600};
+  background-color: ${theme.colors.danger600};
   border-radius: 12px;
-  color: ${({ theme }) => theme.colors.white};
+  color: ${theme.colors.white};
   font-family: Arial, sans-serif;
   max-width: 500px;
   text-align: center;
