@@ -37,7 +37,7 @@ export const DateText = styled.p`
 
 export const InfoList = styled.ul`
   padding: 20px;
-  background-color: #f9fafb;
+  background-color: ${({ theme }) => theme.colors.neutral50};
   list-style: none;
   margin: 0;
   border-radius: 10px;
