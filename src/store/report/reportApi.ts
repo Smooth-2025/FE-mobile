@@ -9,7 +9,7 @@ export const reportApi = createApi({
   endpoints: (build) => ({
     //주행 현황 조회(n/15)
     getDrivingProgress: build.query<DrivingProgress, void>({
-      query: () => ({ url: '/reports/progress', method: 'GET' }),
+      query: () => ({ url: '/reports/stamp', method: 'GET' }),
       providesTags: ['DrivingProgress'],
     }),
   }),
