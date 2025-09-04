@@ -1,8 +1,18 @@
 import * as Styled from '@/components/report/DrivingBehavior.styles';
-import ComparisonChart from './charts/ComparisonChart';
-import PatternChart from './charts/PatternChart';
+import { useGetDrivingBehaviorQuery } from '@/store/report/reportApi';
+import ComparisonChart from '@/components/report/charts/ComparisonChart';
+import PatternChart from '@/components/report/charts/PatternChart';
 
-export default function DrivingBehavior() {
+export default function DrivingBehavior({ reportId }: { reportId: number }) {
+  const { data, isLoading, isError } = useGetDrivingBehaviorQuery({ reportId });
+
+  if (isLoading) return <>isLoading...</>;
+  if (isError) {
+    return;
+  }
+  if (!data) return;
+  const { totalCounts, drivingPattern, compare } = data;
+
   return (
     <Styled.Section>
       <Styled.SectionTitle>주행 분석</Styled.SectionTitle>
@@ -14,19 +24,19 @@ export default function DrivingBehavior() {
             <Styled.BehaviorItem>
               <h4>급제동</h4>
               <p>
-                <span>2</span>회
+                <span>{totalCounts.hardBrake}</span>회
               </p>
             </Styled.BehaviorItem>
             <Styled.BehaviorItem>
               <h4>급가속</h4>
               <p>
-                <span>2</span>회
+                <span>{totalCounts.rapidAccel}</span>회
               </p>
             </Styled.BehaviorItem>
             <Styled.BehaviorItem>
               <h4>차선변경</h4>
               <p>
-                <span>2</span>회
+                <span>{totalCounts.laneChange}</span>회
               </p>
             </Styled.BehaviorItem>
           </Styled.BehaviorList>
@@ -35,22 +45,29 @@ export default function DrivingBehavior() {
         {/* == 주행 차트1 ==  */}
         <div>
           <Styled.BehaviorTitle>
-            이번 주행에는 <b>일요일 밤(20~24시)</b>에 위험 운전 행동이 가장 많이 발생했습니다.
+            이번 주행에는
+            <b>
+              {drivingPattern.weekday} {drivingPattern.timeslot}
+            </b>
+            에 위험 운전 행동이 가장 많이 발생했습니다.
           </Styled.BehaviorTitle>
-          <PatternChart />
-          <Styled.InsightText>
-            평일 저녁에는 급제동과 급회전이 늘어나는 패턴이 보여요! 퇴근길 운전 시 조금 더 여유 있는
-            주행을 해보세요.
-          </Styled.InsightText>
+          <PatternChart data={drivingPattern.chart} />
+          <Styled.InsightText>{drivingPattern.comment}</Styled.InsightText>
         </div>
 
         {/* == 주행 차트2 ==  */}
         <div>
           <Styled.BehaviorTitle>
             위험 운전 행동이 이전 리포트 대비 <br />
-            <b>25% 감소</b>했습니다.
+            <b>
+              {compare.incdec > 0
+                ? `${compare.incdec}% 증가했습니다.`
+                : compare.incdec < 0
+                  ? `${Math.abs(compare.incdec)}% 감소했습니다.`
+                  : '변화가 없습니다.'}
+            </b>
           </Styled.BehaviorTitle>
-          <ComparisonChart />
+          <ComparisonChart data={compare.chart} />
         </div>
       </Styled.BehaviorWrapper>
     </Styled.Section>

@@ -2,15 +2,37 @@ import ReactApexChart from 'react-apexcharts';
 import { theme } from '@/styles/theme';
 import * as Styled from '@/components/report/charts/PatternChart.styles';
 import type { ApexOptions } from 'apexcharts';
+import type { DailyBehavior } from '@/store/report/type';
 
-export default function PatternChart() {
-  const series: ApexAxisChartSeries = [
-    { name: '급가속', data: [2, 3, 4, 0, 0, 5, 4] },
-    { name: '급제동', data: [1, 2, 2, 0, 0, 4, 3] },
-    { name: '차선변경', data: [0, 1, 2, 2, 1, 3, 2] },
-  ];
+const DAYS = ['월', '화', '수', '목', '금', '토', '일'];
+const TIMESLOT = ['새벽', '출근', '낮', '퇴근', '저녁'];
+const TIMESLOT_RANGE: Record<string, string> = {
+  새벽: '00시~06시',
+  출근: '06시~09시',
+  낮: '09시~18시',
+  퇴근: '18시~21시',
+  저녁: '21시~24시',
+};
 
-  const days = ['월', '화', '수', '목', '금', '토', '일'];
+function transformToSeries(data: DailyBehavior[]): {
+  series: ApexAxisChartSeries;
+} {
+  const rapidAccelData = data.map((d) => d.actions.rapidAccel.count);
+  const hardBrakeData = data.map((d) => d.actions.hardBrake.count);
+  const laneChangeData = data.map((d) => d.actions.laneChange.count);
+  return {
+    series: [
+      { name: '급가속', data: rapidAccelData },
+      { name: '급제동', data: hardBrakeData },
+      { name: '차선변경', data: laneChangeData },
+    ],
+  };
+}
+
+export default function PatternChart({ data }: { data: DailyBehavior[] }) {
+  if (!data) return;
+
+  const { series } = transformToSeries(data);
 
   const options: ApexOptions = {
     chart: {
@@ -26,7 +48,7 @@ export default function PatternChart() {
     },
     colors: [theme.colors.accent_green, theme.colors.accent_purple, theme.colors.accent_orange],
     xaxis: {
-      categories: ['월', '화', '수', '목', '금', '토', '일'],
+      categories: DAYS,
       labels: {
         style: { colors: theme.colors.neutral500, fontSize: theme.fontSize[12] },
       },
@@ -34,8 +56,7 @@ export default function PatternChart() {
     yaxis: {
       labels: {
         formatter: (val: number) => {
-          const labels = ['새벽', '출근', '낮', '퇴근', '저녁'];
-          return labels[val] || '';
+          return TIMESLOT[val] || '';
         },
 
         style: { colors: theme.colors.neutral500, fontSize: theme.fontSize[12] },
@@ -47,8 +68,9 @@ export default function PatternChart() {
     tooltip: {
       shared: true,
       custom: ({ series, dataPointIndex }) => {
-        const day = days[dataPointIndex];
-        return RenderTooltip(day, '20~22시', series, dataPointIndex);
+        const day = DAYS[dataPointIndex];
+        const timeBlock = TIMESLOT_RANGE[TIMESLOT[dataPointIndex]];
+        return RenderTooltip(day, timeBlock, series, dataPointIndex);
       },
     },
     legend: {

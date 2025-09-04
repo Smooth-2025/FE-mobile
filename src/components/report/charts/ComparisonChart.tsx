@@ -1,5 +1,6 @@
 import { theme } from '@/styles/theme';
 import * as Styled from '@/components/report/charts/ComparisonChart.styles';
+import type { DrivingComparChart } from '@/store/report/type';
 
 type ItemProps = {
   title: string;
@@ -36,12 +37,27 @@ function ComparisonItem({
   );
 }
 
-export default function ComparisonChart() {
+export default function ComparisonChart({ data }: { data: DrivingComparChart }) {
+  if (!data) return;
+
+  const { hardBrake, rapidAccel, laneChange } = data;
   return (
     <Styled.ComparisonBox>
-      <ComparisonItem title="급제동" prevCount={62} currCount={30} />
-      <ComparisonItem title="급가속" prevCount={62} currCount={30} />
-      <ComparisonItem title="차선 변경" prevCount={20} currCount={30} />
+      <ComparisonItem
+        title="급제동"
+        prevCount={hardBrake.before ?? 0}
+        currCount={hardBrake.current ?? 0}
+      />
+      <ComparisonItem
+        title="급가속"
+        prevCount={rapidAccel.before ?? 0}
+        currCount={rapidAccel.current ?? 0}
+      />
+      <ComparisonItem
+        title="차선 변경"
+        prevCount={laneChange.before ?? 0}
+        currCount={laneChange.current ?? 0}
+      />
     </Styled.ComparisonBox>
   );
 }
