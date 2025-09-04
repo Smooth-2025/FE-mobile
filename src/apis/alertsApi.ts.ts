@@ -13,5 +13,8 @@ export const postAlertRendered = async (
   alertId: string,
   data: AlertRenderedRequest,
 ): Promise<AlertRenderedResponse> => {
-  return await api.post(`/api/alerts/${alertId}/rendered`, data);
+  return await api.post(
+    `/api/driving-analysis/reports/accident-reaction/alerts/${alertId}/rendered`,
+    data,
+  );
 };
