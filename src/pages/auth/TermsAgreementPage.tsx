@@ -1,13 +1,18 @@
 import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTermsAgreement } from '@hooks/useTermsAgreement';
+import Header from '@layout/Header';
+import { useAppDispatch, useAppSelector } from '@hooks/useAppRedux';
+import { 
+  setSignupStep, 
+  nextSignupStep,
+  selectSignupCurrentStep 
+} from '@store/slices/authSlice';
+import { StepProgressBar } from '@components/auth/StepProgressBar';
 import { TERMS_CONTENT } from '@constants/termsContent';
 import {
   Container,
-  Header,
-  BackButton,
-  ProgressBar,
-  ProgressFill,
+  Content,
   Title,
   Subtitle,
   AgreementSection,
@@ -25,6 +30,8 @@ import {
 export function TermsAgreementPage() {
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useAppDispatch();
+  const currentStep = useAppSelector(selectSignupCurrentStep);
 
   // 이전 단계 데이터 가져오기
   const email = location.state?.email;
@@ -39,17 +46,21 @@ export function TermsAgreementPage() {
     isAllRequiredAgreed,
   } = useTermsAgreement();
 
-  // 이전 단계 데이터 확인
+  // 이전 단계 데이터 확인 및 스텝 설정
   useEffect(() => {
     if (!email || !emailVerified || !profileData) {
       navigate('/signup/email');
       return;
     }
-  }, [email, emailVerified, profileData, navigate]);
+    
+    // 현재 스텝 설정 (약관동의는 3단계)
+    dispatch(setSignupStep(3));
+  }, [email, emailVerified, profileData, navigate, dispatch]);
 
   // 다음 단계로
   const handleConfirm = () => {
     if (isAllRequiredAgreed) {
+      dispatch(nextSignupStep()); // 4단계로 변경
       navigate('/signup/emergency', {
         state: {
           email,
@@ -65,18 +76,19 @@ export function TermsAgreementPage() {
   };
 
   return (
-    <Container>
-      <Header>
-        <BackButton onClick={() => navigate(-1)}>←</BackButton>
+    <>
+      <Header 
+        type="back" 
+        onLeftClick={() => navigate(-1)} 
+      />
+      
+      <Container>
+        <Content>
+          <StepProgressBar currentStep={currentStep} />
 
-        <ProgressBar>
-          <ProgressFill progress={75} />
-        </ProgressBar>
-
-        <Title>스무스가 처음이시군요! <br />
-          약관내용에 동의해주세요.</Title>
-        <Subtitle></Subtitle>
-      </Header>
+          <Title>스무스가 처음이시군요! <br />
+            약관내용에 동의해주세요.</Title>
+          <Subtitle></Subtitle>
 
       <AgreementSection>
         {/* 전체 동의 */}
@@ -130,7 +142,9 @@ export function TermsAgreementPage() {
       <ConfirmButton disabled={!isAllRequiredAgreed} onClick={handleConfirm}>
         확인
       </ConfirmButton>
-    </Container>
+        </Content>
+      </Container>
+    </>
   );
 }
 
