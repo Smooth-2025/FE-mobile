@@ -10,11 +10,12 @@ type Props = {
   yawFix?: number;
 };
 
-const BASE = import.meta.env.BASE_URL || '/';
-const EGO_CAR_URL = `${BASE}models/egoCar.glb`;
-const NEIGHBOR_CAR_URL = `${BASE}models/neighborsCar.glb`;
+const S3_BASE_URL = import.meta.env.VITE_S3_BASE_URL;
 
-export default function SimulationCar({ variant = 'neighbor', yawFix = Math.PI }: Props) {
+const EGO_CAR_URL = `${S3_BASE_URL}/assets/models/egoCar.glb`;
+const NEIGHBOR_CAR_URL = `${S3_BASE_URL}/assets/models/neighborsCar.glb`;
+
+export default function SimulationCar({ variant = 'neighbor' }: Props) {
   const modelUrl = useMemo(() => (variant === 'ego' ? EGO_CAR_URL : NEIGHBOR_CAR_URL), [variant]);
 
   const { scene } = useGLTF(modelUrl) as CarGLTF;
@@ -46,7 +47,7 @@ export default function SimulationCar({ variant = 'neighbor', yawFix = Math.PI }
   }, [scene]);
 
   return (
-    <group scale={autoScale} rotation={[0, yawFix, 0]}>
+    <group scale={autoScale} rotation={[0, 0, 0]}>
       <Clone object={scene} />
     </group>
   );
