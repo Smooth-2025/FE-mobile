@@ -15,13 +15,17 @@ function ComparisonItem({
   currCount,
   color = theme.colors.primary500,
 }: ItemProps) {
+  const max = Math.max(prevCount, currCount, 1);
+  const prevPercent = (prevCount / max) * 100;
+  const currPercent = (currCount / max) * 100;
+
   return (
     <Styled.Item>
       <Styled.Title>{title}</Styled.Title>
       <Styled.Row>
         <Styled.Label>이전 리포트</Styled.Label>
         <Styled.BarWrapper>
-          <Styled.Bar percent={prevCount} color={theme.colors.neutral100} />
+          <Styled.Bar percent={prevPercent} color={theme.colors.neutral100} />
         </Styled.BarWrapper>
         <Styled.Value>{prevCount}회</Styled.Value>
       </Styled.Row>
@@ -29,7 +33,7 @@ function ComparisonItem({
       <Styled.Row>
         <Styled.Label>이번 리포트</Styled.Label>
         <Styled.BarWrapper>
-          <Styled.Bar percent={currCount} color={color} />
+          <Styled.Bar percent={currPercent} color={color} />
         </Styled.BarWrapper>
         <Styled.Value>{currCount}회</Styled.Value>
       </Styled.Row>
