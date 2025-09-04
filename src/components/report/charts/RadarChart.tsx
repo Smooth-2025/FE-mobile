@@ -4,7 +4,7 @@ import type { ApexOptions } from 'apexcharts';
 
 type RadarChartProps = {
   categories: string[];
-  series: { name: string; data: number[] }[];
+  series: number[];
 };
 
 export default function RadarChart({ categories, series }: RadarChartProps) {
