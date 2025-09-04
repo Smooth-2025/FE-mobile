@@ -21,7 +21,7 @@ export default function ReportDetailPage() {
       <Container>
         <DrivingSummary reportId={id} />
         <DrivingBehavior reportId={id} />
-        <AccidentResponse />
+        <AccidentResponse reportId={id} />
         {/* 
         <DrivingDNA /> */}
       </Container>

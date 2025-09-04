@@ -1,22 +1,25 @@
 import { theme } from '@/styles/theme';
+import { formatDuration } from '@/utils/timeUtils';
 import * as Styled from '@/components/report/charts/AccidentCompareChart.styles';
+import type { BenchmarkChart } from '@/store/report/type';
 
-type PropsType = {
-  avgUser: number;
-  myResponse: number;
-};
+export default function AccidentCompareChart({ data }: { data: BenchmarkChart }) {
+  if (!data) return;
 
-export default function AccidentCompareChart({ avgUser = 0, myResponse = 0 }: PropsType) {
-  const max = Math.max(avgUser, myResponse, 1);
-  const avgPercent = (avgUser / max) * 100;
-  const myPercent = (myResponse / max) * 100;
+  const { labels, valuesSec } = data;
+
+  const max = Math.max(valuesSec[0], valuesSec[1], 1);
+  const avgPercent = (valuesSec[0] / max) * 100;
+  const myPercent = (valuesSec[1] / max) * 100;
+
+  if (!data || valuesSec.length < 2) return null;
 
   return (
     <Styled.ChartWrapper>
       <Styled.ChartContent>
         <Styled.TopBox>
-          <Styled.ValueTop>{avgUser}초</Styled.ValueTop>
-          <Styled.ValueTop>{myResponse}초</Styled.ValueTop>
+          <Styled.ValueTop>{formatDuration(valuesSec[0] ?? 0)}</Styled.ValueTop>
+          <Styled.ValueTop>{formatDuration(valuesSec[1] ?? 0)}초</Styled.ValueTop>
         </Styled.TopBox>
 
         <Styled.BarBox>
@@ -29,8 +32,9 @@ export default function AccidentCompareChart({ avgUser = 0, myResponse = 0 }: Pr
         </Styled.BarBox>
 
         <Styled.LabelBox>
-          <Styled.LabelBottom>일반 운전자</Styled.LabelBottom>
-          <Styled.LabelBottom>내 주행</Styled.LabelBottom>
+          {labels.map((label, idx) => {
+            return <Styled.LabelBottom key={idx}>{label}</Styled.LabelBottom>;
+          })}
         </Styled.LabelBox>
       </Styled.ChartContent>
     </Styled.ChartWrapper>

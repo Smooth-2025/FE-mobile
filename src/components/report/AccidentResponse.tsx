@@ -1,7 +1,25 @@
 import * as Styled from '@/components/report/AccidentResponse.styles';
-import AccidentCompareChart from './charts/AccidentCompareChart';
+import { useGetAccidentResponseQuery } from '@/store/report/reportApi';
+import AccidentCompareChart from '@/components/report/charts/AccidentCompareChart';
+import { formatDuration } from '@/utils/timeUtils';
 
-export default function AccidentResponse() {
+export default function AccidentResponse({ reportId }: { reportId: number }) {
+  const { data, isLoading, isError } = useGetAccidentResponseQuery({ reportId });
+
+  if (isLoading) return <>isLoading...</>;
+  if (isError) {
+    return;
+  }
+  if (!data) return;
+
+  const {
+    receivedAlertCount,
+    avgReactionSec,
+    brakeOrStopRatio,
+    avoidRatio,
+    benchmark: { deltaSec, chart },
+  } = data;
+
   return (
     <Styled.Section>
       <Styled.SectionTitle>사고 대응</Styled.SectionTitle>
@@ -17,19 +35,19 @@ export default function AccidentResponse() {
           <Styled.AccidentInfoList>
             <li>
               <span>수신된 사고 알림 수</span>
-              <span>0 건</span>
+              <span>{receivedAlertCount ?? 0}건</span>
             </li>
             <li>
               <span>평균 반응 시간</span>
-              <span>0 초</span>
+              <span>{formatDuration(avgReactionSec ?? 0)} 초</span>
             </li>
             <li>
               <span>감속/정지 반응비율</span>
-              <span>0 %</span>
+              <span>{brakeOrStopRatio ?? 0} %</span>
             </li>
             <li>
               <span>우회 비율</span>
-              <span>0 %</span>
+              <span>{avoidRatio ?? 0} %</span>
             </li>
           </Styled.AccidentInfoList>
         </div>
@@ -37,11 +55,16 @@ export default function AccidentResponse() {
         <div>
           <Styled.AccidentTitle>
             평균 사용자보다
-            <b> 1초 </b>
-            <br />더 빠르게 반응하고 있어요!
+            <b>{formatDuration(deltaSec ?? 0)}</b>
+            <br />
+            {deltaSec > 0
+              ? '더 빠르게 반응하고 있어요!'
+              : deltaSec < 0
+                ? '더 느리게 반응하고 있어요!'
+                : '동일하게 반응하고 있어요!'}
           </Styled.AccidentTitle>
           <div>
-            <AccidentCompareChart avgUser={0} myResponse={0} />
+            <AccidentCompareChart data={chart} />
           </div>
         </div>
       </Styled.AccidentWrapper>
