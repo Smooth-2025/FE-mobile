@@ -70,7 +70,7 @@ export interface UserProfileResponse extends BaseResponse {
 export type CommonResponse = BaseResponse;
 
 // 테스트 API 응답
-// /api/test/protected 응답
+// /api/users/test/protected 응답
 export interface ProtectedTestResponse {
   success: boolean;
   message: string;
@@ -277,4 +277,21 @@ export interface EmergencyReportResult {
 // 응급신고 처리 응답 타입
 export interface EmergencyDecisionResponse extends BaseResponse {
   data: EmergencyReportResult;
+}
+
+// 신고내역 조회용 타입 (백엔드 EmergencyReportDto와 매칭)
+export interface EmergencyReportDto {
+  id?: number;
+  accidentId: string;
+  userId: number;
+  reportTime: string; 
+  latitude: number; 
+  longitude: number; 
+  emergencyNotified: boolean; 
+  familyNotified: boolean; 
+}
+
+// 신고내역 조회 응답 타입
+export interface EmergencyHistoryResponse extends BaseResponse {
+  data: EmergencyReportDto[];
 }

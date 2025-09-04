@@ -47,13 +47,12 @@ export const tokenUtils = {
   // 토큰이 필요 없는 경로들
   isPublicPath: (path: string): boolean => {
     const publicPaths = [
-      '/api/auth/login',
-      '/api/auth/register',
-      '/api/auth/send-verification',
-      '/api/auth/verify-email', 
-      '/api/auth/check-email',
-      '/api/auth/refresh', 
-      '/api/public',
+      '/api/users/auth/login',
+      '/api/users/auth/register',
+      '/api/users/auth/send-verification',
+      '/api/users/auth/verify-email', 
+      '/api/users/auth/check-email',
+      '/api/users/auth/refresh',
     ];
 
     return publicPaths.some((publicPath) => path.includes(publicPath));

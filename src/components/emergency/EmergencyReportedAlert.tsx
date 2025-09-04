@@ -67,7 +67,7 @@ export default function EmergencyReportedAlert({
           <Styled.Description style={{ marginTop: '15px' }}>30초 간 반응이 없어 자동신고로<br />접수되었습니다.</Styled.Description>
         )}
         <Styled.Description style={{ marginTop: '15px' }}>
-          빠르게 도움을 요청 중입니다
+          빠르게 도움을 요청 중입니다.
         </Styled.Description>
 
         <Styled.ButtonContainer style={{ marginTop: '60px' }}>

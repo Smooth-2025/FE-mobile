@@ -36,6 +36,7 @@
       "@layout/*": ["layout/*"],
       "@pages/*": ["pages/*"],
       "@routes/*": ["routes/*"],
+      "@store": ["store/index"],
       "@store/*": ["store/*"],
       "@styles/*": ["styles/*"],
       "@types/*": ["types/*"],

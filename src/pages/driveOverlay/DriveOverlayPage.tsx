@@ -7,7 +7,7 @@ import AlertToast from '@/components/common/AlertToast/AlertToast';
 import { useEmergencyHandler } from '@/hooks/useEmergencyHandler';
 import EmergencyCallAlert from '@/components/emergency/EmergencyCallAlert';
 import EmergencyReportedAlert from '@/components/emergency/EmergencyReportedAlert';
-import DrivingSimulation from '@/components/driving/DrivingSimulation';
+import DrivingSimulation from '@/components/simulation/DrivingSimulation';
 import type { AlertType as StoreAlertType } from '@/store/websocket/types';
 
 const ALLOWED_TYPES = ['accident-nearby', 'obstacle', 'pothole', 'accident'] as const;

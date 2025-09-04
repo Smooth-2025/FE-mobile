@@ -24,6 +24,12 @@ import type { AlertType , DrivingTendencyData, NeighborData } from './types';
 let rxStomp: RxStomp | null = null;
 const subscriptions: Map<string, Subscription> = new Map();
 
+let reconnectAttempts = 0;
+const MAX_INITIAL_ATTEMPTS = 3; 
+const LONG_RECONNECT_INTERVAL = 10 * 60 * 1000;
+let reconnectTimeout: NodeJS.Timeout | null = null;
+
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === 'object';
 }
@@ -85,6 +91,7 @@ export const websocketMiddleware: Middleware =
     const result = next(action);
 
     if (connectWebSocket.match(action)) {
+      // 기존 연결 정리
       if (rxStomp) {
         try {
           rxStomp.deactivate();
@@ -94,15 +101,22 @@ export const websocketMiddleware: Middleware =
         subscriptions.clear();
       }
 
-      const socket = new SockJS(import.meta.env.VITE_API_BASE_WS_URL);
+      if (reconnectTimeout) {
+        clearTimeout(reconnectTimeout);
+        reconnectTimeout = null;
+      }
+
       const token = tokenUtils.getToken();
       
       if (!token) {
         console.error('❌ 웹소켓 연결 실패: JWT 토큰이 없습니다.');
         dispatch(setConnectionStatus(ConnectionStatus.DISCONNECTED));
         dispatch(setError('JWT 토큰이 없어 웹소켓 연결을 할 수 없습니다.'));
+        reconnectAttempts = 0;
         return result;
       }
+
+      const socket = new SockJS(import.meta.env.VITE_API_BASE_WS_URL);
 
       rxStomp = new RxStomp();
       const config: RxStompConfig = {
@@ -110,9 +124,9 @@ export const websocketMiddleware: Middleware =
         connectHeaders: {
           Authorization: `Bearer ${token}`,
         },
-        heartbeatIncoming: 10000,
-        heartbeatOutgoing: 10000,
-        reconnectDelay: 3000,
+        heartbeatIncoming: 30000,
+        heartbeatOutgoing: 30000,
+        reconnectDelay: 0, 
         debug: (str) => console.warn('🔍 STOMP Debug:', str),
       };
       rxStomp.configure(config);
@@ -122,12 +136,29 @@ export const websocketMiddleware: Middleware =
         if (state === RxStompState.OPEN) {
           dispatch(setConnectionStatus(ConnectionStatus.CONNECTED));
           console.warn('✅ STOMP 연결 성공!');
-          // 원하면 여기서 자동 재구독
-          // 자동 구독은 useWebSocket에서 처리
+          reconnectAttempts = 0;
         } else if (state === RxStompState.CLOSED) {
           dispatch(setConnectionStatus(ConnectionStatus.DISCONNECTED));
           subscriptions.clear();
           console.error('❌ STOMP 연결 종료');
+          
+          reconnectAttempts++;
+          
+          if (reconnectAttempts <= MAX_INITIAL_ATTEMPTS) {
+        
+            console.warn(`🔄 연결 끊김 - 재연결 시도 ${reconnectAttempts}/${MAX_INITIAL_ATTEMPTS}`);
+            
+            reconnectTimeout = setTimeout(() => {
+              dispatch(connectWebSocket());
+            }, 5000);
+          } else {
+          
+            console.warn(`🔄 장기간 연결 실패 - 10분 후 재연결 시도 (${reconnectAttempts}번째)`);
+            
+            reconnectTimeout = setTimeout(() => {
+              dispatch(connectWebSocket());
+            }, LONG_RECONNECT_INTERVAL);
+          }
         } else if (state === RxStompState.CONNECTING) {
           dispatch(setConnectionStatus(ConnectionStatus.CONNECTING));
         }
@@ -137,6 +168,14 @@ export const websocketMiddleware: Middleware =
     }
 
     if (disconnectWebSocket.match(action)) {
+    
+      if (reconnectTimeout) {
+        clearTimeout(reconnectTimeout);
+        reconnectTimeout = null;
+      }
+      
+      reconnectAttempts = 0;
+      
       if (rxStomp) {
         try {
           rxStomp.deactivate();
@@ -167,7 +206,7 @@ export const websocketMiddleware: Middleware =
             }
 
             if (isRecord(rawData)) {
-              const eventType = getString(rawData, 'eventType');
+              const eventType = getString(rawData, 'type');
               if (eventType === 'start' || eventType === 'end') {
                 dispatch(addAlert({
                   id: String(Date.now()),
@@ -192,7 +231,10 @@ export const websocketMiddleware: Middleware =
                   const egoUserId = ego.userId;
                   const egoPose = getAny(ego, 'pose');
                   
-                  if ((typeof egoUserId === 'number' || typeof egoUserId === 'string') && isRecord(egoPose)) {
+                  if ((typeof egoUserId === 'number' || typeof egoUserId === 'string') && 
+                      isRecord(egoPose) && 
+                      typeof egoPose.latitude === 'number' && 
+                      typeof egoPose.longitude === 'number') {
                     const validNeighbors: NeighborData[] = neighbors
                       .filter((neighbor: unknown): neighbor is NeighborData => {
                         if (!isRecord(neighbor)) return false;
@@ -203,7 +245,7 @@ export const websocketMiddleware: Middleware =
                         return (
                           (typeof userId === 'number' || typeof userId === 'string') &&
                           typeof character === 'string' &&
-                          ['lion', 'dolphin', 'meerkat', 'cat'].includes(character) &&
+                          ['LION', 'DOLPHIN', 'MEERKAT', 'CAT'].includes(character) &&
                           isRecord(pose) &&
                           typeof pose.latitude === 'number' &&
                           typeof pose.longitude === 'number'
@@ -217,8 +259,8 @@ export const websocketMiddleware: Middleware =
                         ego: {
                           userId: egoUserId,
                           pose: {
-                            latitude: egoPose.latitude as number,
-                            longitude: egoPose.longitude as number,
+                            latitude: egoPose.latitude,
+                            longitude: egoPose.longitude,
                           },
                         },
                         neighbors: validNeighbors,
@@ -285,12 +327,6 @@ export const websocketMiddleware: Middleware =
               // 최상위에서 accidentId 확인
               const accidentId = getAny(rawData, 'accidentId');
               if (typeof accidentId === 'string') return accidentId;
-              
-              // accident 타입인 경우 하드코딩된 ID 사용 (임시)
-              if (type === 'accident') {
-                console.warn('🚨 accident 타입이지만 accidentId를 찾을 수 없음, 하드코딩 사용');
-                return '9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d';
-              }
               
               return undefined;
             })();

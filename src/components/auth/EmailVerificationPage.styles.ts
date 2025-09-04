@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { theme } from '@styles/theme';
 
 export const ErrorMessage = styled.p`
-  color: #ef4444;
+  color: ${theme.colors.danger700};
   font-size: 12px;
   margin: 4px 0 0 0;
   line-height: 1.4;
@@ -12,6 +12,8 @@ export const Container = styled.div`
   padding: 20px;
   max-width: 400px;
   margin: 0 auto;
+  height: 100%;
+  background-color: ${theme.colors.white};
 `;
 
 export const Header = styled.div`
@@ -30,7 +32,7 @@ export const BackButton = styled.button`
 export const ProgressBar = styled.div`
   width: 100%;
   height: 4px;
-  background-color: #e5e7eb;
+  background-color: ${theme.colors.neutral300};
   border-radius: 2px;
   margin-bottom: 24px;
 `;
@@ -38,7 +40,7 @@ export const ProgressBar = styled.div`
 export const ProgressFill = styled.div<{ progress: number }>`
   width: ${(props) => props.progress}%;
   height: 100%;
-  background-color: ${theme.colors.primary500};
+  background-color: ${theme.colors.primary600};
   border-radius: 2px;
   transition: width 0.3s ease;
 `;
@@ -56,15 +58,6 @@ export const Subtitle = styled.p`
   margin-bottom: 32px;
 `;
 
-export const EmailDisplay = styled.div`
-  padding: 16px;
-  background-color: #f9fafb;
-  border-radius: 8px;
-  margin-bottom: 24px;
-  font-size: 16px;
-  color: ${theme.colors.neutral700};
-`;
-
 export const FormGroup = styled.div`
   margin-bottom: 24px;
 `;
@@ -77,12 +70,21 @@ export const Label = styled.label`
   color: ${theme.colors.neutral700};
 `;
 
-export const TimerDisplay = styled.div`
-  text-align: right;
+export const CodeInputWrapper = styled.div`
+  position: relative;
+  align-items: center;
+`;
+
+export const CodeTimerDisplay = styled.div`
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
   color: ${theme.colors.primary500};
   font-size: 14px;
   font-weight: 600;
-  margin-top: 8px;
+  pointer-events: none; // 타이머는 클릭되지 않도록
+  z-index: 1;
 `;
 
 export const VerifyButton = styled.button<{ disabled: boolean }>`
@@ -91,16 +93,15 @@ export const VerifyButton = styled.button<{ disabled: boolean }>`
   border: none;
   border-radius: 8px;
   font-size: 16px;
-  font-weight: 600;
   cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
   transition: all 0.2s ease;
   margin-bottom: 16px;
 
-  background-color: ${(props) => (props.disabled ? '#e5e7eb' : theme.colors.primary500)};
-  color: ${(props) => (props.disabled ? '#9ca3af' : '#ffffff')};
+  background-color: ${(props) => (props.disabled ? theme.colors.neutral200 : theme.colors.primary600)};
+  color: ${(props) => (props.disabled ? theme.colors.neutral500 : theme.colors.white)};
 
   &:hover {
-    background-color: ${(props) => (props.disabled ? '#e5e7eb' : theme.colors.primary600)};
+    background-color: ${(props) => (props.disabled ? theme.colors.neutral300 : theme.colors.primary600)};
   }
 
   &:active {

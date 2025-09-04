@@ -73,8 +73,9 @@ export function TermsAgreementPage() {
           <ProgressFill progress={75} />
         </ProgressBar>
 
-        <Title>스무스가 처음이시군요!</Title>
-        <Subtitle>약관내용에 동의해주세요.</Subtitle>
+        <Title>스무스가 처음이시군요! <br />
+          약관내용에 동의해주세요.</Title>
+        <Subtitle></Subtitle>
       </Header>
 
       <AgreementSection>

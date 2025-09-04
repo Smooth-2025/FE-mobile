@@ -19,14 +19,13 @@ const SignupCompletePage = lazy(() => import('@pages/auth/SignupCompletePage'));
 const ChangePasswordPage = lazy(() => import('@/pages/myPage/ChangePasswordPage'));
 const EmergencyPage = lazy(() => import('@/pages/myPage/EmergencyPage'));
 const EmergencyEditPage = lazy(() => import('@/pages/myPage/EmergencyEditPage'));
+const ReportListPage = lazy(() => import('@/pages/myPage/ReportListPage'));
 
 // 권한 여부에 따른 가드 설정
 function RequireAuth({ children }: { children: ReactNode }) {
   const isAuth = Boolean(sessionStorage.getItem('smooth_access_token')); // 올바른 토큰 키 사용
   return isAuth ? <>{children}</> : <Navigate to="/login" replace />;
 
-  // 임시로 로그인 페이지로 가는거 방지. 웹소켓 테스트 시 위의 두 줄은 주석처리 후 아래 주석을 풀고 사용하세요
-  // return <>{children}</>;
 }
 
 const routes: RouteObject[] = [
@@ -56,6 +55,7 @@ const routes: RouteObject[] = [
       { path: 'mypage/ChangePasswordPage', element: <ChangePasswordPage /> },
       { path: 'mypage/emergency', element: <EmergencyPage /> },
       { path: 'mypage/emergency/edit', element: <EmergencyEditPage /> },
+      { path: 'mypage/reports', element: <ReportListPage /> },
       // { path: 'mypage/:id', element: <MyPage />, handle: { hideBottomNav: true } },
     ],
   },

@@ -49,12 +49,14 @@ api.interceptors.request.use(
 
 //응답 인터셉터
 api.interceptors.response.use(
-  (response: AxiosResponse) => response.data,
+  async (response: AxiosResponse) => {
+    return response.data;
+  },
   async (error) => {
     const originalRequest = error.config;
 
-    // 401 에러 처리
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    // 401 에러 처리 - refresh API 요청은 재시도하지 않음
+    if (error.response?.status === 401 && !originalRequest._retry && !originalRequest.url?.includes('/api/users/auth/refresh')) {
       if (isRefreshing) {
         // 이미 갱신 중이면 대기열에 추가
         return new Promise((resolve, reject) => {
@@ -71,18 +73,24 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
+        console.warn('토큰 재발급 시도 - 401 에러로 인한 자동 갱신');
+        
         // 토큰 갱신 시도
-        const refreshResponse = await api.post('/api/auth/refresh');
-        const newAccessToken = refreshResponse.data.accessToken;
+        const refreshResponse = await api.post('/api/users/auth/refresh');
+        console.warn('토큰 재발급 응답:', refreshResponse);
+        const newAccessToken = refreshResponse.data.accessToken; 
+        console.warn('새로운 액세스 토큰:', newAccessToken);
         
         // 새 토큰 저장
         tokenUtils.setAccessToken(newAccessToken);
+        console.warn('토큰 저장 완료');
         
         // 대기열 처리
         processQueue(null, newAccessToken);
         
         // 원래 요청 재시도
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+        console.warn('원래 요청 재시도:', originalRequest.url);
         return api(originalRequest);
       } catch (refreshError) {
         // 갱신 실패 시 로그아웃 처리

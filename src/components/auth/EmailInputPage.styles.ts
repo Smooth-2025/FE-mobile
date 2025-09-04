@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import { theme } from '@styles/theme';
 
 export const ErrorMessage = styled.p`
-  color: #ef4444;
+  color: ${theme.colors.danger700};
   font-size: 12px;
   margin: 4px 0 0 0;
   line-height: 1.4;
@@ -10,8 +10,10 @@ export const ErrorMessage = styled.p`
 
 export const Container = styled.div`
   padding: 20px;
-  max-width: 400px;
+  max-width: 500px;
   margin: 0 auto;
+  height: 100%;
+  background-color: ${theme.colors.white};
 `;
 
 export const Header = styled.div`
@@ -30,7 +32,7 @@ export const BackButton = styled.button`
 export const ProgressBar = styled.div`
   width: 100%;
   height: 4px;
-  background-color: #e5e7eb;
+  background-color: ${theme.colors.neutral300};
   border-radius: 2px;
   margin-bottom: 24px;
 `;
@@ -38,7 +40,7 @@ export const ProgressBar = styled.div`
 export const ProgressFill = styled.div<{ progress: number }>`
   width: ${(props) => props.progress}%;
   height: 100%;
-  background-color: ${theme.colors.primary500};
+  background-color: ${theme.colors.primary600};
   border-radius: 2px;
   transition: width 0.3s ease;
 `;
@@ -52,7 +54,7 @@ export const Title = styled.h1`
 
 export const Subtitle = styled.p`
   font-size: 14px;
-  color: ${theme.colors.neutral600};
+  color: ${theme.colors.neutral500};
   margin-bottom: 32px;
 `;
 
@@ -74,15 +76,14 @@ export const SendButton = styled.button<{ disabled: boolean }>`
   border: none;
   border-radius: 8px;
   font-size: 16px;
-  font-weight: 600;
   cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
   transition: all 0.2s ease;
 
-  background-color: ${(props) => (props.disabled ? '#e5e7eb' : theme.colors.primary500)};
-  color: ${(props) => (props.disabled ? '#9ca3af' : '#ffffff')};
+  background-color: ${(props) => (props.disabled ? theme.colors.neutral200 : theme.colors.primary600)};
+  color: ${(props) => (props.disabled ? theme.colors.neutral500 : theme.colors.white )};
 
   &:hover {
-    background-color: ${(props) => (props.disabled ? '#e5e7eb' : theme.colors.primary600)};
+    background-color: ${(props) => (props.disabled ? theme.colors.neutral200 : theme.colors.primary600)};
   }
 
   &:active {
