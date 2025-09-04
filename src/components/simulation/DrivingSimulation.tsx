@@ -4,7 +4,7 @@ import * as Styled from './DrivingSimulation.styles';
 export default function DrivingSimulation() {
   return (
     <Styled.Container>
-      <OpenDriveVisualization xodrFilePath="/maps/Town10HD_Opt.xodr" width="100%" height="100%" />
+      <OpenDriveVisualization width="100%" height="100%" />
     </Styled.Container>
   );
 }

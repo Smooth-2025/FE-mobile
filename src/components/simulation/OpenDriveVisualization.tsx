@@ -41,8 +41,12 @@ interface OpenDriveVisualizationProps {
 
 type LoadingState = 'idle' | 'loading' | 'success' | 'error';
 
+const S3_BASE_URL = import.meta.env.VITE_S3_BASE_URL;
+
+const MAP_URL = `${S3_BASE_URL}/assets/maps/Town10HD_Opt.xodr`;
+
 export default function OpenDriveVisualization({
-  xodrFilePath = '/maps/Town10HD_Opt.xodr',
+  xodrFilePath = MAP_URL,
   width = '',
   height = '',
   samplingResolution = 1,
