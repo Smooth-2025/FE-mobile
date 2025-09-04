@@ -1,4 +1,26 @@
 /**
+ * 초(second) 단위를 "시간 분 초" 형식의 문자열 변환 함수
+ *
+ * @param seconds 변환할 초(second) 값
+ * @returns "X시간 Y분 Z초", "Y분 Z초", 또는 "Z초" 형태의 문자열
+ */
+export function formatDuration(seconds: number): string {
+  if (isNaN(seconds) || seconds < 0) return '0초';
+
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = seconds % 60;
+
+  if (h > 0) {
+    return `${h}시간 ${m}분 ${s}초`;
+  }
+  if (m > 0) {
+    return `${m}분 ${s}초`;
+  }
+  return `${s}초`;
+}
+
+/**
  * 분(minute) 단위를 "시간 + 분" 형식의 문자열 변환 함수
 
  * @param minutes 변환할 분(minute) 값
