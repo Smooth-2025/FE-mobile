@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import styled from '@emotion/styled';
 import { selectAlerts } from '@/store/slices/alertSlice';
+import { postAlertRendered } from '@/apis/alertsApi.ts';
 import AlertToast from '@/components/common/AlertToast/AlertToast';
 import { useEmergencyHandler } from '@/hooks/useEmergencyHandler';
 import EmergencyCallAlert from '@/components/emergency/EmergencyCallAlert';
@@ -73,6 +74,14 @@ export default function DriveOverlayPage() {
     const alertItem: ActiveItem = { alertId, type, title, content, createdAt: Date.now() };
 
     setActive((prev) => [alertItem, ...prev]);
+
+    // == 유저 알림 수신 반응 시각 POST (주변사고, 장애물) ==
+    if (type === 'accident-nearby' || type === 'obstacle') {
+      postAlertRendered(alertId, {
+        type,
+        renderedAtMs: Date.now(),
+      });
+    }
 
     // 'accident' 타입이고 내 사고일 때 119 신고 모달 표시
     if (type === 'accident') {
