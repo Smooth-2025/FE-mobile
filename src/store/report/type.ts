@@ -97,3 +97,26 @@ export type AccidentResponse = {
   avoidRatio: number; // 우회 반응 비율 (%)
   benchmark: Benchmark; // 벤치마크 데이터
 };
+
+export type AxisId = 'A' | 'B' | 'C' | 'D';
+
+type Axis = {
+  id: AxisId;
+  label: string;
+  summary: string;
+};
+
+export type DnaRadar = {
+  A: number;
+  B: number;
+  C: number;
+  D: number;
+};
+
+//리포트 상세4_DNA 성향 분석
+export type DrivingDNA = {
+  reportId: string;
+  headline: string; // 상단 보조 문구
+  radar: DnaRadar;
+  axes: Axis[];
+};
