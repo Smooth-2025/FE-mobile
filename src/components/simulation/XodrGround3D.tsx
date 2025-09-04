@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { OrbitControls, Html } from '@react-three/drei';
+import { OrbitControls, Html, Grid } from '@react-three/drei';
 import * as THREE from 'three';
 import { useSelector } from 'react-redux';
 import { selectCurrentDrivingData } from '@/store/slices/drivingSlice';
@@ -27,7 +27,7 @@ import type { OpenDriveData, LaneBoundaryData } from './types';
 interface XodrGround3DProps {
   openDriveData?: OpenDriveData;
   laneBoundaryData?: LaneBoundaryData;
-  _showGrid?: boolean;
+  showGrid?: boolean;
   width?: string | number;
   height?: string | number;
   roadLineWidth?: number;
@@ -364,7 +364,7 @@ function ChaseCam({
 export function XodrGround3D({
   openDriveData,
   laneBoundaryData: _laneBoundaryData,
-  _showGrid = true,
+  showGrid = true,
   width = '100%',
   height = '100vh',
   roadLineWidth = 0.2,
@@ -481,7 +481,7 @@ export function XodrGround3D({
       {/* == 유저 차량 == */}
       {scenePos && (
         <group position={[egoWorldPos.e, 0, egoWorldPos.n]} rotation={[0, egoWorldPos.theta, 0]}>
-          <SimulationCar variant="ego" _yawFix={Math.PI} />
+          <SimulationCar variant="ego" yawFix={Math.PI} />
           <primitive object={new THREE.AxesHelper(3)} />
         </group>
       )}
@@ -489,7 +489,7 @@ export function XodrGround3D({
       {/* == 주변 차량  == */}
       {scenePos?.nbs.map((nb) => (
         <group key={nb.userId} position={[nb.sx, 0, nb.sz]} rotation={[0, egoWorldPos.theta, 0]}>
-          <SimulationCar variant="neighbor" _yawFix={Math.PI} />
+          <SimulationCar variant="neighbor" yawFix={Math.PI} />
           <Html position={[0, 1.0, 0]} center distanceFactor={10} transform>
             <Styled.Character>
               <Styled.CharacterImg src={CHARACTER_IMG[nb.character]} alt={nb.character} />
@@ -499,7 +499,7 @@ export function XodrGround3D({
       ))}
 
       {/* == 그리드 박스 == */}
-      {/* {showGrid && (
+      {showGrid && (
         <Grid
           infiniteGrid
           cellSize={10}
@@ -511,7 +511,7 @@ export function XodrGround3D({
           fadeDistance={400}
           fadeStrength={1}
         />
-      )} */}
+      )}
 
       <OrbitControls
         enablePan={true}

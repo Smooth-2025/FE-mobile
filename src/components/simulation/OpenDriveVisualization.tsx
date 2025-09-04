@@ -419,7 +419,7 @@ export default function OpenDriveVisualization({
           <XodrGround3D
             openDriveData={openDriveData}
             laneBoundaryData={laneBoundaryData || undefined}
-            _showGrid={true}
+            showGrid={false}
             width={width}
             height={height}
             roadLineWidth={roadLineWidth}
