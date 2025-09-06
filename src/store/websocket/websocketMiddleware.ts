@@ -116,13 +116,18 @@ export const websocketMiddleware: Middleware =
         return result;
       }
 
+      console.warn('🔗 웹소켓 연결 시작 - 사용 토큰:', token?.substring(0, 20) + '...');
+
       const socket = new SockJS(import.meta.env.VITE_API_BASE_WS_URL);
 
       rxStomp = new RxStomp();
+      const currentToken = tokenUtils.getToken();
+      console.warn('🔑 실제 전송 토큰:', currentToken?.substring(0, 20) + '...');
+      
       const config: RxStompConfig = {
         webSocketFactory: () => socket,
         connectHeaders: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${currentToken}`,
         },
         heartbeatIncoming: 30000,
         heartbeatOutgoing: 30000,
