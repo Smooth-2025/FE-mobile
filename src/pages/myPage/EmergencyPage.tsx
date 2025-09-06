@@ -1,9 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useToast } from '@/hooks/useToast';
 import { getUserProfile } from '@/apis/auth';
-import { theme } from '@/styles/theme';
-import { Icon } from '@/components/common';
+import Header from '@/layout/Header';
 import AlertToast from '@/components/common/AlertToast/AlertToast';
 import * as S from '@/components/myPage/EmergencyPage.styles';
 import type { UserProfileResponse } from '@/types/api';
@@ -12,7 +11,8 @@ type UserProfile = UserProfileResponse['data'];
 
 export default function EmergencyPage() {
   const navigate = useNavigate();
-  const { showError, toasts } = useToast();
+  const location = useLocation();
+  const { showError, showSuccess, toasts } = useToast();
 
   // 사용자 프로필 상태
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
@@ -20,6 +20,16 @@ export default function EmergencyPage() {
 
   // showError를 useCallback으로 memoization
   const showErrorCallback = useCallback(showError, [showError]);
+
+  // 성공 메시지 토스트 표시
+  useEffect(() => {
+    const state = location.state as { successMessage?: string } | null;
+    if (state?.successMessage) {
+      showSuccess(state.successMessage);
+      // state를 정리하여 새로고침 시 중복 표시 방지
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state, showSuccess]);
 
   // 사용자 프로필 조회
   useEffect(() => {
@@ -88,32 +98,30 @@ export default function EmergencyPage() {
 
   if (isLoading) {
     return (
-      <S.Container>
-        <S.Header>
-          <S.BackButton onClick={handleGoBack}>
-            <Icon name="close" size={24} color={theme.colors.neutral700} />
-          </S.BackButton>
-          <S.HeaderTitle>응급정보</S.HeaderTitle>
-          <div />
-        </S.Header>
-        <S.LoadingContainer>
-          <S.LoadingText>응급정보를 불러오는 중...</S.LoadingText>
-        </S.LoadingContainer>
-      </S.Container>
+      <>
+        <Header 
+          type="close" 
+          title="응급정보" 
+          onLeftClick={handleGoBack} 
+        />
+        <S.Container>
+          <S.LoadingContainer>
+            <S.LoadingText>응급정보를 불러오는 중...</S.LoadingText>
+          </S.LoadingContainer>
+        </S.Container>
+      </>
     );
   }
 
   return (
     <>
+      <Header 
+        type="close" 
+        title="응급정보" 
+        onLeftClick={handleGoBack} 
+      />
+      
       <S.Container>
-        {/* 헤더 */}
-        <S.Header>
-          <S.BackButton onClick={handleGoBack}>
-            <Icon name="close" size={24} color={theme.colors.neutral700} />
-          </S.BackButton>
-          <S.HeaderTitle>응급정보</S.HeaderTitle>
-          <div />
-        </S.Header>
 
         {/* 응급정보 내용 */}
         <S.ContentSection>

@@ -3,8 +3,8 @@ import { theme } from '@/styles/theme';
 
 // 페이지 컨테이너
 export const Container = styled.div`
-  min-height: 100vh;
-  background-color: ${theme.colors.bg_page};
+  height: 100%;
+  background-color: ${theme.colors.white};
   display: flex;
   flex-direction: column;
 `;
@@ -17,16 +17,6 @@ export const Header = styled.header`
   padding: ${theme.spacing.md}px;
   background-color: ${theme.colors.white};
   border-bottom: 1px solid ${theme.colors.neutral200};
-`;
-
-export const BackButton = styled.button`
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 `;
 
 export const HeaderTitle = styled.h1`
@@ -49,7 +39,6 @@ export const InfoItem = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: ${theme.spacing.md}px 0;
-  border-bottom: 1px solid ${theme.colors.neutral200};
   
   &:last-child {
     border-bottom: none;
@@ -58,7 +47,7 @@ export const InfoItem = styled.div`
 
 export const InfoLabel = styled.span`
   font-size: ${theme.fontSize[16]}rem;
-  color: ${theme.colors.neutral600};
+  color: ${theme.colors.neutral500};
   font-weight: 400;
 `;
 
@@ -90,20 +79,19 @@ export const LoadingText = styled.p`
 
 // 수정 버튼
 export const EditButton = styled.button`
-  width: calc(100% - ${theme.spacing.md * 2}px);
-  height: 56px;
-  margin: ${theme.spacing.xl}px ${theme.spacing.md}px;
-  background-color: ${theme.colors.primary600};
-  color: ${theme.colors.white};
-  border: none;
-  border-radius: ${theme.borderRadius.sm}px;
-  font-size: ${theme.fontSize[16]}rem;
-  font-weight: 600;
+  width: calc(100% - 40px);
+  margin: 0 20px 40px 20px;
+  padding: 16px;
+  background-color: ${theme.colors.white};
+  border: 1px solid ${theme.colors.neutral200};
+  border-radius: ${theme.borderRadius.lg}px;
+  font-size: 16px;
+  color: ${theme.colors.neutral700};
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
 
   &:hover {
-    background-color: ${theme.colors.primary700};
+    background-color: ${theme.colors.neutral200};
   }
 
   &:active {

@@ -9,41 +9,16 @@ export const ErrorMessage = styled.p`
 `;
 
 export const Container = styled.div`
-  padding: 20px;
-  max-width: 500px;
+  max-width: 100%;
   margin: 0 auto;
   height: 100%;
   background-color: ${theme.colors.white};
 `;
 
-export const Header = styled.div`
-  margin-bottom: 32px;
+export const Content = styled.div`
+  padding: 20px;
 `;
 
-export const BackButton = styled.button`
-  background: none;
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
-  padding: 8px;
-  margin-bottom: 20px;
-`;
-
-export const ProgressBar = styled.div`
-  width: 100%;
-  height: 4px;
-  background-color: ${theme.colors.neutral300};
-  border-radius: 2px;
-  margin-bottom: 24px;
-`;
-
-export const ProgressFill = styled.div<{ progress: number }>`
-  width: ${(props) => props.progress}%;
-  height: 100%;
-  background-color: ${theme.colors.primary600};
-  border-radius: 2px;
-  transition: width 0.3s ease;
-`;
 
 export const Title = styled.h1`
   font-size: 24px;
