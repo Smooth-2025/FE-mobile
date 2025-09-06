@@ -10,13 +10,7 @@ export interface MenuItemData {
 }
 
 export const MENU_ITEMS: MenuItemData[] = [
-  {
-    id: 'profile',
-    path: '/mypage/profile',
-    label: '내 정보',
-    icon: 'user',
-    iconColor: theme.colors.primary600,
-  },
+
   {
     id: 'emergency',
     path: '/mypage/emergency',

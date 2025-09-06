@@ -45,13 +45,34 @@ export const UserName = styled.span`
   color: ${theme.colors.primary600};
 `;
 
+export const ProfileLink = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  
+  p {
+    font-size: 14px;
+    color: ${theme.colors.neutral600};
+    margin: 0;
+  }
+  
+  &:hover {
+    opacity: 0.7;
+  }
+`;
+
 // 설정 섹션
 export const SettingsSection = styled.div`
   h2 {
-    font-size: 16px;
-    font-weight: 600;
+    padding: 16px 20px;
+    font-size: 14px;
+    font-weight: 700;
     color: ${theme.colors.neutral700};
-    margin: 0 0 16px 0;
   }
 `;
 
@@ -59,6 +80,9 @@ export const SettingsSection = styled.div`
 export const MenuList = styled.div`
   display: flex;
   flex-direction: column;
+  border-radius: ${theme.borderRadius.lg}px;
+  background-color: ${theme.colors.white};
+  border: 1px solid ${theme.colors.neutral200};
   gap: 4px;
 `;
 
@@ -67,9 +91,7 @@ export const MenuItem = styled.button`
   width: 100%;
   padding: 16px 20px;
   border: none;
-  border-radius: ${theme.borderRadius.lg}px;
-  background-color: ${theme.colors.white};
-  border: 1px solid ${theme.colors.neutral200};
+
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -95,7 +117,6 @@ export const MenuItemLeft = styled.div`
 export const MenuItemText = styled.span`
   font-size: 16px;
   color: ${theme.colors.neutral700};
-  font-weight: 500;
 `;
 
 export const MenuItemIcon = styled.div`

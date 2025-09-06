@@ -3,55 +3,19 @@ import { theme } from '@/styles/theme';
 
 // 페이지 컨테이너
 export const Container = styled.div`
-  min-height: 100vh;
-  background-color: ${theme.colors.bg_page};
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: ${theme.colors.white};
   padding-bottom: env(safe-area-inset-bottom);
 `;
 
-// 헤더
-export const Header = styled.header`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 20px;
-  background-color: ${theme.colors.bg_page};
-  border-bottom: 1px solid ${theme.colors.neutral200};
-`;
-
-export const BackButton = styled.button`
-  background: none;
-  border: none;
-  padding: 8px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  transition: background-color 0.2s ease;
-
-  &:hover {
-    background-color: ${theme.colors.neutral100};
-  }
-
-  &:active {
-    transform: scale(0.95);
-  }
-`;
-
-export const HeaderTitle = styled.h1`
-  font-size: 18px;
-  font-weight: 600;
-  color: ${theme.colors.neutral700};
-  margin: 0;
-`;
 
 // 정보 섹션
 export const InfoSection = styled.section`
   background-color: ${theme.colors.white};
-  margin: 20px;
-  border-radius: ${theme.borderRadius.lg}px;
   padding: 24px 20px;
-  border: 1px solid ${theme.colors.neutral200};
+
 `;
 
 export const InfoItem = styled.div`
@@ -59,7 +23,7 @@ export const InfoItem = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 16px 0;
-  border-bottom: 1px solid ${theme.colors.neutral100};
+
 
   &:last-child {
     border-bottom: none;
@@ -73,14 +37,14 @@ export const InfoItem = styled.div`
 
 export const InfoLabel = styled.span`
   font-size: 16px;
-  color: ${theme.colors.neutral600};
-  font-weight: 500;
+  color: ${theme.colors.neutral500};
+
 `;
 
 export const InfoValue = styled.span`
   font-size: 16px;
   color: ${theme.colors.neutral700};
-  font-weight: 600;
+
 `;
 
 // 비밀번호 변경 버튼
@@ -88,11 +52,10 @@ export const ActionButton = styled.button`
   width: calc(100% - 40px);
   margin: 0 20px 40px 20px;
   padding: 16px;
-  background-color: ${theme.colors.neutral100};
+  background-color: ${theme.colors.white};
   border: 1px solid ${theme.colors.neutral200};
   border-radius: ${theme.borderRadius.lg}px;
   font-size: 16px;
-  font-weight: 500;
   color: ${theme.colors.neutral700};
   cursor: pointer;
   transition: all 0.2s ease;
@@ -110,8 +73,10 @@ export const ActionButton = styled.button`
 export const BottomActions = styled.div`
   display: flex;
   justify-content: center;
+  align-items: center;
   gap: 32px;
-  padding: 0 20px;
+  padding: 80px 20px;
+  margin-top: auto;
 `;
 
 export const TextButton = styled.button`
@@ -142,7 +107,7 @@ export const SheetTitle = styled.h2`
   font-weight: 600;
   color: ${theme.colors.neutral700};
   margin: 0;
-  text-align: center;
+  text-align: left;
 `;
 
 export const SheetDescription = styled.p`
@@ -150,7 +115,7 @@ export const SheetDescription = styled.p`
   color: ${theme.colors.neutral500};
   margin: 0;
   line-height: 1.5;
-  text-align: center;
+  text-align: left;
 `;
 
 export const SheetButtonGroup = styled.div`

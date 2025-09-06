@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '@/hooks/useAppRedux';
 import {
   selectUser,
@@ -10,8 +10,7 @@ import {
 } from '@/store/slices/authSlice';
 import { useToast } from '@/hooks/useToast';
 import { getUserProfile } from '@/apis/auth';
-import { theme } from '@/styles/theme';
-import { Icon } from '@/components/common';
+import Header from '@/layout/Header';
 import BottomSheetPortal from '@/components/portal/BottomSheetPortal';
 import AlertToast from '@/components/common/AlertToast/AlertToast';
 import * as S from '@/components/myPage/ProfilePage.styles';
@@ -21,6 +20,7 @@ type UserProfile = UserProfileResponse['data'];
 
 export default function ProfilePage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
   const isLogoutLoading = useAppSelector(selectIsLogoutLoading);
@@ -37,6 +37,16 @@ export default function ProfilePage() {
 
   // showError를 useCallback으로 memoization
   const showErrorCallback = useCallback(showError, [showError]);
+
+  // 성공 메시지 토스트 표시
+  useEffect(() => {
+    const state = location.state as { successMessage?: string } | null;
+    if (state?.successMessage) {
+      showSuccess(state.successMessage);
+      // state를 정리하여 새로고침 시 중복 표시 방지
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state, showSuccess]);
 
   // 사용자 프로필 정보 조회
   useEffect(() => {
@@ -81,9 +91,10 @@ export default function ProfilePage() {
   const handleLogout = async () => {
     try {
       await dispatch(logoutAsync()).unwrap();
-      showSuccess('로그아웃이 완료되었습니다.');
       setIsLogoutSheetOpen(false);
-      navigate('/login');
+      navigate('/login', {
+        state: { successMessage: '이용해주셔서 감사합니다. 다시 만나요!' }
+      });
     } catch {
       showError('로그아웃 처리 중 오류가 발생했습니다.');
     }
@@ -93,9 +104,10 @@ export default function ProfilePage() {
   const handleDeleteAccount = async () => {
     try {
       await dispatch(deleteAccountAsync()).unwrap();
-      showSuccess('회원탈퇴가 완료되었습니다.');
       setIsDeleteAccountSheetOpen(false);
-      navigate('/login');
+      navigate('/login', {
+        state: { successMessage: '계정 탈퇴가 완료되었습니다. 이용해주셔서 감사합니다.' }
+      });
     } catch {
       showError('회원탈퇴 처리 중 오류가 발생했습니다.');
     }
@@ -118,31 +130,29 @@ export default function ProfilePage() {
   };
   if (isProfileLoading) {
     return (
-      <S.Container>
-        <S.Header>
-          <S.BackButton onClick={handleGoBack}>
-            <Icon name="chevronLeft" size={24} color={theme.colors.neutral700} />
-          </S.BackButton>
-          <S.HeaderTitle>내정보</S.HeaderTitle>
-          <div />
-        </S.Header>
-        <div style={{ padding: '50px 20px', textAlign: 'center' }}>
-          <p>사용자 정보를 불러오는 중...</p>
-        </div>
-      </S.Container>
+      <>
+        <Header 
+          type="back" 
+          title="내정보" 
+          onLeftClick={handleGoBack} 
+        />
+        <S.Container>
+          <div style={{ padding: '50px 20px', textAlign: 'center' }}>
+            <p>사용자 정보를 불러오는 중...</p>
+          </div>
+        </S.Container>
+      </>
     );
   }
   return (
     <>
+      <Header 
+        type="close" 
+        title="내정보" 
+        onLeftClick={handleGoBack} 
+      />
+      
       <S.Container>
-        {/* 헤더 */}
-        <S.Header>
-          <S.BackButton onClick={handleGoBack}>
-            <Icon name="chevronLeft" size={24} color={theme.colors.neutral700} />
-          </S.BackButton>
-          <S.HeaderTitle>내정보</S.HeaderTitle>
-          <div /> {/* 우측 여백을 위한 빈 div */}
-        </S.Header>
 
         {/* 사용자 정보 */}
         <S.InfoSection>

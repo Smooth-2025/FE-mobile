@@ -51,7 +51,7 @@ const routes: RouteObject[] = [
       { path: 'drive', element: <DrivePage /> },
       { path: 'report', element: <ReportPage /> },
       { path: 'mypage', element: <MyPage /> },
-      { path: 'mypage/profile', element: <ProfilePage /> },
+      { path: 'mypage/profile', element: <ProfilePage />, handle: { hideBottomNav: true } },
       { path: 'mypage/ChangePasswordPage', element: <ChangePasswordPage /> , handle: { hideBottomNav: true } },
       { path: 'mypage/emergency', element: <EmergencyPage /> , handle: { hideBottomNav: true } },
       { path: 'mypage/emergency/edit', element: <EmergencyEditPage /> , handle: { hideBottomNav: true } },
