@@ -11,13 +11,13 @@ import cat from '@/assets/images/characters/cat.png';
 import meerkat from '@/assets/images/characters/meerkat.png';
 import SimulationCar from '@/components/simulation/SimulationCar';
 import {
-  DUMI,
+  // DUMI,
   meters_per_lat_degree,
   meters_per_lon_degree,
   origin_latitude,
   origin_longitude,
 } from '@/components/simulation/mock/dumiData';
-import useDumiPlayback from '@/components/simulation/mock/useDumiPlayback';
+// import useDumiPlayback from '@/components/simulation/mock/useDumiPlayback';
 import { calculateLaneBoundaries } from '@/utils/laneBoundaryUtils';
 import { sampleRoadGeometry } from '@/components/simulation/GeometrySampler';
 import { ErrorBoundary } from '@/components/simulation/ErrorBoundary';
@@ -373,7 +373,7 @@ export function XodrGround3D({
   showRoadLines = true,
   showLaneLines = true,
 }: XodrGround3DProps): React.JSX.Element {
-  useDumiPlayback({ data: DUMI, tickMs: 1000, autostart: true, loop: false });
+  // useDumiPlayback({ data: DUMI, tickMs: 1000, autostart: true, loop: false });
 
   const current = useSelector(selectCurrentDrivingData);
   const [scenePos, setScenePos] = useState<ScenePos | null>(null);
