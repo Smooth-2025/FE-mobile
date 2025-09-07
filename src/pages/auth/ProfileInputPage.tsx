@@ -3,13 +3,18 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Input } from '@components/common';
 import { Icon } from '@components/common/Icons';
 import { theme } from '@styles/theme';
+import Header from '@layout/Header';
 import { useProfileForm } from '@hooks/useProfileForm';
+import { useAppDispatch, useAppSelector } from '@hooks/useAppRedux';
+import { 
+  setSignupStep, 
+  nextSignupStep,
+  selectSignupCurrentStep 
+} from '@store/slices/authSlice';
+import { StepProgressBar } from '@components/auth/StepProgressBar';
 import {
   Container,
-  Header,
-  BackButton,
-  ProgressBar,
-  ProgressFill,
+  Content,
   Title,
   FormGroup,
   Label,
@@ -25,6 +30,8 @@ import {
 export function ProfileInputPage() {
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useAppDispatch();
+  const currentStep = useAppSelector(selectSignupCurrentStep);
 
   // 이메일 정보 가져오기
   const email = location.state?.email;
@@ -44,17 +51,21 @@ export function ProfileInputPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
 
-  // 이메일 인증 확인
+  // 이메일 인증 확인 및 스텝 설정
   useEffect(() => {
     if (!email || !emailVerified) {
       navigate('/signup/email');
       return;
     }
-  }, [email, emailVerified, navigate]);
+    
+    // 현재 스텝 설정 (프로필 입력은 2단계)
+    dispatch(setSignupStep(2));
+  }, [email, emailVerified, navigate, dispatch]);
 
   // 다음 단계로
   const handleNext = () => {
     if (isFormValid()) {
+      dispatch(nextSignupStep()); // 3단계로 변경
       navigate('/signup/terms', {
         state: {
           email,
@@ -66,16 +77,17 @@ export function ProfileInputPage() {
   };
 
   return (
-    <Container>
-      <Header>
-        <BackButton onClick={() => navigate(-1)}>←</BackButton>
+    <>
+      <Header 
+        type="back" 
+        onLeftClick={() => navigate(-1)} 
+      />
+      
+      <Container>
+        <Content>
+          <StepProgressBar currentStep={currentStep} />
 
-        <ProgressBar>
-          <ProgressFill progress={50} />
-        </ProgressBar>
-
-        <Title>필수 정보를 입력해주세요</Title>
-      </Header>
+          <Title>필수 정보를 입력해주세요</Title>
 
       {/* 비밀번호 */}
       <FormGroup>
@@ -207,7 +219,9 @@ export function ProfileInputPage() {
       <NextButton disabled={!isFormValid()} onClick={handleNext}>
         다음
       </NextButton>
-    </Container>
+        </Content>
+      </Container>
+    </>
   );
 }
 

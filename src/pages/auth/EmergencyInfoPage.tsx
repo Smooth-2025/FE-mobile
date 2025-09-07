@@ -2,13 +2,18 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Input } from '@components/common';
 import { useEmergencyForm } from '@hooks/useEmergencyForm';
+import Header from '@layout/Header';
+import { useAppDispatch, useAppSelector } from '@hooks/useAppRedux';
+import { 
+  setSignupStep, 
+  resetSignupStep,
+  selectSignupCurrentStep 
+} from '@store/slices/authSlice';
+import { StepProgressBar } from '@components/auth/StepProgressBar';
 import { registerUser } from '@apis/auth';
 import {
   Container,
-  Header,
-  BackButton,
-  ProgressBar,
-  ProgressFill,
+  Content,
   Title,
   Subtitle,
   FormGroup,
@@ -25,6 +30,8 @@ import type { RegisterRequest } from '@/types/api';
 export function EmergencyInfoPage() {
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useAppDispatch();
+  const currentStep = useAppSelector(selectSignupCurrentStep);
 
   // 이전 단계 데이터 가져오기
   const email = location.state?.email;
@@ -39,13 +46,16 @@ export function EmergencyInfoPage() {
   const { formData, formErrors, handleInputChange, handleBloodTypeSelect, handleFieldBlur } =
     useEmergencyForm();
 
-  // 이전 단계 데이터 확인
+  // 이전 단계 데이터 확인 및 스텝 설정
   useEffect(() => {
     if (!email || !emailVerified || !profileData || !termsData) {
       navigate('/signup/email');
       return;
     }
-  }, [email, emailVerified, profileData, termsData, navigate]);
+    
+    // 현재 스텝 설정 (응급정보는 4단계 - 마지막)
+    dispatch(setSignupStep(4));
+  }, [email, emailVerified, profileData, termsData, navigate, dispatch]);
 
   // 회원가입 데이터 생성 함수
   const createSignupData = (includeEmergencyData: boolean = true): RegisterRequest => {
@@ -94,6 +104,9 @@ export function EmergencyInfoPage() {
       // 실제 API 호출
       await registerUser(signupData);
 
+      // 회원가입 완료 후 스텝 초기화
+      dispatch(resetSignupStep());
+      
       // 회원가입 완료 페이지로 이동
       navigate('/signup/complete', {
         state: {
@@ -119,6 +132,9 @@ export function EmergencyInfoPage() {
       // 실제 API 호출
       await registerUser(signupData);
 
+      // 회원가입 완료 후 스텝 초기화
+      dispatch(resetSignupStep());
+      
       // 회원가입 완료 페이지로 이동
       navigate('/signup/complete', {
         state: {
@@ -132,22 +148,21 @@ export function EmergencyInfoPage() {
     } finally {
       setIsLoading(false);
     }
-  }; // 🔧 함수 제대로 닫기
+  };
 
   return (
-    <Container>
-      <Header>
-        <BackButton onClick={() => navigate(-1)} disabled={isLoading}>
-          ←
-        </BackButton>
+    <>
+      <Header 
+        type="back" 
+        onLeftClick={() => navigate(-1)} 
+      />
+      
+      <Container>
+        <Content>
+          <StepProgressBar currentStep={currentStep} />
 
-        <ProgressBar>
-          <ProgressFill progress={100} />
-        </ProgressBar>
-
-        <Title>응급 정보를 등록해주세요 (선택)</Title>
-        <Subtitle>등록된 연락처로 사고 발생 알림 문자가 전송됩니다.</Subtitle>
-      </Header>
+          <Title>응급 정보를 등록해주세요 (선택)</Title>
+          <Subtitle>등록된 연락처로 사고 발생 알림 문자가 전송됩니다.</Subtitle>
 
       {/* 혈액형 */}
       <FormGroup>
@@ -239,7 +254,9 @@ export function EmergencyInfoPage() {
       <SkipButton onClick={handleSkip} disabled={isLoading}>
         건너뛰기
       </SkipButton>
-    </Container>
+        </Content>
+      </Container>
+    </>
   );
 }
 

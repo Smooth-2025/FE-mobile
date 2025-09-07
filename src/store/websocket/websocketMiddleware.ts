@@ -24,6 +24,12 @@ import type { AlertType , DrivingTendencyData, NeighborData } from './types';
 let rxStomp: RxStomp | null = null;
 const subscriptions: Map<string, Subscription> = new Map();
 
+let reconnectAttempts = 0;
+const MAX_INITIAL_ATTEMPTS = 3; 
+const LONG_RECONNECT_INTERVAL = 10 * 60 * 1000;
+let reconnectTimeout: NodeJS.Timeout | null = null;
+
+
 function isRecord(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === 'object';
 }
@@ -85,6 +91,7 @@ export const websocketMiddleware: Middleware =
     const result = next(action);
 
     if (connectWebSocket.match(action)) {
+      // 기존 연결 정리
       if (rxStomp) {
         try {
           rxStomp.deactivate();
@@ -94,15 +101,22 @@ export const websocketMiddleware: Middleware =
         subscriptions.clear();
       }
 
-      const socket = new SockJS(import.meta.env.VITE_API_BASE_WS_URL);
+      if (reconnectTimeout) {
+        clearTimeout(reconnectTimeout);
+        reconnectTimeout = null;
+      }
+
       const token = tokenUtils.getToken();
       
       if (!token) {
         console.error('❌ 웹소켓 연결 실패: JWT 토큰이 없습니다.');
         dispatch(setConnectionStatus(ConnectionStatus.DISCONNECTED));
         dispatch(setError('JWT 토큰이 없어 웹소켓 연결을 할 수 없습니다.'));
+        reconnectAttempts = 0;
         return result;
       }
+
+      const socket = new SockJS(import.meta.env.VITE_API_BASE_WS_URL);
 
       rxStomp = new RxStomp();
       const config: RxStompConfig = {
@@ -110,9 +124,9 @@ export const websocketMiddleware: Middleware =
         connectHeaders: {
           Authorization: `Bearer ${token}`,
         },
-        heartbeatIncoming: 10000,
-        heartbeatOutgoing: 10000,
-        reconnectDelay: 3000,
+        heartbeatIncoming: 30000,
+        heartbeatOutgoing: 30000,
+        reconnectDelay: 0, 
         debug: (str) => console.warn('🔍 STOMP Debug:', str),
       };
       rxStomp.configure(config);
@@ -122,23 +136,29 @@ export const websocketMiddleware: Middleware =
         if (state === RxStompState.OPEN) {
           dispatch(setConnectionStatus(ConnectionStatus.CONNECTED));
           console.warn('✅ STOMP 연결 성공!');
-          // 원하면 여기서 자동 재구독
-          // 자동 구독은 useWebSocket에서 처리
+          reconnectAttempts = 0;
         } else if (state === RxStompState.CLOSED) {
           dispatch(setConnectionStatus(ConnectionStatus.DISCONNECTED));
           subscriptions.clear();
           console.error('❌ STOMP 연결 종료');
           
-          // // 토큰 확인 후 재연결 시도
-          // const token = tokenUtils.getToken();
-          // if (token && !tokenUtils.isTokenExpired()) {
-          //   console.warn('🔄 연결 끊김 - 재연결 시도');
-          //   setTimeout(() => {
-          //     dispatch(connectWebSocket());
-          //   }, 3000); // 3초 후 재연결
-          // } else {
-          //   console.warn('❌ 토큰 만료 또는 없음 - 재연결 중단');
-          // }
+          reconnectAttempts++;
+          
+          if (reconnectAttempts <= MAX_INITIAL_ATTEMPTS) {
+        
+            console.warn(`🔄 연결 끊김 - 재연결 시도 ${reconnectAttempts}/${MAX_INITIAL_ATTEMPTS}`);
+            
+            reconnectTimeout = setTimeout(() => {
+              dispatch(connectWebSocket());
+            }, 5000);
+          } else {
+          
+            console.warn(`🔄 장기간 연결 실패 - 10분 후 재연결 시도 (${reconnectAttempts}번째)`);
+            
+            reconnectTimeout = setTimeout(() => {
+              dispatch(connectWebSocket());
+            }, LONG_RECONNECT_INTERVAL);
+          }
         } else if (state === RxStompState.CONNECTING) {
           dispatch(setConnectionStatus(ConnectionStatus.CONNECTING));
         }
@@ -148,6 +168,14 @@ export const websocketMiddleware: Middleware =
     }
 
     if (disconnectWebSocket.match(action)) {
+    
+      if (reconnectTimeout) {
+        clearTimeout(reconnectTimeout);
+        reconnectTimeout = null;
+      }
+      
+      reconnectAttempts = 0;
+      
       if (rxStomp) {
         try {
           rxStomp.deactivate();
@@ -328,9 +356,6 @@ export const websocketMiddleware: Middleware =
             console.warn('🚨 추출된 ID:', id);
             console.warn('🚨 서버에서 온 ID:', idFromServer);
 
-            if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
-              new Notification(title || '🚨 사고 알림', { body: display, icon: '/favicon.ico' });
-            }
           } catch (error) {
             console.error('❌ 사고 알림 처리 오류:', error);
             dispatch(setError((error as Error)?.message ?? 'incident handling error'));

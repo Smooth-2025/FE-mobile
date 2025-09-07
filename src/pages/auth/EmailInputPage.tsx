@@ -1,16 +1,20 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Input } from '@components/common';
+import Header from '@layout/Header';
 import { useEmailVerification } from '@hooks/useEmailVerification';
+import { useAppDispatch, useAppSelector } from '@hooks/useAppRedux';
+import { 
+  setSignupStep, 
+  selectSignupCurrentStep 
+} from '@store/slices/authSlice';
+import { StepProgressBar } from '@components/auth/StepProgressBar';
 import { validateEmail } from '@/utils/validation/authValidation';
 import AlertToast from '@components/common/AlertToast/AlertToast';
 import {
   ErrorMessage,
   Container,
-  Header,
-  BackButton,
-  ProgressBar,
-  ProgressFill,
+  Content,
   Title,
   Subtitle,
   FormGroup,
@@ -21,9 +25,17 @@ import {
 
 export function EmailInputPage() {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const currentStep = useAppSelector(selectSignupCurrentStep);
+  
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
   const { sendCode, isLoading, toasts } = useEmailVerification();
+
+  // 컴포넌트 마운트시 현재 스텝 설정
+  useEffect(() => {
+    dispatch(setSignupStep(1)); // 이메일 입력은 1단계
+  }, [dispatch]);
 
 
   // 이메일 입력 처리
@@ -57,17 +69,17 @@ export function EmailInputPage() {
 
   return (
     <>
+      <Header 
+        type="back" 
+        onLeftClick={() => navigate(-1)} 
+      />
+      
       <Container>
-        <Header>
-          <BackButton onClick={() => navigate(-1)}>←</BackButton>
-
-          <ProgressBar>
-            <ProgressFill progress={25} />
-          </ProgressBar>
+        <Content>
+          <StepProgressBar currentStep={currentStep} />
 
           <Title>이메일을 입력해주세요</Title>
           <Subtitle>로그인에 사용될 이메일입니다</Subtitle>
-        </Header>
 
         <FormGroup>
           <Label>이메일</Label>
@@ -87,6 +99,7 @@ export function EmailInputPage() {
         <SendButton disabled={!isEmailValid || isLoading} onClick={handleSendCode}>
           {isLoading ? '발송 중...' : '인증코드 전송'}
         </SendButton>
+        </Content>
       </Container>
       {toasts &&
         toasts.map((toast) => (

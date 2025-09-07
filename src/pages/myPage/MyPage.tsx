@@ -28,20 +28,20 @@ export default function MyPage() {
           </S.ProfileIcon>
           <S.GreetingText>
             <h1><S.UserName>{user?.name || '사용자'}</S.UserName>님, 안녕하세요</h1>
-            <p>오늘도 안전한 하루 되세요!</p>
+            <S.ProfileLink onClick={() => navigate('/mypage/profile')}>
+              <p>내정보</p>
+              <Icon name="chevronRight" size={16} color={theme.colors.neutral400} />
+            </S.ProfileLink>
           </S.GreetingText>
         </S.GreetingSection>
 
         {/* 설정 메뉴 */}
         <S.SettingsSection>
-          <h2>설정</h2>
           <S.MenuList>
+            <h2>설정</h2>
             {MENU_ITEMS.map((menuItem) => (
               <S.MenuItem key={menuItem.id} onClick={() => handleMenuClick(menuItem.path)}>
                 <S.MenuItemLeft>
-                  <S.MenuItemIcon>
-                    <Icon name={menuItem.icon} size={20} color={menuItem.iconColor} />
-                  </S.MenuItemIcon>
                   <S.MenuItemText>{menuItem.label}</S.MenuItemText>
                 </S.MenuItemLeft>
                 <S.ChevronWrapper>

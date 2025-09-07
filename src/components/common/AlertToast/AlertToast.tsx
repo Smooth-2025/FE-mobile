@@ -19,7 +19,7 @@ const styleMap: Record<
     border: 'transparent',
     text: theme.colors.white,
     icon: 'checkmarkCircle',
-    iconColor: theme.colors.primary600,
+    iconColor: theme.colors.success600,
   },
   error: {
     bg: 'rgba(0, 0, 0, 0.7)',

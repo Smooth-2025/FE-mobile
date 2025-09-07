@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '@hooks/useAppRedux';
 import { theme } from '@styles/theme';
 import { Icon } from '@components/common/Icons';
@@ -37,8 +37,9 @@ import type { LoginRequest } from '@/types/api';
 // LoginPage 컴포넌트
 export function LoginPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useAppDispatch();
-  const { toasts, showLoginError } = useToast();
+  const { toasts, showLoginError, showSuccess } = useToast();
 
   // Redux 상태
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
@@ -70,6 +71,16 @@ export function LoginPage() {
       dispatch(clearError());
     }
   }, [error, showLoginError, dispatch]);
+
+  // 성공 메시지 토스트 표시
+  useEffect(() => {
+    const state = location.state as { successMessage?: string } | null;
+    if (state?.successMessage) {
+      showSuccess(state.successMessage);
+      // state를 정리하여 새로고침 시 중복 표시 방지
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state, showSuccess]);
 
   // 컴포넌트 언마운트시 에러 클리어
   useEffect(() => {
@@ -159,15 +170,6 @@ export function LoginPage() {
                 onChange={handleInputChange('email')}
                 onBlur={handleFieldBlur('email')}
                 disabled={isLoginLoading}
-                required
-                style={{
-                  borderColor:
-                    touchedFields.email && formErrors.email
-                      ? '#ef4444'
-                      : touchedFields.email && !formErrors.email && formData.email
-                        ? '#22c55e'
-                        : undefined,
-                }}
               />
               {touchedFields.email && formErrors.email && (
                 <ErrorMessage>{formErrors.email}</ErrorMessage>
@@ -186,15 +188,7 @@ export function LoginPage() {
                   onBlur={handleFieldBlur('password')}
                   disabled={isLoginLoading}
                   required
-                  style={{
-                    borderColor:
-                      touchedFields.password && formErrors.password
-                        ? '#ef4444'
-                        : touchedFields.password && !formErrors.password && formData.password
-                          ? '#22c55e'
-                          : undefined,
-                    paddingRight: '60px', // 버튼 공간 확보
-                  }}
+                  style={{ paddingRight: '60px' }}
                 />
                 <PasswordToggleButton
                   type="button"
