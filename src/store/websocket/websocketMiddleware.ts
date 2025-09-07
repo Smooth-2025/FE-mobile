@@ -1,6 +1,7 @@
 import { RxStomp, RxStompState, type RxStompConfig } from '@stomp/rx-stomp';
 import SockJS from 'sockjs-client';
 import { tokenUtils } from '@/utils/token';
+import api from '@/apis/index';
 import { ConnectionStatus } from './types';
 import { setConnectionStatus, setError } from '../slices/websocketSlice';
 import { addAlert } from '../slices/alertSlice';
@@ -28,6 +29,19 @@ let reconnectAttempts = 0;
 const MAX_INITIAL_ATTEMPTS = 3; 
 const LONG_RECONNECT_INTERVAL = 10 * 60 * 1000;
 let reconnectTimeout: NodeJS.Timeout | null = null;
+
+// 토큰 갱신 함수
+const refreshTokenIfNeeded = async (): Promise<boolean> => {
+  try {
+    console.warn('🔄 토큰 갱신 시도...');
+    await api.post('/api/users/auth/refresh');
+    console.warn('✅ 토큰 갱신 완료');
+    return true;
+  } catch (error) {
+    console.error('❌ 토큰 갱신 실패:', error);
+    return false;
+  }
+};
 
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -121,13 +135,12 @@ export const websocketMiddleware: Middleware =
       const socket = new SockJS(import.meta.env.VITE_API_BASE_WS_URL);
 
       rxStomp = new RxStomp();
-      const currentToken = tokenUtils.getToken();
-      console.warn('🔑 실제 전송 토큰:', currentToken?.substring(0, 20) + '...');
+      console.warn('🔑 실제 전송 토큰:', token?.substring(0, 20) + '...');
       
       const config: RxStompConfig = {
         webSocketFactory: () => socket,
         connectHeaders: {
-          Authorization: `Bearer ${currentToken}`,
+          Authorization: `Bearer ${token}`,
         },
         heartbeatIncoming: 30000,
         heartbeatOutgoing: 30000,
@@ -153,15 +166,33 @@ export const websocketMiddleware: Middleware =
         
             console.warn(`🔄 연결 끊김 - 재연결 시도 ${reconnectAttempts}/${MAX_INITIAL_ATTEMPTS}`);
             
-            reconnectTimeout = setTimeout(() => {
-              dispatch(connectWebSocket());
+            reconnectTimeout = setTimeout(async () => {
+              // 3번째 시도에서만 토큰 갱신
+              if (reconnectAttempts === 3) {
+                const tokenRefreshed = await refreshTokenIfNeeded();
+                if (tokenRefreshed) {
+                  // 토큰 갱신 후 새로운 토큰으로 웹소켓 연결
+                  const newToken = tokenUtils.getToken();
+                  console.warn('🔄 갱신된 토큰으로 웹소켓 재연결:', newToken?.substring(0, 20) + '...');
+                  dispatch(connectWebSocket());
+                } else {
+                  console.error('토큰 갱신 실패로 재연결 중단');
+                }
+              } else {
+                dispatch(connectWebSocket());
+              }
             }, 5000);
           } else {
           
             console.warn(`🔄 장기간 연결 실패 - 10분 후 재연결 시도 (${reconnectAttempts}번째)`);
             
-            reconnectTimeout = setTimeout(() => {
-              dispatch(connectWebSocket());
+            reconnectTimeout = setTimeout(async () => {
+              const tokenRefreshed = await refreshTokenIfNeeded();
+              if (tokenRefreshed) {
+                dispatch(connectWebSocket());
+              } else {
+                console.error('토큰 갱신 실패로 재연결 중단');
+              }
             }, LONG_RECONNECT_INTERVAL);
           }
         } else if (state === RxStompState.CONNECTING) {
