@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { theme } from '@/styles/theme';
-import { Icon } from '@/components/common';
+import Header from '@/layout/Header';
 import ReportListItem from '@/components/myPage/ReportListItem';
 import * as S from '@/components/myPage/ReportListPage.styles';
 import { getEmergencyHistory } from '@/apis/emergency';
@@ -89,13 +88,7 @@ export default function ReportListPage() {
 
   return (
     <S.Container>
-      <S.Header>
-        <S.BackButton onClick={handleGoBack}>
-          <Icon name="close" size={24} color={theme.colors.neutral700} />
-        </S.BackButton>
-        <S.HeaderTitle>신고내역</S.HeaderTitle>
-        <div />
-      </S.Header>
+      <Header type="back" title="신고내역" onLeftClick={handleGoBack} />
 
       <S.ContentSection>
         {loading ? (
