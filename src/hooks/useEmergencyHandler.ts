@@ -10,6 +10,7 @@ export const useEmergencyHandler = () => {
   const [isReportedModalOpen, setIsReportedModalOpen] = useState(false);
   const [isTimeout, setIsTimeout] = useState(false);
   const [currentAccidentId, setCurrentAccidentId] = useState<string>('');
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const openEmergencyModal = (accidentId: string) => {
     setCurrentAccidentId(accidentId);
@@ -17,7 +18,14 @@ export const useEmergencyHandler = () => {
   };
 
   const handleEmergencyCall = useCallback(async (timeout: boolean) => {
+    if (isProcessing) {
+      console.warn('Emergency call already in progress, skipping...');
+      return;
+    }
+
     try {
+      setIsProcessing(true);
+      
       const requestData: EmergencyRequestDto = {
         accidentId: currentAccidentId,
         chooseReport: true,
@@ -28,7 +36,8 @@ export const useEmergencyHandler = () => {
       console.warn('Current token:', tokenUtils.getToken());
       console.warn('Has token:', tokenUtils.hasToken());
 
-      await sendEmergencyDecision(requestData);
+      const response = await sendEmergencyDecision(requestData);
+      console.warn('Emergency decision response:', response);
 
       setIsEmergencyModalOpen(false);
       setIsReportedModalOpen(true);
@@ -37,14 +46,21 @@ export const useEmergencyHandler = () => {
       if (error instanceof AxiosError) {
         console.error("Emergency call failed:", error);
 
-          if (error.response?.status === 503) {
-            console.error("서비스 일시 중단 - 백엔드 서버 상태를 확인하세요");
-          }
-      } else {
-          console.error("알 수 없는 오류:", error);
+        if (error.response?.status === 409) {
+          console.warn("이미 처리된 응급상황입니다.");
+          setIsEmergencyModalOpen(false);
+          setIsReportedModalOpen(true);
+          setIsTimeout(timeout);
+        } else if (error.response?.status === 503) {
+          console.error("서비스 일시 중단 - 백엔드 서버 상태를 확인하세요");
         }
+      } else {
+        console.error("알 수 없는 오류:", error);
       }
-  }, [currentAccidentId]);
+    } finally {
+      setIsProcessing(false);
+    }
+  }, [currentAccidentId, isProcessing]);
 
   const handleManualEmergencyCall = useCallback(() => {
     handleEmergencyCall(false);
@@ -67,6 +83,7 @@ export const useEmergencyHandler = () => {
     isEmergencyModalOpen,
     isReportedModalOpen,
     isTimeout,
+    isProcessing,
     openEmergencyModal,
     handleManualEmergencyCall,
     handleTimeoutEmergencyCall,
