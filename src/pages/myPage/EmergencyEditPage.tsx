@@ -3,15 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/useToast';
 import { getUserProfile, updateEmergencyInfo } from '@/apis/auth';
 import { validateEmergencyContact, formatPhoneNumber } from '@/utils/validation/emergencyValidation';
-import { theme } from '@/styles/theme';
-import { Icon } from '@/components/common';
 import AlertToast from '@/components/common/AlertToast/AlertToast';
+import { Input } from '@/components/common/Input';
+import Header from '@/layout/Header';
 import * as S from '@/components/myPage/EmergencyEditPage.styles';
 import type { UpdateEmergencyInfoRequest, EmergencyFormData, EmergencyFormErrors } from '@/types/api';
 
 export default function EmergencyEditPage() {
   const navigate = useNavigate();
-  const { showSuccess, showError, toasts } = useToast();
+  const { showError, toasts } = useToast();
 
   // 초기 데이터 로딩 상태
   const [isInitialLoading, setIsInitialLoading] = useState(true);
@@ -136,8 +136,9 @@ export default function EmergencyEditPage() {
 
       await updateEmergencyInfo(requestData);
 
-      showSuccess('응급정보가 성공적으로 수정되었습니다.');
-      navigate('/mypage/emergency');
+      navigate('/mypage/emergency', {
+        state: { successMessage: '응급정보가 수정되었습니다.' }
+      });
     } catch (error) {
       console.error('응급정보 수정 실패:', error);
       
@@ -154,13 +155,7 @@ export default function EmergencyEditPage() {
   if (isInitialLoading) {
     return (
       <S.Container>
-        <S.Header>
-          <S.BackButton onClick={handleGoBack}>
-            <Icon name="chevronLeft" size={24} color={theme.colors.neutral700} />
-          </S.BackButton>
-          <S.HeaderTitle>응급정보 수정</S.HeaderTitle>
-          <div />
-        </S.Header>
+        <Header type="back" title="응급정보 수정" onLeftClick={handleGoBack} />
         <S.LoadingContainer>
           <S.LoadingText>응급정보를 불러오는 중...</S.LoadingText>
         </S.LoadingContainer>
@@ -172,14 +167,9 @@ export default function EmergencyEditPage() {
     <>
       <S.Container>
         {/* 헤더 */}
-        <S.Header>
-          <S.BackButton onClick={handleGoBack}>
-            <Icon name="chevronLeft" size={24} color={theme.colors.neutral700} />
-          </S.BackButton>
-          <S.HeaderTitle>응급정보 수정</S.HeaderTitle>
-          <div />
-        </S.Header>
-
+        <Header type="back" title="응급정보 수정" onLeftClick={handleGoBack} />
+          <S.Title>응급 정보를 입력해주세요</S.Title>
+          <S.Subtitle>등록된 연락처로 사고 발생 알림 문자가 전송됩니다.</S.Subtitle>
         {/* 폼 */}
         <S.FormSection>
           {/* 혈액형 */}
@@ -202,14 +192,13 @@ export default function EmergencyEditPage() {
 
           {/* 긴급연락처 1 */}
           <S.FormGroup>
-            <S.Label>긴급연락처 1</S.Label>
-            <S.Input
+            <Input
+              label="긴급연락처 1"
               type="text"
               placeholder="연락처를 입력해주세요"
               value={formData.emergencyContact1}
               onChange={handleInputChange('emergencyContact1')}
               onBlur={handleFieldBlur('emergencyContact1')}
-              $hasError={!!formErrors.emergencyContact1}
               maxLength={13}
             />
             {formErrors.emergencyContact1 && (
@@ -219,14 +208,13 @@ export default function EmergencyEditPage() {
 
           {/* 긴급연락처 2 */}
           <S.FormGroup>
-            <S.Label>긴급연락처 2</S.Label>
-            <S.Input
+            <Input
+              label="긴급연락처 2"
               type="text"
               placeholder="연락처를 입력해주세요"
               value={formData.emergencyContact2}
               onChange={handleInputChange('emergencyContact2')}
               onBlur={handleFieldBlur('emergencyContact2')}
-              $hasError={!!formErrors.emergencyContact2}
               maxLength={13}
             />
             {formErrors.emergencyContact2 && (
@@ -236,14 +224,13 @@ export default function EmergencyEditPage() {
 
           {/* 긴급연락처 3 */}
           <S.FormGroup>
-            <S.Label>긴급연락처 3</S.Label>
-            <S.Input
+            <Input
+              label="긴급연락처 3"
               type="text"
               placeholder="연락처를 입력해주세요"
               value={formData.emergencyContact3}
               onChange={handleInputChange('emergencyContact3')}
               onBlur={handleFieldBlur('emergencyContact3')}
-              $hasError={!!formErrors.emergencyContact3}
               maxLength={13}
             />
             {formErrors.emergencyContact3 && (
@@ -257,7 +244,7 @@ export default function EmergencyEditPage() {
           onClick={handleSubmit}
           disabled={!isFormValid() || isSubmitLoading}
         >
-          {isSubmitLoading ? '저장 중...' : '저장'}
+          {isSubmitLoading ? '수정 중...' : '수정'}
         </S.SaveButton>
       </S.Container>
 

@@ -13,17 +13,10 @@ function Placeholder() {
       </styled.P_TitleBox>
       <styled.P_MetricWrapper>
         {Array.from({ length: 4 }).map((_, idx) => (
-          <styled.P_MetricItem>
-            <Skeleton key={idx} width={10} height={10} style={{ marginRight: '10px' }} circle />
-            <Skeleton key={idx} width={50} unit="%" height={100} rounded style={{ flex: '1' }} />
-            <Skeleton
-              key={idx}
-              width={20}
-              unit="%"
-              height={100}
-              style={{ marginLeft: '10px' }}
-              rounded
-            />
+          <styled.P_MetricItem key={idx}>
+            <Skeleton width={10} height={10} style={{ marginRight: '10px' }} circle />
+            <Skeleton width={50} unit="%" height={100} rounded style={{ flex: '1' }} />
+            <Skeleton width={20} unit="%" height={100} style={{ marginLeft: '10px' }} rounded />
           </styled.P_MetricItem>
         ))}
       </styled.P_MetricWrapper>

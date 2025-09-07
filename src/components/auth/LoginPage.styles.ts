@@ -4,10 +4,10 @@ import { theme } from '@styles/theme';
 export const PageContainer = styled.div`
   min-height: 100vh;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   background-color: ${theme.colors.white};
-  padding: 20px;
+  padding: 60px 20px 20px 20px;
 `;
 
 export const LoginContainer = styled.div`

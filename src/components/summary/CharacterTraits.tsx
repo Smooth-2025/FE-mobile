@@ -17,6 +17,14 @@ const characterImages: Record<CharacterType, string> = {
   NONE: emptyImg,
 };
 
+const characterTypeLabels: Record<CharacterType, string> = {
+  NONE: '? ',
+  LION: '사자',
+  MEERKAT: '미어캣',
+  CAT: '고양이',
+  DOLPHIN: '돌고래',
+};
+
 const MIN_KM = 0;
 const MAX_KM = 100;
 
@@ -59,7 +67,7 @@ export default function CharacterTraits() {
     return;
   }
 
-  const characterImage = characterImages[data?.character_type ?? 'NONE'];
+  const characterImage = characterImages[data?.characterType ?? 'NONE'];
 
   return (
     <styled.CharacterTraitsContainer>
@@ -68,13 +76,14 @@ export default function CharacterTraits() {
         <styled.Title>
           당신의 운전 성향은 &nbsp;
           <strong>
-            [{data?.character_trait}] {data?.character_type}
+            {data?.characterTrait && `[${data?.characterTrait}]`}
+            {characterTypeLabels[data?.characterType ?? 'NONE']}
           </strong>
           입니다.
         </styled.Title>
       </styled.Header>
-      <styled.Character src={characterImage} alt={`${data?.character_type} 캐릭터`} />
-      <styled.Description>{data?.description}</styled.Description>
+      <styled.Character src={characterImage} alt={`${data?.characterType} 캐릭터`} />
+      {data?.description && <styled.Description>{data?.description}</styled.Description>}
 
       <styled.ProgressSection>
         <styled.ProgressText>

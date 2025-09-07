@@ -5,6 +5,8 @@ import { changePassword } from '@/apis/auth';
 import { validatePassword, validatePasswordConfirm } from '@/utils/validation/profileValidation';
 import { theme } from '@/styles/theme';
 import { Icon } from '@/components/common';
+import { Input } from '@/components/common/Input/Input';
+import Header from '@/layout/Header';
 import AlertToast from '@/components/common/AlertToast/AlertToast';
 import * as S from '@/components/myPage/ChangePasswordPage.styles';
 import type { ChangePasswordRequest } from '@/types/api';
@@ -28,7 +30,7 @@ interface FormSuccess {
 
 export default function ChangePasswordPage() {
   const navigate = useNavigate();
-  const { showSuccess, showError, toasts } = useToast();
+  const { showError, toasts } = useToast();
 
   // 폼 상태
   const [formData, setFormData] = useState<FormData>({
@@ -152,8 +154,9 @@ export default function ChangePasswordPage() {
 
       await changePassword(requestData);
 
-      showSuccess('비밀번호가 성공적으로 변경되었습니다.');
-      navigate('/mypage/profile');
+      navigate('/mypage/profile', {
+        state: { successMessage: '비밀번호 수정이 완료되었습니다.' }
+      });
     } catch (error: unknown) {
       console.error('비밀번호 변경 실패:', error);
       
@@ -184,29 +187,26 @@ export default function ChangePasswordPage() {
 
   return (
     <>
+      <Header 
+        type="back" 
+        title="비밀번호 변경" 
+        onLeftClick={handleGoBack} 
+      />
+      
       <S.Container>
-        {/* 헤더 */}
-        <S.Header>
-          <S.BackButton onClick={handleGoBack}>
-            <Icon name="chevronLeft" size={24} color={theme.colors.neutral700} />
-          </S.BackButton>
-          <S.HeaderTitle>비밀번호 변경</S.HeaderTitle>
-          <div />
-        </S.Header>
 
         {/* 폼 */}
         <S.FormSection>
           {/* 현재 비밀번호 */}
           <S.FormGroup>
-            <S.Label>현재 비밀번호</S.Label>
             <S.PasswordWrapper>
-              <S.Input
+              <Input
+                label="현재 비밀번호"
                 type={showCurrentPassword ? 'text' : 'password'}
                 placeholder="현재 비밀번호를 입력해주세요."
                 value={formData.currentPassword}
                 onChange={handleInputChange('currentPassword')}
                 onBlur={handleFieldBlur('currentPassword')}
-                $hasError={!!formErrors.currentPassword}
               />
               <S.PasswordToggleButton 
                 type="button" 
@@ -226,16 +226,14 @@ export default function ChangePasswordPage() {
 
           {/* 새 비밀번호 */}
           <S.FormGroup>
-            <S.Label>새 비밀번호</S.Label>
             <S.PasswordWrapper>
-              <S.Input
+              <Input
+                label="새 비밀번호"
                 type={showNewPassword ? 'text' : 'password'}
                 placeholder="새 비밀번호를 입력해주세요."
                 value={formData.newPassword}
                 onChange={handleInputChange('newPassword')}
                 onBlur={handleFieldBlur('newPassword')}
-                $hasError={!!formErrors.newPassword}
-                $hasSuccess={!!formSuccess.newPassword}
               />
               <S.PasswordToggleButton 
                 type="button" 
@@ -258,16 +256,14 @@ export default function ChangePasswordPage() {
 
           {/* 새 비밀번호 확인 */}
           <S.FormGroup>
-            <S.Label>새 비밀번호 확인</S.Label>
             <S.PasswordWrapper>
-              <S.Input
+              <Input
+                label="새 비밀번호 확인"
                 type={showConfirmPassword ? 'text' : 'password'}
                 placeholder="새 비밀번호를 다시 입력해주세요."
                 value={formData.confirmPassword}
                 onChange={handleInputChange('confirmPassword')}
                 onBlur={handleFieldBlur('confirmPassword')}
-                $hasError={!!formErrors.confirmPassword}
-                $hasSuccess={!!formSuccess.confirmPassword}
               />
               <S.PasswordToggleButton 
                 type="button" 

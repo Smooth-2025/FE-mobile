@@ -3,10 +3,27 @@ import { theme } from '@/styles/theme';
 
 // 페이지 컨테이너
 export const Container = styled.div`
-  min-height: 100vh;
-  background-color: ${theme.colors.bg_page};
+  height: 100%;
+  background-color: ${theme.colors.white};
   display: flex;
   flex-direction: column;
+`;
+
+export const Content = styled.div`
+  padding: 20px;
+`;
+
+export const Title = styled.h1`
+  font-size: 24px;
+  font-weight: 600;
+  margin: 20px 0px 10px 15px ;
+  color: ${theme.colors.neutral700};
+`;
+
+export const Subtitle = styled.p`
+  font-size: 16px;
+  color: ${theme.colors.neutral500};
+  margin: 0px 0px 10px 15px ;
 `;
 
 // 헤더
@@ -67,14 +84,13 @@ export const BloodTypeButton = styled.button<{ selected: boolean }>`
   flex: 1;
   height: 48px;
   border: 2px solid ${({ selected }) => 
-    selected ? theme.colors.primary600 : theme.colors.neutral300};
+    selected ? theme.colors.primary600 : 0};
   border-radius: ${theme.borderRadius.sm}px;
   background-color: ${({ selected }) => 
-    selected ? theme.colors.primary50 : theme.colors.white};
+    selected ? theme.colors.white : theme.colors.neutral50};
   color: ${({ selected }) => 
     selected ? theme.colors.primary600 : theme.colors.neutral600};
   font-size: ${theme.fontSize[16]}rem;
-  font-weight: ${({ selected }) => selected ? 600 : 400};
   cursor: pointer;
   transition: all 0.2s ease;
 
@@ -86,30 +102,6 @@ export const BloodTypeButton = styled.button<{ selected: boolean }>`
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
-  }
-`;
-
-// 입력 필드
-export const Input = styled.input<{
-  $hasError?: boolean;
-}>`
-  width: 100%;
-  height: 48px;
-  padding: 0 16px;
-  border: 1px solid ${({ $hasError }) =>
-    $hasError ? theme.colors.danger500 : theme.colors.neutral300};
-  border-radius: ${theme.borderRadius.sm}px;
-  font-size: ${theme.fontSize[16]}rem;
-  background-color: ${theme.colors.white};
-  
-  &::placeholder {
-    color: ${theme.colors.neutral400};
-  }
-  
-  &:focus {
-    outline: none;
-    border-color: ${({ $hasError }) =>
-      $hasError ? theme.colors.danger500 : theme.colors.primary500};
   }
 `;
 
