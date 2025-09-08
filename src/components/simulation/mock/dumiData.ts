@@ -150,7 +150,7 @@ export const origin_latitude = 37.55807;
 export const meters_per_lon_degree = 89000.0;
 export const meters_per_lat_degree = 111139.0;
 
-export function round(value: number, digits: number): number {
+function round(value: number, digits: number): number {
   const factor = Math.pow(10, digits);
   return Math.round(value * factor) / factor;
 }
