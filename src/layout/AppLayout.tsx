@@ -7,7 +7,6 @@ import { theme } from '@/styles/theme';
 import DrivePortal from '@/components/portal/DrivePortal';
 import DriveOverlayPage from '@/pages/driveOverlay/DriveOverlayPage';
 import { selectIsAuthenticated } from '@/store/slices/authSlice';
-import { ConnectionStatus } from '@/store/websocket/types';
 import { useWebSocket } from '@/hooks/useWebSocket';
 import { useGetLinkStatusQuery } from '@/store/vehicle/vehicleApi';
 import BottomNav, { NAV_HEIGHT } from './BottomNav';
@@ -25,34 +24,6 @@ const Content = styled.div<{ $hasBottomNav: boolean }>`
   box-sizing: border-box;
 `;
 
-// WebSocket 상태 표시 컴포넌트 (개발용)
-const WSStatus = styled.div`
-  position: fixed;
-  top: 10px;
-  right: 10px;
-  padding: 4px 8px;
-  background: rgba(0, 0, 0, 0.7);
-  color: white;
-  font-size: 10px;
-  border-radius: 4px;
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-`;
-
-const Dot = styled.span<{ status: ConnectionStatus }>`
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: ${({ status }) =>
-    status === ConnectionStatus.CONNECTED
-      ? '#22c55e'
-      : status === ConnectionStatus.CONNECTING || status === ConnectionStatus.RECONNECTING
-        ? '#f59e0b'
-        : '#ef4444'};
-`;
 
 type RouteHandle = { hideBottomNav?: boolean };
 type MatchUnknown = { handle?: unknown };
@@ -87,7 +58,7 @@ export default function AppLayout() {
     skip: !isAuthenticated,
   });
 
-  const { connectionStatus } = useWebSocket({
+  useWebSocket({
     autoConnect: isAuthenticated && linkStatus?.linked === true,
   });
 
@@ -104,10 +75,6 @@ export default function AppLayout() {
           <DriveOverlayPage />
         </DrivePortal>
       )}
-      <WSStatus>
-        WS: {connectionStatus}
-        <Dot status={connectionStatus} />
-      </WSStatus>
     </>
   );
 }

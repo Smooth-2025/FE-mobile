@@ -1,9 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Input } from '@components/common';
+import Header from '@layout/Header';
 import { useEmailVerification } from '@hooks/useEmailVerification';
 import { useCountdown } from '@hooks/useCountdown';
 import { useToast } from '@hooks/useToast';
+import { useAppDispatch, useAppSelector } from '@hooks/useAppRedux';
+import { 
+  setSignupStep, 
+  nextSignupStep,
+  selectSignupCurrentStep 
+} from '@store/slices/authSlice';
+import { StepProgressBar } from '@components/auth/StepProgressBar';
 import {
   validateVerificationCode,
   formatVerificationCode,
@@ -12,26 +20,25 @@ import AlertToast from '@components/common/AlertToast/AlertToast';
 import {
   ErrorMessage,
   Container,
-  Header,
-  BackButton,
-  ProgressBar,
-  ProgressFill,
+  Content,
   Title,
   Subtitle,
-  EmailDisplay,
   FormGroup,
   Label,
-  TimerDisplay,
   VerifyButton,
   ResendText,
   ResendLink,
+  CodeInputWrapper,
+  CodeTimerDisplay,
 } from '@/components/auth/EmailVerificationPage.styles';
-
 
 export function EmailVerificationPage() {
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useAppDispatch();
   const { showToast, toasts } = useToast();
+
+  const currentStep = useAppSelector(selectSignupCurrentStep);
 
   const [verificationCode, setVerificationCode] = useState('');
   const [codeError, setCodeError] = useState('');
@@ -57,10 +64,12 @@ export function EmailVerificationPage() {
       return;
     }
 
+    // 현재 스텝 설정 (이메일 인증은 1단계)
+    dispatch(setSignupStep(1));
+
     // 타이머 시작
     startTimer();
-  }, [email, navigate, startTimer]);
-
+  }, [email, navigate, startTimer, dispatch]);
 
   // 인증번호 입력 처리
   const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -91,6 +100,7 @@ export function EmailVerificationPage() {
     const success = await verifyCode(email, verificationCode);
     if (success) {
       // 다음 단계로 이동
+      dispatch(nextSignupStep()); // 2단계로 변경
       navigate('/signup/profile', {
         state: { email, emailVerified: true },
       });
@@ -111,15 +121,18 @@ export function EmailVerificationPage() {
 
   const isCodeValid = verificationCode.length === 5 && !codeError;
 
+
+ 
   return (
     <>
+      <Header 
+        type="back"  
+        onLeftClick={() => navigate(-1)} 
+      />
+      
       <Container>
-        <Header>
-          <BackButton onClick={() => navigate(-1)}>←</BackButton>
-
-          <ProgressBar>
-            <ProgressFill progress={25} />
-          </ProgressBar>
+        <Content>
+          <StepProgressBar currentStep={currentStep} />
 
           <Title>이메일 인증</Title>
           <Subtitle>
@@ -127,27 +140,34 @@ export function EmailVerificationPage() {
             <br />
             메일을 확인하고 인증코드 5자리를 입력해주세요.
           </Subtitle>
-        </Header>
 
-        <EmailDisplay>{email}</EmailDisplay>
+        {/* 이메일을 disabled Input으로 변경 */}
+        <FormGroup>
+          <Label>이메일</Label>
+          <Input
+            type="email"
+            value={email}
+            disabled
+          />
+        </FormGroup>
 
+        {/* 인증코드 입력 - 타이머를 input 안에 표시 */}
         <FormGroup>
           <Label>인증코드</Label>
-          <Input
-            type="text"
-            placeholder="인증코드 5자리"
-            value={verificationCode}
-            onChange={handleCodeChange}
-            maxLength={5}
-            style={{
-              borderColor: codeError ? '#ef4444' : undefined,
-              borderWidth: codeError ? '2px' : '1px',
-            }}
-          />
+          <CodeInputWrapper>
+            <Input
+              type="text"
+              placeholder="인증코드 5자리"
+              value={verificationCode}
+              onChange={handleCodeChange}
+              maxLength={5}
+            />
+            {!isExpired && (
+              <CodeTimerDisplay>{formattedTime}</CodeTimerDisplay>
+            )}
+          </CodeInputWrapper>
+          
           {codeError && <ErrorMessage>{codeError}</ErrorMessage>}
-
-          {!isExpired && !codeError && <TimerDisplay>{formattedTime}</TimerDisplay>}
-
           {isExpired && <ErrorMessage>인증 시간이 만료되었습니다.</ErrorMessage>}
         </FormGroup>
 
@@ -161,7 +181,9 @@ export function EmailVerificationPage() {
             재전송
           </ResendLink>
         </ResendText>
+        </Content>
       </Container>
+      
       {toasts &&
         toasts.map((toast) => (
           <AlertToast

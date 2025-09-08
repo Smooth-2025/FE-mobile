@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { loginUser, registerUser, logoutUser, deleteAccount } from '@apis/auth';
 import { tokenUtils } from '@/utils/token';
+import type { PayloadAction } from '@reduxjs/toolkit';
 import type {
   LoginRequest,
   LoginResponse,
@@ -24,6 +25,8 @@ interface AuthState {
   error: string | null;
   // 인증 여부
   isAuthenticated: boolean;
+
+   signupCurrentStep: 1 | 2 | 3 | 4;
 }
 
 // 초기 상태
@@ -36,6 +39,7 @@ const initialState: AuthState = {
   isDeleteAccountLoading: false,
   error: null,
   isAuthenticated: !!tokenUtils.getAccessToken(),
+  signupCurrentStep: 1,
 };
 
 // 로그인 비동기 액션
@@ -78,8 +82,6 @@ export const registerAsync = createAsyncThunk<
     try {
       const response = await registerUser(registerData);
       
-      // 회원가입 후 자동 로그인되므로 토큰 저장
-      tokenUtils.setToken(response.data.token); 
       
       return response.data; 
     } catch (error: unknown) {
@@ -139,6 +141,43 @@ const authSlice = createSlice({
       state.error = null;
     },
 
+
+    // 회원가입 스텝 관리
+    setSignupStep: (state, action: PayloadAction<1 | 2 | 3 | 4>) => {
+      state.signupCurrentStep = action.payload;
+    },
+    
+    nextSignupStep: (state) => {
+      if (state.signupCurrentStep < 4) {
+        state.signupCurrentStep = (state.signupCurrentStep + 1) as 1 | 2 | 3 | 4;
+      }
+    },
+    
+    prevSignupStep: (state) => {
+      if (state.signupCurrentStep > 1) {
+        state.signupCurrentStep = (state.signupCurrentStep - 1) as 1 | 2 | 3 | 4;
+      }
+    },
+    
+    resetSignupStep: (state) => {
+      state.signupCurrentStep = 1;
+    },
+    
+    // 로그아웃시 상태 초기화
+    resetAuthState: (state) => {
+      tokenUtils.removeToken();
+      // immer를 사용해서 상태 초기화
+      state.user = null;
+      state.accessToken = null;
+      state.isAuthenticated = false;
+      state.error = null;
+      state.signupCurrentStep = 1;
+      state.isLoginLoading = false;
+      state.isRegisterLoading = false;
+      state.isLogoutLoading = false;
+      state.isDeleteAccountLoading = false;
+    },
+
     // Access Token 설정
     setAccessToken: (state, action) => {
       state.accessToken = action.payload;
@@ -196,17 +235,15 @@ extraReducers: (builder) => {
         state.isRegisterLoading = true;
         state.error = null;
       })
-      .addCase(registerAsync.fulfilled, (state, action) => {
+      .addCase(registerAsync.fulfilled, (state) => {
         state.isRegisterLoading = false;
-        state.accessToken = action.payload.token;
-        state.isAuthenticated = true;
-
-        // User 객체 생성
-        state.user = {
-          id: action.payload.userId,
-          name: action.payload.name,
-          email: '', // 필요시 registerData에서 가져오기
-        } as User;
+        // 회원가입 후에는 인증 상태로 만들지 않음
+        state.accessToken = null;
+        state.isAuthenticated = false;
+        state.user = null;
+        state.signupCurrentStep = 1;
+        // 회원가입 성공 시 에러 상태만 초기화
+        state.error = null;
       })
       .addCase(registerAsync.rejected, (state, action) => {
         state.isRegisterLoading = false;
@@ -259,7 +296,13 @@ extraReducers: (builder) => {
 });
 
 // Export
-export const { clearError, setAccessToken, logout, updateUser } = authSlice.actions;
+export const { clearError, setAccessToken, logout, updateUser,   setSignupStep, 
+  nextSignupStep, 
+  prevSignupStep, 
+  resetSignupStep,
+  resetAuthState } = authSlice.actions;
+
+export const selectSignupCurrentStep = (state: { auth: AuthState }) => state.auth.signupCurrentStep;
 export default authSlice.reducer;
 
 // 셀렉터들 (상태 조회용)

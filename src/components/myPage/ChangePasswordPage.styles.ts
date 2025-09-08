@@ -3,37 +3,10 @@ import { theme } from '@/styles/theme';
 
 // 페이지 컨테이너
 export const Container = styled.div`
-  min-height: 100vh;
-  background-color: ${theme.colors.bg_page};
+  height: 100%;
+  background-color: ${theme.colors.white};
   display: flex;
   flex-direction: column;
-`;
-
-// 헤더
-export const Header = styled.header`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: ${theme.spacing.md}px;
-  background-color: ${theme.colors.white};
-  border-bottom: 1px solid ${theme.colors.neutral200};
-`;
-
-export const BackButton = styled.button`
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-export const HeaderTitle = styled.h1`
-  font-size: ${theme.fontSize[18]}rem;
-  font-weight: 600;
-  color: ${theme.colors.neutral700};
-  margin: 0;
 `;
 
 // 폼 섹션
@@ -52,16 +25,13 @@ export const FormGroup = styled.div`
 
 export const Label = styled.label`
   font-size: ${theme.fontSize[14]}rem;
-  font-weight: 500;
   color: ${theme.colors.neutral700};
-  margin-bottom: 4px;
+  margin-bottom: 1px;
 `;
 
 // 비밀번호 입력 래퍼
 export const PasswordWrapper = styled.div`
   position: relative;
-  display: flex;
-  align-items: center;
 `;
 
 export const Input = styled.input<{
@@ -93,6 +63,8 @@ export const Input = styled.input<{
 export const PasswordToggleButton = styled.button`
   position: absolute;
   right: 12px;
+  top: 56%;
+  transform: translateY(-50%);
   background: none;
   border: none;
   cursor: pointer;
