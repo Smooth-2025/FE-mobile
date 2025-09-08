@@ -7,12 +7,15 @@ export type SendCommandPayload = { command: string; data: unknown };
 export const connectWebSocket = createAction('websocket/connect');
 export const disconnectWebSocket = createAction('websocket/disconnect');
 
-
 export const subscribeToDriving = createAction('websocket/subscribeDriving');
-export const unsubscribeFromDriving = createAction<UnsubscribePayload>('websocket/unsubscribeDriving');
+export const unsubscribeFromDriving = createAction<UnsubscribePayload>(
+  'websocket/unsubscribeDriving',
+);
 
 export const subscribeToIncident = createAction('websocket/subscribeIncident');
-export const unsubscribeFromIncident = createAction<UnsubscribePayload>('websocket/unsubscribeIncident');
+export const unsubscribeFromIncident = createAction<UnsubscribePayload>(
+  'websocket/unsubscribeIncident',
+);
 
 export const sendTestAlert = createAction<SendTestAlertPayload>('websocket/sendTestAlert');
 export const pingWebSocket = createAction('websocket/ping');

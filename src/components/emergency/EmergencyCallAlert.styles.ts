@@ -3,10 +3,12 @@ import { theme } from '@/styles/theme';
 
 export const ModalBackdrop = styled.div`
   @keyframes emergencyBlink {
-    0%, 50% {
+    0%,
+    50% {
       background: ${theme.colors.danger700};
     }
-    51%, 100% {
+    51%,
+    100% {
       background: ${theme.colors.black};
     }
   }

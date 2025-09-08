@@ -64,7 +64,7 @@ export interface UserProfileResponse extends BaseResponse {
 
 // 단순 성공/실패 응답 (로그아웃 등에서 사용)
 // export interface CommonResponse extends BaseResponse {
-  // BaseResponse와 동일하지만 명시적으로 구분
+// BaseResponse와 동일하지만 명시적으로 구분
 // }
 
 export type CommonResponse = BaseResponse;
@@ -284,11 +284,11 @@ export interface EmergencyReportDto {
   id?: number;
   accidentId: string;
   userId: number;
-  reportTime: string; 
-  latitude: number; 
-  longitude: number; 
-  emergencyNotified: boolean; 
-  familyNotified: boolean; 
+  reportTime: string;
+  latitude: number;
+  longitude: number;
+  emergencyNotified: boolean;
+  familyNotified: boolean;
 }
 
 // 신고내역 조회 응답 타입

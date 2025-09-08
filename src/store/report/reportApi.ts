@@ -27,22 +27,22 @@ export const reportApi = createApi({
     }),
     //리포트 상세1_주행 정보
     getDrivingSummary: build.query<DrivingSummary, ReportArg>({
-      query: ({ reportId }) => ({ url: `${reportId}/basic-summary`, method: 'GET' }),
+      query: ({ reportId }) => ({ url: `/${reportId}/basic-summary`, method: 'GET' }),
       providesTags: ['DrivingSummary'],
     }),
     //리포트 상세2_주행 행동 요약
     getDrivingBehavior: build.query<DrivingBehavior, ReportArg>({
-      query: ({ reportId }) => ({ url: `${reportId}/behavior`, method: 'GET' }),
+      query: ({ reportId }) => ({ url: `/${reportId}/behavior`, method: 'GET' }),
       providesTags: ['DrivingBehavior'],
     }),
     //리포트 상세3_사고 알림 반응 분석
     getAccidentResponse: build.query<AccidentResponse, ReportArg>({
-      query: ({ reportId }) => ({ url: `${reportId}/accident-response`, method: 'GET' }),
+      query: ({ reportId }) => ({ url: `/${reportId}/accident-response`, method: 'GET' }),
       providesTags: ['AccidentResponse'],
     }),
     //리포트 상세4_DNA 성향 분석
     getDrivingDNA: build.query<DrivingDNA, ReportArg>({
-      query: ({ reportId }) => ({ url: `${reportId}/dna`, method: 'GET' }),
+      query: ({ reportId }) => ({ url: `/${reportId}/dna`, method: 'GET' }),
       providesTags: ['DrivingDNA'],
     }),
   }),

@@ -35,31 +35,31 @@ export const useEmailVerification = () => {
   };
 
   // 인증코드 검증
-const verifyCode = async (email: string, code: string): Promise<boolean> => {
-  try {
-    setIsLoading(true);
-    
-    const response = await verifyEmailCode({ email, code });
-    
-    if (response.data.verified) { 
-      setVerifiedEmail(email);
-      return true;
-    } else {
-      showLoginError('인증번호를 확인해 주세요');
+  const verifyCode = async (email: string, code: string): Promise<boolean> => {
+    try {
+      setIsLoading(true);
+
+      const response = await verifyEmailCode({ email, code });
+
+      if (response.data.verified) {
+        setVerifiedEmail(email);
+        return true;
+      } else {
+        showLoginError('인증번호를 확인해 주세요');
+        return false;
+      }
+    } catch (error: unknown) {
+      console.error('인증 에러 상세:', error);
+      const axiosError = error as AxiosError<{ message?: string }>;
+      console.error('에러 응답:', axiosError.response?.data);
+
+      const errorMessage = axiosError.response?.data?.message || '인증에 실패했습니다.';
+      showLoginError(errorMessage);
       return false;
+    } finally {
+      setIsLoading(false);
     }
-  } catch (error: unknown) {
-    console.error('인증 에러 상세:', error);
-    const axiosError = error as AxiosError<{ message?: string }>;
-    console.error('에러 응답:', axiosError.response?.data);
-    
-    const errorMessage = axiosError.response?.data?.message || '인증에 실패했습니다.';
-    showLoginError(errorMessage);
-    return false;
-  } finally {
-    setIsLoading(false);
-  }
-};
+  };
 
   // 재전송
   const resendCode = async (email: string): Promise<boolean> => {

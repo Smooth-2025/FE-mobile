@@ -11,11 +11,8 @@ const StepItem = styled.div<{ isCompleted: boolean; isActive: boolean }>`
   flex: 1;
   height: 4px;
   border-radius: 2px;
-  background-color: ${({ isCompleted, isActive }) => 
-    isCompleted || isActive 
-      ? theme.colors.primary600 
-      : theme.colors.neutral300
-  };
+  background-color: ${({ isCompleted, isActive }) =>
+    isCompleted || isActive ? theme.colors.primary600 : theme.colors.neutral300};
   transition: background-color 0.3s ease;
 `;
 
@@ -31,14 +28,8 @@ export function StepProgressBar({ currentStep, totalSteps = 4 }: StepProgressBar
         const stepNumber = index + 1;
         const isCompleted = stepNumber < currentStep;
         const isActive = stepNumber === currentStep;
-        
-        return (
-          <StepItem 
-            key={stepNumber}
-            isCompleted={isCompleted}
-            isActive={isActive}
-          />
-        );
+
+        return <StepItem key={stepNumber} isCompleted={isCompleted} isActive={isActive} />;
       })}
     </StepContainer>
   );

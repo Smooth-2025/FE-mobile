@@ -10,20 +10,22 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
+  padding-bottom: 30px;
 `;
 
 export default function ReportDetailPage() {
-  const { reportId } = useParams<{ reportId: string }>();
-  const id = Number(reportId);
+  const { id } = useParams<{ id: string }>();
+  const reportId = Number(id);
   const navigate = useNavigate();
+
   return (
     <>
       <Header type="close" onLeftClick={() => navigate(-1)} title="주행 리포트" />
       <Container>
-        <DrivingSummary reportId={id} />
-        <DrivingBehavior reportId={id} />
-        <AccidentResponse reportId={id} />
-        <DrivingDNA reportId={id} />
+        <DrivingSummary reportId={reportId} />
+        <DrivingBehavior reportId={reportId} />
+        <AccidentResponse reportId={reportId} />
+        <DrivingDNA reportId={reportId} />
       </Container>
     </>
   );

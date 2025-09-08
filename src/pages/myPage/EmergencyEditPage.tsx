@@ -2,12 +2,19 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/useToast';
 import { getUserProfile, updateEmergencyInfo } from '@/apis/auth';
-import { validateEmergencyContact, formatPhoneNumber } from '@/utils/validation/emergencyValidation';
+import {
+  validateEmergencyContact,
+  formatPhoneNumber,
+} from '@/utils/validation/emergencyValidation';
 import AlertToast from '@/components/common/AlertToast/AlertToast';
 import { Input } from '@/components/common/Input';
 import Header from '@/layout/Header';
 import * as S from '@/components/myPage/EmergencyEditPage.styles';
-import type { UpdateEmergencyInfoRequest, EmergencyFormData, EmergencyFormErrors } from '@/types/api';
+import type {
+  UpdateEmergencyInfoRequest,
+  EmergencyFormData,
+  EmergencyFormErrors,
+} from '@/types/api';
 
 export default function EmergencyEditPage() {
   const navigate = useNavigate();
@@ -43,9 +50,15 @@ export default function EmergencyEditPage() {
           const profile = response.data;
           setFormData({
             bloodType: profile.bloodType || '',
-            emergencyContact1: profile.emergencyContact1 ? formatPhoneNumber(profile.emergencyContact1) : '',
-            emergencyContact2: profile.emergencyContact2 ? formatPhoneNumber(profile.emergencyContact2) : '',
-            emergencyContact3: profile.emergencyContact3 ? formatPhoneNumber(profile.emergencyContact3) : '',
+            emergencyContact1: profile.emergencyContact1
+              ? formatPhoneNumber(profile.emergencyContact1)
+              : '',
+            emergencyContact2: profile.emergencyContact2
+              ? formatPhoneNumber(profile.emergencyContact2)
+              : '',
+            emergencyContact3: profile.emergencyContact3
+              ? formatPhoneNumber(profile.emergencyContact3)
+              : '',
           });
         }
       } catch {
@@ -77,21 +90,22 @@ export default function EmergencyEditPage() {
   };
 
   // 입력값 변경
-  const handleInputChange = (field: keyof EmergencyFormData) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    let value = e.target.value;
+  const handleInputChange =
+    (field: keyof EmergencyFormData) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      let value = e.target.value;
 
-    // 긴급연락처 포맷팅
-    if (field.includes('emergencyContact')) {
-      value = formatPhoneNumber(value);
-    }
+      // 긴급연락처 포맷팅
+      if (field.includes('emergencyContact')) {
+        value = formatPhoneNumber(value);
+      }
 
-    setFormData((prev) => ({ ...prev, [field]: value }));
+      setFormData((prev) => ({ ...prev, [field]: value }));
 
-    // 터치된 필드만 실시간 검사
-    if (touchedFields[field]) {
-      validateField(field, value);
-    }
-  };
+      // 터치된 필드만 실시간 검사
+      if (touchedFields[field]) {
+        validateField(field, value);
+      }
+    };
 
   // 필드 포커스 해제 시
   const handleFieldBlur = (field: keyof EmergencyFormData) => () => {
@@ -129,22 +143,28 @@ export default function EmergencyEditPage() {
 
       const requestData: UpdateEmergencyInfoRequest = {
         bloodType: formData.bloodType || null, // 빈 값일 때 null로 전송
-        emergencyContact1: formData.emergencyContact1 ? formData.emergencyContact1.replace(/-/g, '') : null,
-        emergencyContact2: formData.emergencyContact2 ? formData.emergencyContact2.replace(/-/g, '') : null,
-        emergencyContact3: formData.emergencyContact3 ? formData.emergencyContact3.replace(/-/g, '') : null,
+        emergencyContact1: formData.emergencyContact1
+          ? formData.emergencyContact1.replace(/-/g, '')
+          : null,
+        emergencyContact2: formData.emergencyContact2
+          ? formData.emergencyContact2.replace(/-/g, '')
+          : null,
+        emergencyContact3: formData.emergencyContact3
+          ? formData.emergencyContact3.replace(/-/g, '')
+          : null,
       };
 
       await updateEmergencyInfo(requestData);
 
       navigate('/mypage/emergency', {
-        state: { successMessage: '응급정보가 수정되었습니다.' }
+        state: { successMessage: '응급정보가 수정되었습니다.' },
       });
     } catch (error) {
       console.error('응급정보 수정 실패:', error);
-      
+
       // API 에러 메시지 처리
-      const errorMessage = 
-        (error as { response?: { data?: { message?: string } } })?.response?.data?.message || 
+      const errorMessage =
+        (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||
         '응급정보 수정에 실패했습니다.';
       showError(errorMessage);
     } finally {
@@ -168,8 +188,8 @@ export default function EmergencyEditPage() {
       <S.Container>
         {/* 헤더 */}
         <Header type="back" title="응급정보 수정" onLeftClick={handleGoBack} />
-          <S.Title>응급 정보를 입력해주세요</S.Title>
-          <S.Subtitle>등록된 연락처로 사고 발생 알림 문자가 전송됩니다.</S.Subtitle>
+        <S.Title>응급 정보를 입력해주세요</S.Title>
+        <S.Subtitle>등록된 연락처로 사고 발생 알림 문자가 전송됩니다.</S.Subtitle>
         {/* 폼 */}
         <S.FormSection>
           {/* 혈액형 */}
@@ -240,10 +260,7 @@ export default function EmergencyEditPage() {
         </S.FormSection>
 
         {/* 저장 버튼 */}
-        <S.SaveButton
-          onClick={handleSubmit}
-          disabled={!isFormValid() || isSubmitLoading}
-        >
+        <S.SaveButton onClick={handleSubmit} disabled={!isFormValid() || isSubmitLoading}>
           {isSubmitLoading ? '수정 중...' : '수정'}
         </S.SaveButton>
       </S.Container>

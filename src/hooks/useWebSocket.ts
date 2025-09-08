@@ -19,7 +19,7 @@ export const useWebSocket = (props: UseWebSocketProps = {}): UseWebSocketReturn 
 
   const connectionStatus = useSelector((s: RootState) => s.websocket.connectionStatus);
   const isAuthenticated = useSelector(selectIsAuthenticated);
-  
+
   const isConnected = useMemo(
     () => connectionStatus === ConnectionStatus.CONNECTED,
     [connectionStatus],
@@ -31,9 +31,9 @@ export const useWebSocket = (props: UseWebSocketProps = {}): UseWebSocketReturn 
       console.error('❌ 웹소켓 연결 실패: 인증 토큰이 없습니다.');
       return;
     }
-    
+
     dispatch(connectWebSocket());
-    
+
     dispatch(subscribeToDriving());
     dispatch(subscribeToIncident());
   }, [dispatch, isAuthenticated]);
@@ -48,7 +48,7 @@ export const useWebSocket = (props: UseWebSocketProps = {}): UseWebSocketReturn 
       console.error('❌ 웹소켓 재연결 실패: 인증 토큰이 없습니다.');
       return;
     }
-    
+
     dispatch(disconnectWebSocket());
     dispatch(connectWebSocket());
     dispatch(subscribeToDriving());

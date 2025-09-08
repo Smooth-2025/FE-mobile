@@ -15,11 +15,11 @@ export const ReportRow = styled.div`
   justify-content: flex-start;
   align-items: center;
   padding: 4px 0;
-  
+
   &:last-child {
     padding-bottom: 0;
   }
-  
+
   &:first-of-type {
     padding-top: 0;
   }

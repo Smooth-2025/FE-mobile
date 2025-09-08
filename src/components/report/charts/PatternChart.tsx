@@ -17,9 +17,9 @@ const TIMESLOT_RANGE: Record<string, string> = {
 function transformToSeries(data: DailyBehavior[]): {
   series: ApexAxisChartSeries;
 } {
-  const rapidAccelData = data.map((d) => d.actions.rapidAccel.count);
-  const hardBrakeData = data.map((d) => d.actions.hardBrake.count);
-  const laneChangeData = data.map((d) => d.actions.laneChange.count);
+  const rapidAccelData = data.map((d) => d.actions?.rapidAccel?.count ?? 0);
+  const hardBrakeData = data.map((d) => d.actions?.hardBrake?.count ?? 0);
+  const laneChangeData = data.map((d) => d.actions?.laneChange?.count ?? 0);
   return {
     series: [
       { name: '급가속', data: rapidAccelData },

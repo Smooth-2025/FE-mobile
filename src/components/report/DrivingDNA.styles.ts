@@ -5,6 +5,7 @@ export const Section = styled.section`
   ${horizontalPadding.layout_Base}
   background-color:${({ theme }) => theme.colors.white};
   padding-top: 24px;
+  padding-bottom: 32px;
 `;
 
 export const SectionTitle = styled.h2`

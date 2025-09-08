@@ -22,7 +22,7 @@ export const registerUser = async (data: RegisterRequest): Promise<RegisterRespo
   return await api.post('/api/users/auth/register', data);
 };
 
-// 로그인 API 호출 
+// 로그인 API 호출
 export const loginUser = async (data: LoginRequest): Promise<LoginResponse> => {
   return await api.post('/api/users/auth/login', data);
 };
@@ -61,7 +61,9 @@ export const verifyEmailCode = async (data: VerifyEmailRequest): Promise<VerifyE
 
 // 이메일 중복 체크 - 응답 구조 변경에 맞춰 수정
 export const checkEmailDuplicate = async (email: string): Promise<boolean> => {
-  const response: CheckEmailResponse = await api.get(`/api/users/auth/check-email?email=${encodeURIComponent(email)}`);
+  const response: CheckEmailResponse = await api.get(
+    `/api/users/auth/check-email?email=${encodeURIComponent(email)}`,
+  );
   return response.data.isDuplicate;
 };
 
@@ -77,7 +79,9 @@ export const changePassword = async (data: ChangePasswordRequest): Promise<BaseR
 };
 
 // 응급정보 수정
-export const updateEmergencyInfo = async (data: UpdateEmergencyInfoRequest): Promise<UserProfileResponse> => {
+export const updateEmergencyInfo = async (
+  data: UpdateEmergencyInfoRequest,
+): Promise<UserProfileResponse> => {
   try {
     const response = await api.put<UserProfileResponse>('/api/users/emergency-info', data);
     return response.data;

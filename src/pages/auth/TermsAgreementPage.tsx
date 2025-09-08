@@ -3,11 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useTermsAgreement } from '@hooks/useTermsAgreement';
 import Header from '@layout/Header';
 import { useAppDispatch, useAppSelector } from '@hooks/useAppRedux';
-import { 
-  setSignupStep, 
-  nextSignupStep,
-  selectSignupCurrentStep 
-} from '@store/slices/authSlice';
+import { setSignupStep, nextSignupStep, selectSignupCurrentStep } from '@store/slices/authSlice';
 import { StepProgressBar } from '@components/auth/StepProgressBar';
 import { TERMS_CONTENT } from '@constants/termsContent';
 import {
@@ -52,7 +48,7 @@ export function TermsAgreementPage() {
       navigate('/signup/email');
       return;
     }
-    
+
     // 현재 스텝 설정 (약관동의는 3단계)
     dispatch(setSignupStep(3));
   }, [email, emailVerified, profileData, navigate, dispatch]);
@@ -77,71 +73,74 @@ export function TermsAgreementPage() {
 
   return (
     <>
-      <Header 
-        type="back" 
-        onLeftClick={() => navigate(-1)} 
-      />
-      
+      <Header type="back" onLeftClick={() => navigate(-1)} />
+
       <Container>
         <Content>
           <StepProgressBar currentStep={currentStep} />
 
-          <Title>스무스가 처음이시군요! <br />
-            약관내용에 동의해주세요.</Title>
+          <Title>
+            스무스가 처음이시군요! <br />
+            약관내용에 동의해주세요.
+          </Title>
           <Subtitle></Subtitle>
 
-      <AgreementSection>
-        {/* 전체 동의 */}
-        <AllAgreementItem>
-          <CheckboxWrapper>
-            <HiddenCheckbox
-              type="checkbox"
-              checked={agreements.allAgreed}
-              onChange={(e) => handleAllAgreementChange(e.target.checked)}
-            />
-            <CustomCheckbox checked={agreements.allAgreed} />
-            <CheckboxLabel isAll>약관 전체 동의</CheckboxLabel>
-          </CheckboxWrapper>
-        </AllAgreementItem>
+          <AgreementSection>
+            {/* 전체 동의 */}
+            <AllAgreementItem>
+              <CheckboxWrapper>
+                <HiddenCheckbox
+                  type="checkbox"
+                  checked={agreements.allAgreed}
+                  onChange={(e) => handleAllAgreementChange(e.target.checked)}
+                />
+                <CustomCheckbox checked={agreements.allAgreed} />
+                <CheckboxLabel isAll>약관 전체 동의</CheckboxLabel>
+              </CheckboxWrapper>
+            </AllAgreementItem>
 
-        {/* 이용약관 */}
-        <AgreementItem>
-          <CheckboxWrapper>
-            <HiddenCheckbox
-              type="checkbox"
-              checked={agreements.termsOfService}
-              onChange={(e) => handleIndividualAgreementChange('termsOfService')(e.target.checked)}
-            />
-            <CustomCheckbox checked={agreements.termsOfService} />
-            <CheckboxLabel>
-              이용약관 <TermsLink>(필수)</TermsLink>
-            </CheckboxLabel>
-          </CheckboxWrapper>
+            {/* 이용약관 */}
+            <AgreementItem>
+              <CheckboxWrapper>
+                <HiddenCheckbox
+                  type="checkbox"
+                  checked={agreements.termsOfService}
+                  onChange={(e) =>
+                    handleIndividualAgreementChange('termsOfService')(e.target.checked)
+                  }
+                />
+                <CustomCheckbox checked={agreements.termsOfService} />
+                <CheckboxLabel>
+                  이용약관 <TermsLink>(필수)</TermsLink>
+                </CheckboxLabel>
+              </CheckboxWrapper>
 
-          <TermsContent>{TERMS_CONTENT.termsOfService}</TermsContent>
-        </AgreementItem>
+              <TermsContent>{TERMS_CONTENT.termsOfService}</TermsContent>
+            </AgreementItem>
 
-        {/* 개인정보 처리방침 */}
-        <AgreementItem>
-          <CheckboxWrapper>
-            <HiddenCheckbox
-              type="checkbox"
-              checked={agreements.privacyPolicy}
-              onChange={(e) => handleIndividualAgreementChange('privacyPolicy')(e.target.checked)}
-            />
-            <CustomCheckbox checked={agreements.privacyPolicy} />
-            <CheckboxLabel>
-              개인정보 처리방침 <TermsLink>(필수)</TermsLink>
-            </CheckboxLabel>
-          </CheckboxWrapper>
+            {/* 개인정보 처리방침 */}
+            <AgreementItem>
+              <CheckboxWrapper>
+                <HiddenCheckbox
+                  type="checkbox"
+                  checked={agreements.privacyPolicy}
+                  onChange={(e) =>
+                    handleIndividualAgreementChange('privacyPolicy')(e.target.checked)
+                  }
+                />
+                <CustomCheckbox checked={agreements.privacyPolicy} />
+                <CheckboxLabel>
+                  개인정보 처리방침 <TermsLink>(필수)</TermsLink>
+                </CheckboxLabel>
+              </CheckboxWrapper>
 
-          <TermsContent>{TERMS_CONTENT.privacyPolicy}</TermsContent>
-        </AgreementItem>
-      </AgreementSection>
+              <TermsContent>{TERMS_CONTENT.privacyPolicy}</TermsContent>
+            </AgreementItem>
+          </AgreementSection>
 
-      <ConfirmButton disabled={!isAllRequiredAgreed} onClick={handleConfirm}>
-        확인
-      </ConfirmButton>
+          <ConfirmButton disabled={!isAllRequiredAgreed} onClick={handleConfirm}>
+            확인
+          </ConfirmButton>
         </Content>
       </Container>
     </>

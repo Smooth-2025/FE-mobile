@@ -33,7 +33,7 @@ export const GreetingText = styled.div`
     color: ${theme.colors.neutral700};
     margin: 0 0 4px 0;
   }
-  
+
   p {
     font-size: 14px;
     color: ${theme.colors.neutral600};
@@ -54,13 +54,13 @@ export const ProfileLink = styled.button`
   padding: 0;
   cursor: pointer;
   transition: opacity 0.2s ease;
-  
+
   p {
     font-size: 14px;
     color: ${theme.colors.neutral600};
     margin: 0;
   }
-  
+
   &:hover {
     opacity: 0.7;
   }

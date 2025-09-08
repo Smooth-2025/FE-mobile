@@ -25,12 +25,12 @@ const drivingSlice = createSlice({
 
     startDrivingSession: (state) => {
       state.isActive = true;
-      state.currentDrivingData = null; 
+      state.currentDrivingData = null;
     },
 
     endDrivingSession: (state) => {
       state.isActive = false;
-      state.currentDrivingData = null; 
+      state.currentDrivingData = null;
     },
 
     clearAllDrivingData: (state) => {

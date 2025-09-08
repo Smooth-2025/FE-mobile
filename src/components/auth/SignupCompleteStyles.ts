@@ -17,8 +17,8 @@ export const Container = styled.div`
 export const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 48px; 
-  align-items: stretch; 
+  gap: 48px;
+  align-items: stretch;
 `;
 
 export const TitleSection = styled.div`
@@ -83,10 +83,10 @@ export const ConfirmButton = styled.button`
   border-radius: 8px;
   font-size: 16px;
   cursor: pointer;
-  
+
   transition: all 0.2s ease;
   margin: 24px auto 0 auto;
-  display: block;   
+  display: block;
 
   background-color: ${theme.colors.primary600};
   color: ${theme.colors.white};

@@ -16,14 +16,14 @@ export const Content = styled.div`
 export const Title = styled.h1`
   font-size: 24px;
   font-weight: 600;
-  margin: 20px 0px 10px 15px ;
+  margin: 20px 0px 10px 15px;
   color: ${theme.colors.neutral700};
 `;
 
 export const Subtitle = styled.p`
   font-size: 16px;
   color: ${theme.colors.neutral500};
-  margin: 0px 0px 10px 15px ;
+  margin: 0px 0px 10px 15px;
 `;
 
 // 헤더
@@ -83,13 +83,10 @@ export const BloodTypeGroup = styled.div`
 export const BloodTypeButton = styled.button<{ selected: boolean }>`
   flex: 1;
   height: 48px;
-  border: 2px solid ${({ selected }) => 
-    selected ? theme.colors.primary600 : 0};
+  border: 2px solid ${({ selected }) => (selected ? theme.colors.primary600 : 0)};
   border-radius: ${theme.borderRadius.sm}px;
-  background-color: ${({ selected }) => 
-    selected ? theme.colors.white : theme.colors.neutral50};
-  color: ${({ selected }) => 
-    selected ? theme.colors.primary600 : theme.colors.neutral600};
+  background-color: ${({ selected }) => (selected ? theme.colors.white : theme.colors.neutral50)};
+  color: ${({ selected }) => (selected ? theme.colors.primary600 : theme.colors.neutral600)};
   font-size: ${theme.fontSize[16]}rem;
   cursor: pointer;
   transition: all 0.2s ease;

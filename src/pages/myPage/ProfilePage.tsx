@@ -93,7 +93,7 @@ export default function ProfilePage() {
       await dispatch(logoutAsync()).unwrap();
       setIsLogoutSheetOpen(false);
       navigate('/login', {
-        state: { successMessage: '이용해주셔서 감사합니다. 다시 만나요!' }
+        state: { successMessage: '이용해주셔서 감사합니다. 다시 만나요!' },
       });
     } catch {
       showError('로그아웃 처리 중 오류가 발생했습니다.');
@@ -106,7 +106,7 @@ export default function ProfilePage() {
       await dispatch(deleteAccountAsync()).unwrap();
       setIsDeleteAccountSheetOpen(false);
       navigate('/login', {
-        state: { successMessage: '계정 탈퇴가 완료되었습니다. 이용해주셔서 감사합니다.' }
+        state: { successMessage: '계정 탈퇴가 완료되었습니다. 이용해주셔서 감사합니다.' },
       });
     } catch {
       showError('회원탈퇴 처리 중 오류가 발생했습니다.');
@@ -131,11 +131,7 @@ export default function ProfilePage() {
   if (isProfileLoading) {
     return (
       <>
-        <Header 
-          type="back" 
-          title="내정보" 
-          onLeftClick={handleGoBack} 
-        />
+        <Header type="back" title="내정보" onLeftClick={handleGoBack} />
         <S.Container>
           <div style={{ padding: '50px 20px', textAlign: 'center' }}>
             <p>사용자 정보를 불러오는 중...</p>
@@ -146,14 +142,9 @@ export default function ProfilePage() {
   }
   return (
     <>
-      <Header 
-        type="close" 
-        title="내정보" 
-        onLeftClick={handleGoBack} 
-      />
-      
-      <S.Container>
+      <Header type="close" title="내정보" onLeftClick={handleGoBack} />
 
+      <S.Container>
         {/* 사용자 정보 */}
         <S.InfoSection>
           <S.InfoItem>

@@ -10,7 +10,6 @@ import * as S from '@/components/myPage/MyPage.styles';
 export default function MyPage() {
   const navigate = useNavigate();
   const user = useAppSelector(selectUser);
-
   const handleMenuClick = (path: string) => {
     navigate(path);
   };
@@ -27,7 +26,9 @@ export default function MyPage() {
             <Icon name="user" size={28} color={theme.colors.primary600} />
           </S.ProfileIcon>
           <S.GreetingText>
-            <h1><S.UserName>{user?.name || '사용자'}</S.UserName>님, 안녕하세요</h1>
+            <h1>
+              <S.UserName>{user?.name || '사용자'}</S.UserName>님, 안녕하세요
+            </h1>
             <S.ProfileLink onClick={() => navigate('/mypage/profile')}>
               <p>내정보</p>
               <Icon name="chevronRight" size={16} color={theme.colors.neutral400} />

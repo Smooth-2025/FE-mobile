@@ -12,7 +12,6 @@ export const Content = styled.div`
   padding: 20px;
 `;
 
-
 export const Title = styled.h1`
   font-size: 24px;
   font-weight: 600;
@@ -102,11 +101,13 @@ export const ConfirmButton = styled.button<{ disabled: boolean }>`
   transition: all 0.2s ease;
   margin-top: 32px;
 
-  background-color: ${(props) => (props.disabled ? theme.colors.neutral200 : theme.colors.primary600)};
+  background-color: ${(props) =>
+    props.disabled ? theme.colors.neutral200 : theme.colors.primary600};
   color: ${(props) => (props.disabled ? theme.colors.neutral500 : theme.colors.white)};
 
   &:hover {
-    background-color: ${(props) => (props.disabled ? theme.colors.neutral300 : theme.colors.primary600)};
+    background-color: ${(props) =>
+      props.disabled ? theme.colors.neutral300 : theme.colors.primary600};
   }
 
   &:active {
@@ -119,7 +120,8 @@ export const CustomCheckbox = styled.div<{ checked: boolean }>`
   width: 20px;
   height: 20px;
   border-radius: 4px;
-  border: 2px solid ${(props) => (props.checked ? theme.colors.primary600 : theme.colors.neutral400)};
+  border: 2px solid
+    ${(props) => (props.checked ? theme.colors.primary600 : theme.colors.neutral400)};
   background-color: ${(props) => (props.checked ? theme.colors.primary600 : theme.colors.white)};
   display: flex;
   align-items: center;

@@ -47,5 +47,17 @@ export default function RadarChart({ categories, series }: RadarChartProps) {
     },
   };
 
-  return <ReactApexChart options={options} series={series} type="radar" height={300} />;
+  const chartOptions = {
+    ...options,
+    xaxis: {
+      categories: categories,
+    },
+  };
+  const chartSeries = [
+    {
+      data: series,
+    },
+  ];
+
+  return <ReactApexChart options={chartOptions} series={chartSeries} type="radar" height={300} />;
 }

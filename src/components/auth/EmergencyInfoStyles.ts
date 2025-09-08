@@ -12,7 +12,6 @@ export const Content = styled.div`
   padding: 20px;
 `;
 
-
 export const Title = styled.h1`
   font-size: 24px;
   font-weight: 600;
@@ -47,7 +46,7 @@ export const BloodTypeGroup = styled.div`
 
 export const BloodTypeButton = styled.button<{ selected: boolean }>`
   padding: 16px;
-  border: 2px solid ${(props) => (props.selected ? theme.colors.primary600 : 0 )};
+  border: 2px solid ${(props) => (props.selected ? theme.colors.primary600 : 0)};
   border-radius: 8px;
   background: ${(props) => (props.selected ? theme.colors.white : theme.colors.neutral50)};
   color: ${(props) => (props.selected ? theme.colors.neutral600 : theme.colors.neutral600)};
@@ -84,11 +83,13 @@ export const RegisterButton = styled.button<{ disabled?: boolean }>`
   cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
   transition: all 0.2s ease;
 
-  background-color: ${(props) => (props.disabled ? theme.colors.neutral300 : theme.colors.primary600)};
-  color: ${(props) => (props.disabled ? theme.colors.neutral500 : theme.colors.white )};
+  background-color: ${(props) =>
+    props.disabled ? theme.colors.neutral300 : theme.colors.primary600};
+  color: ${(props) => (props.disabled ? theme.colors.neutral500 : theme.colors.white)};
 
   &:hover {
-    background-color: ${(props) => (props.disabled ? theme.colors.neutral300 : theme.colors.primary600)};
+    background-color: ${(props) =>
+      props.disabled ? theme.colors.neutral300 : theme.colors.primary600};
   }
 
   &:active {

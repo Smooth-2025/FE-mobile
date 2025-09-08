@@ -15,21 +15,7 @@ export default defineConfig({
   define: {
     global: 'globalThis',
   },
-  server: {
-    proxy: {
-      '/api': {
-        target: process.env.VITE_API_BASE_URL,// ec2 주소로 변경
-        changeOrigin: true,
-        secure: false,
-      },
-      '/ws': {
-        target: process.env.VITE_API_BASE_URL, // ec2 주소로 변경
-        changeOrigin: true,
-        secure: false,
-        ws: true,
-      },
-    },
-  },
+  server: {},
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),

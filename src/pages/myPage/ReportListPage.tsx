@@ -33,23 +33,22 @@ export default function ReportListPage() {
     try {
       // 백엔드에서 오는 UTC 시간을 Date 객체로 변환
       const utcDate = new Date(timeString);
-      
+
       if (isNaN(utcDate.getTime())) {
         return timeString;
       }
-      
-      const koreanTime = new Date(utcDate.getTime() + (9 * 60 * 60 * 1000));
-      
+
+      const koreanTime = new Date(utcDate.getTime() + 9 * 60 * 60 * 1000);
+
       const year = koreanTime.getFullYear();
       const month = String(koreanTime.getMonth() + 1).padStart(2, '0');
       const day = String(koreanTime.getDate()).padStart(2, '0');
       const hours = String(koreanTime.getHours()).padStart(2, '0');
       const minutes = String(koreanTime.getMinutes()).padStart(2, '0');
-      
+
       const result = `${year}-${month}-${day} ${hours}:${minutes}`;
-      
+
       return result;
-      
     } catch (error) {
       console.error('formatDateTime 에러:', error);
       return timeString;
@@ -62,7 +61,7 @@ export default function ReportListPage() {
         setLoading(true);
         setError(null);
         const response = await getEmergencyHistory();
-        
+
         if (response.success && response.data) {
           const transformedData = response.data.map((item, index) => ({
             id: item.id?.toString() || `report-${index}`,

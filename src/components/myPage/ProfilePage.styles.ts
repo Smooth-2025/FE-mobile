@@ -10,12 +10,10 @@ export const Container = styled.div`
   padding-bottom: env(safe-area-inset-bottom);
 `;
 
-
 // 정보 섹션
 export const InfoSection = styled.section`
   background-color: ${theme.colors.white};
   padding: 24px 20px;
-
 `;
 
 export const InfoItem = styled.div`
@@ -23,7 +21,6 @@ export const InfoItem = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 16px 0;
-
 
   &:last-child {
     border-bottom: none;
@@ -38,13 +35,11 @@ export const InfoItem = styled.div`
 export const InfoLabel = styled.span`
   font-size: 16px;
   color: ${theme.colors.neutral500};
-
 `;
 
 export const InfoValue = styled.span`
   font-size: 16px;
   color: ${theme.colors.neutral700};
-
 `;
 
 // 비밀번호 변경 버튼

@@ -49,22 +49,26 @@ export default function EmergencyReportedAlert({
   const modalRoot = document.getElementById('modal-root') || document.body;
 
   return createPortal(
-    <Styled.ModalBackdrop 
+    <Styled.ModalBackdrop
       data-mounted={mounted ? 'true' : 'false'}
       style={{
         background: theme.colors.black_a60,
-        animation: 'none'
+        animation: 'none',
       }}
     >
       <Styled.AlertContent data-mounted={mounted ? 'true' : 'false'}>
         <Styled.EmergencyBellImage src={emergencyBell} alt="응급벨" style={{ marginTop: '30px' }} />
-        
+
         <Styled.Title style={{ marginTop: '20px' }}>
           <span style={{ color: theme.colors.danger600 }}>자동 신고</span>가 접수되었습니다.
         </Styled.Title>
-        
+
         {isTimeout && (
-          <Styled.Description style={{ marginTop: '15px' }}>30초 간 반응이 없어 자동신고로<br />접수되었습니다.</Styled.Description>
+          <Styled.Description style={{ marginTop: '15px' }}>
+            30초 간 반응이 없어 자동신고로
+            <br />
+            접수되었습니다.
+          </Styled.Description>
         )}
         <Styled.Description style={{ marginTop: '15px' }}>
           빠르게 도움을 요청 중입니다.
@@ -82,6 +86,6 @@ export default function EmergencyReportedAlert({
         </Styled.ButtonContainer>
       </Styled.AlertContent>
     </Styled.ModalBackdrop>,
-    modalRoot
+    modalRoot,
   );
 }

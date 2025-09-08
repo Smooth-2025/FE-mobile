@@ -20,13 +20,13 @@ import { updateDrivingTendency } from '../slices/drivingSlice';
 import type { Middleware } from '@reduxjs/toolkit';
 import type { Subscription } from 'rxjs';
 import type { IMessage } from '@stomp/stompjs';
-import type { AlertType , DrivingTendencyData, NeighborData } from './types';
+import type { AlertType, DrivingTendencyData, NeighborData } from './types';
 
 let rxStomp: RxStomp | null = null;
 const subscriptions: Map<string, Subscription> = new Map();
 
 let reconnectAttempts = 0;
-const MAX_INITIAL_ATTEMPTS = 3; 
+const MAX_INITIAL_ATTEMPTS = 3;
 const LONG_RECONNECT_INTERVAL = 10 * 60 * 1000;
 let reconnectTimeout: NodeJS.Timeout | null = null;
 
@@ -42,7 +42,6 @@ const refreshTokenIfNeeded = async (): Promise<boolean> => {
     return false;
   }
 };
-
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === 'object';
@@ -73,7 +72,7 @@ function parseAlertType(v: unknown): AlertType {
 function extractDisplayText(obj: unknown): string {
   if (obj === null) return '';
   if (typeof obj === 'string') return obj;
-  
+
   // payload 내부 확인
   const payload = getAny(obj, 'payload');
   if (payload) {
@@ -82,7 +81,7 @@ function extractDisplayText(obj: unknown): string {
     const title = getString(payload, 'title');
     if (title) return title;
   }
-  
+
   // 최상위 레벨 확인
   const message = getString(obj, 'message');
   if (message) return message;
@@ -90,7 +89,7 @@ function extractDisplayText(obj: unknown): string {
   if (content) return content;
   const title = getString(obj, 'title');
   if (title) return title;
-  
+
   try {
     return JSON.stringify(obj);
   } catch {
@@ -121,7 +120,7 @@ export const websocketMiddleware: Middleware =
       }
 
       const token = tokenUtils.getToken();
-      
+
       if (!token) {
         console.error('❌ 웹소켓 연결 실패: JWT 토큰이 없습니다.');
         dispatch(setConnectionStatus(ConnectionStatus.DISCONNECTED));
@@ -136,7 +135,7 @@ export const websocketMiddleware: Middleware =
 
       rxStomp = new RxStomp();
       console.warn('🔑 실제 전송 토큰:', token?.substring(0, 20) + '...');
-      
+
       const config: RxStompConfig = {
         webSocketFactory: () => socket,
         connectHeaders: {
@@ -144,7 +143,7 @@ export const websocketMiddleware: Middleware =
         },
         heartbeatIncoming: 30000,
         heartbeatOutgoing: 30000,
-        reconnectDelay: 0, 
+        reconnectDelay: 0,
         debug: (str) => console.warn('🔍 STOMP Debug:', str),
       };
       rxStomp.configure(config);
@@ -159,13 +158,12 @@ export const websocketMiddleware: Middleware =
           dispatch(setConnectionStatus(ConnectionStatus.DISCONNECTED));
           subscriptions.clear();
           console.error('❌ STOMP 연결 종료');
-          
+
           reconnectAttempts++;
-          
+
           if (reconnectAttempts <= MAX_INITIAL_ATTEMPTS) {
-        
             console.warn(`🔄 연결 끊김 - 재연결 시도 ${reconnectAttempts}/${MAX_INITIAL_ATTEMPTS}`);
-            
+
             reconnectTimeout = setTimeout(async () => {
               // 3번째 시도에서만 토큰 갱신
               if (reconnectAttempts === 3) {
@@ -173,7 +171,10 @@ export const websocketMiddleware: Middleware =
                 if (tokenRefreshed) {
                   // 토큰 갱신 후 새로운 토큰으로 웹소켓 연결
                   const newToken = tokenUtils.getToken();
-                  console.warn('🔄 갱신된 토큰으로 웹소켓 재연결:', newToken?.substring(0, 20) + '...');
+                  console.warn(
+                    '🔄 갱신된 토큰으로 웹소켓 재연결:',
+                    newToken?.substring(0, 20) + '...',
+                  );
                   dispatch(connectWebSocket());
                 } else {
                   console.error('토큰 갱신 실패로 재연결 중단');
@@ -183,9 +184,8 @@ export const websocketMiddleware: Middleware =
               }
             }, 5000);
           } else {
-          
             console.warn(`🔄 장기간 연결 실패 - 10분 후 재연결 시도 (${reconnectAttempts}번째)`);
-            
+
             reconnectTimeout = setTimeout(async () => {
               const tokenRefreshed = await refreshTokenIfNeeded();
               if (tokenRefreshed) {
@@ -204,14 +204,13 @@ export const websocketMiddleware: Middleware =
     }
 
     if (disconnectWebSocket.match(action)) {
-    
       if (reconnectTimeout) {
         clearTimeout(reconnectTimeout);
         reconnectTimeout = null;
       }
-      
+
       reconnectAttempts = 0;
-      
+
       if (rxStomp) {
         try {
           rxStomp.deactivate();
@@ -224,7 +223,6 @@ export const websocketMiddleware: Middleware =
       }
       return result;
     }
-
 
     if (subscribeToDriving.match(action)) {
       const destination = '/user/queue/driving';
@@ -244,40 +242,44 @@ export const websocketMiddleware: Middleware =
             if (isRecord(rawData)) {
               const eventType = getString(rawData, 'type');
               if (eventType === 'start' || eventType === 'end') {
-                dispatch(addAlert({
-                  id: String(Date.now()),
-                  type: eventType,
-                  message: eventType === 'start' ? '주행 시작' : '주행 종료',
-                  timestamp: getString(rawData, 'timestamp') || new Date().toISOString(),
-                  raw: rawData,
-                  isRead: false,
-                }));
+                dispatch(
+                  addAlert({
+                    id: String(Date.now()),
+                    type: eventType,
+                    message: eventType === 'start' ? '주행 시작' : '주행 종료',
+                    timestamp: getString(rawData, 'timestamp') || new Date().toISOString(),
+                    raw: rawData,
+                    isRead: false,
+                  }),
+                );
                 return;
               }
-              
+
               const type = getString(rawData, 'type');
               const payload = getAny(rawData, 'payload');
-              
+
               if (type === 'driving' && isRecord(payload)) {
                 const timestamp = getString(payload, 'timestamp');
                 const ego = getAny(payload, 'ego');
                 const neighbors = getAny(payload, 'neighbors');
-                
+
                 if (timestamp && isRecord(ego) && Array.isArray(neighbors)) {
                   const egoUserId = ego.userId;
                   const egoPose = getAny(ego, 'pose');
-                  
-                  if ((typeof egoUserId === 'number' || typeof egoUserId === 'string') && 
-                      isRecord(egoPose) && 
-                      typeof egoPose.latitude === 'number' && 
-                      typeof egoPose.longitude === 'number') {
-                    const validNeighbors: NeighborData[] = neighbors
-                      .filter((neighbor: unknown): neighbor is NeighborData => {
+
+                  if (
+                    (typeof egoUserId === 'number' || typeof egoUserId === 'string') &&
+                    isRecord(egoPose) &&
+                    typeof egoPose.latitude === 'number' &&
+                    typeof egoPose.longitude === 'number'
+                  ) {
+                    const validNeighbors: NeighborData[] = neighbors.filter(
+                      (neighbor: unknown): neighbor is NeighborData => {
                         if (!isRecord(neighbor)) return false;
                         const userId = neighbor.userId;
                         const character = neighbor.character;
                         const pose = neighbor.pose;
-                        
+
                         return (
                           (typeof userId === 'number' || typeof userId === 'string') &&
                           typeof character === 'string' &&
@@ -286,7 +288,8 @@ export const websocketMiddleware: Middleware =
                           typeof pose.latitude === 'number' &&
                           typeof pose.longitude === 'number'
                         );
-                      });
+                      },
+                    );
 
                     const drivingData: DrivingTendencyData = {
                       type: 'driving',
@@ -302,7 +305,7 @@ export const websocketMiddleware: Middleware =
                         neighbors: validNeighbors,
                       },
                     };
-                    
+
                     dispatch(updateDrivingTendency(drivingData));
                     console.warn('🚗 주행 성향 데이터 업데이트:', drivingData);
                   }
@@ -336,7 +339,7 @@ export const websocketMiddleware: Middleware =
             } catch {
               rawData = message.body;
             }
-            
+
             const display = extractDisplayText(rawData);
             const type: AlertType = parseAlertType(getAny(rawData, 'type'));
             const timestamp = (() => {
@@ -347,23 +350,23 @@ export const websocketMiddleware: Middleware =
               // 먼저 id 필드 확인
               const v = getAny(rawData, 'id');
               if (typeof v === 'string') return v;
-              
+
               // payload에서 여러 필드 확인
               const payload = getAny(rawData, 'payload');
               if (isRecord(payload)) {
                 // accidentId 확인
                 const accidentId = getAny(payload, 'accidentId');
                 if (typeof accidentId === 'string') return accidentId;
-                
+
                 // id 확인
                 const payloadId = getAny(payload, 'id');
                 if (typeof payloadId === 'string') return payloadId;
               }
-              
+
               // 최상위에서 accidentId 확인
               const accidentId = getAny(rawData, 'accidentId');
               if (typeof accidentId === 'string') return accidentId;
-              
+
               return undefined;
             })();
             const id =
@@ -391,7 +394,6 @@ export const websocketMiddleware: Middleware =
             console.warn('🚨 웹소켓 Raw Data:', JSON.stringify(rawData, null, 2));
             console.warn('🚨 추출된 ID:', id);
             console.warn('🚨 서버에서 온 ID:', idFromServer);
-
           } catch (error) {
             console.error('❌ 사고 알림 처리 오류:', error);
             dispatch(setError((error as Error)?.message ?? 'incident handling error'));
@@ -404,7 +406,6 @@ export const websocketMiddleware: Middleware =
       }
       return result;
     }
-
 
     if (unsubscribeFromDriving.match(action)) {
       const { destination } = action.payload;

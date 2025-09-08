@@ -145,7 +145,7 @@ export default function ChangePasswordPage() {
 
     try {
       setIsLoading(true);
-      
+
       const requestData: ChangePasswordRequest = {
         currentPassword: formData.currentPassword,
         newPassword: formData.newPassword,
@@ -155,30 +155,30 @@ export default function ChangePasswordPage() {
       await changePassword(requestData);
 
       navigate('/mypage/profile', {
-        state: { successMessage: '비밀번호 수정이 완료되었습니다.' }
+        state: { successMessage: '비밀번호 수정이 완료되었습니다.' },
       });
     } catch (error: unknown) {
       console.error('비밀번호 변경 실패:', error);
-      
+
       let errorMessage = '비밀번호 변경에 실패했습니다.';
-      
+
       // 타입 안전한 방식으로 에러 메시지 추출
       if (error && typeof error === 'object' && 'response' in error) {
         const response = (error as Record<string, unknown>).response;
-        
+
         if (response && typeof response === 'object' && 'data' in response) {
           const data = (response as Record<string, unknown>).data;
-          
+
           if (data && typeof data === 'object' && 'message' in data) {
             const message = (data as Record<string, unknown>).message;
-            
+
             if (typeof message === 'string' && message.length > 0) {
               errorMessage = message;
             }
           }
         }
       }
-      
+
       showError(errorMessage);
     } finally {
       setIsLoading(false);
@@ -187,14 +187,9 @@ export default function ChangePasswordPage() {
 
   return (
     <>
-      <Header 
-        type="back" 
-        title="비밀번호 변경" 
-        onLeftClick={handleGoBack} 
-      />
-      
-      <S.Container>
+      <Header type="back" title="비밀번호 변경" onLeftClick={handleGoBack} />
 
+      <S.Container>
         {/* 폼 */}
         <S.FormSection>
           {/* 현재 비밀번호 */}
@@ -208,8 +203,8 @@ export default function ChangePasswordPage() {
                 onChange={handleInputChange('currentPassword')}
                 onBlur={handleFieldBlur('currentPassword')}
               />
-              <S.PasswordToggleButton 
-                type="button" 
+              <S.PasswordToggleButton
+                type="button"
                 onClick={() => setShowCurrentPassword(!showCurrentPassword)}
               >
                 <Icon
@@ -235,8 +230,8 @@ export default function ChangePasswordPage() {
                 onChange={handleInputChange('newPassword')}
                 onBlur={handleFieldBlur('newPassword')}
               />
-              <S.PasswordToggleButton 
-                type="button" 
+              <S.PasswordToggleButton
+                type="button"
                 onClick={() => setShowNewPassword(!showNewPassword)}
               >
                 <Icon
@@ -249,9 +244,7 @@ export default function ChangePasswordPage() {
             {formSuccess.newPassword && (
               <S.SuccessMessage>{formSuccess.newPassword}</S.SuccessMessage>
             )}
-            {formErrors.newPassword && (
-              <S.ErrorMessage>{formErrors.newPassword}</S.ErrorMessage>
-            )}
+            {formErrors.newPassword && <S.ErrorMessage>{formErrors.newPassword}</S.ErrorMessage>}
           </S.FormGroup>
 
           {/* 새 비밀번호 확인 */}
@@ -265,8 +258,8 @@ export default function ChangePasswordPage() {
                 onChange={handleInputChange('confirmPassword')}
                 onBlur={handleFieldBlur('confirmPassword')}
               />
-              <S.PasswordToggleButton 
-                type="button" 
+              <S.PasswordToggleButton
+                type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               >
                 <Icon
@@ -286,10 +279,7 @@ export default function ChangePasswordPage() {
         </S.FormSection>
 
         {/* 변경 버튼 */}
-        <S.SubmitButton
-          onClick={handleSubmit}
-          disabled={!isFormValid() || isLoading}
-        >
+        <S.SubmitButton onClick={handleSubmit} disabled={!isFormValid() || isLoading}>
           {isLoading ? '변경 중...' : '변경'}
         </S.SubmitButton>
       </S.Container>

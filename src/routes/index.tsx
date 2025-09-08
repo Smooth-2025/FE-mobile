@@ -26,7 +26,6 @@ const ReportListPage = lazy(() => import('@/pages/myPage/ReportListPage'));
 function RequireAuth({ children }: { children: ReactNode }) {
   const isAuth = Boolean(sessionStorage.getItem('smooth_access_token')); // 올바른 토큰 키 사용
   return isAuth ? <>{children}</> : <Navigate to="/login" replace />;
-
 }
 
 const routes: RouteObject[] = [
@@ -54,10 +53,18 @@ const routes: RouteObject[] = [
       { path: 'report/:id', element: <ReportDetailPage />, handle: { hideBottomNav: true } },
       { path: 'mypage', element: <MyPage /> },
       { path: 'mypage/profile', element: <ProfilePage />, handle: { hideBottomNav: true } },
-      { path: 'mypage/ChangePasswordPage', element: <ChangePasswordPage /> , handle: { hideBottomNav: true } },
-      { path: 'mypage/emergency', element: <EmergencyPage /> , handle: { hideBottomNav: true } },
-      { path: 'mypage/emergency/edit', element: <EmergencyEditPage /> , handle: { hideBottomNav: true } },
-      { path: 'mypage/reports', element: <ReportListPage /> , handle: { hideBottomNav: true } },
+      {
+        path: 'mypage/ChangePasswordPage',
+        element: <ChangePasswordPage />,
+        handle: { hideBottomNav: true },
+      },
+      { path: 'mypage/emergency', element: <EmergencyPage />, handle: { hideBottomNav: true } },
+      {
+        path: 'mypage/emergency/edit',
+        element: <EmergencyEditPage />,
+        handle: { hideBottomNav: true },
+      },
+      { path: 'mypage/reports', element: <ReportListPage />, handle: { hideBottomNav: true } },
       // { path: 'mypage/:id', element: <MyPage />, handle: { hideBottomNav: true } },
     ],
   },

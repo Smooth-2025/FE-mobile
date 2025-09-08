@@ -76,12 +76,13 @@ export default function EmergencyCallAlert({
     <Styled.ModalBackdrop data-mounted={mounted ? 'true' : 'false'}>
       <Styled.AlertContent data-mounted={mounted ? 'true' : 'false'}>
         <Styled.EmergencyBellImage src={emergencyBell} alt="응급벨" />
-        
+
         <Styled.Title>심각한 충돌이 감지되었습니다.</Styled.Title>
-        
+
         <Styled.Description>운전자 상태 확인이 필요합니다.</Styled.Description>
         <Styled.Description>
-          <Styled.HighlightText>{remainingTime}초 이내</Styled.HighlightText>에 아래 버튼을 눌러 응답해주세요.
+          <Styled.HighlightText>{remainingTime}초 이내</Styled.HighlightText>에 아래 버튼을 눌러
+          응답해주세요.
         </Styled.Description>
 
         <Styled.TimerSection>
@@ -98,12 +99,10 @@ export default function EmergencyCallAlert({
             size="lg"
             style={{ height: '56px' }}
           />
-          <Styled.CancelButton onClick={handleCancel}>
-            괜찮습니다.
-          </Styled.CancelButton>
+          <Styled.CancelButton onClick={handleCancel}>괜찮습니다.</Styled.CancelButton>
         </Styled.ButtonContainer>
       </Styled.AlertContent>
     </Styled.ModalBackdrop>,
-    modalRoot
+    modalRoot,
   );
 }

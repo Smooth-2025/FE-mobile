@@ -19,7 +19,6 @@ export const Content = styled.div`
   padding: 20px;
 `;
 
-
 export const Title = styled.h1`
   font-size: 24px;
   font-weight: 600;
@@ -54,11 +53,13 @@ export const SendButton = styled.button<{ disabled: boolean }>`
   cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
   transition: all 0.2s ease;
 
-  background-color: ${(props) => (props.disabled ? theme.colors.neutral200 : theme.colors.primary600)};
-  color: ${(props) => (props.disabled ? theme.colors.neutral500 : theme.colors.white )};
+  background-color: ${(props) =>
+    props.disabled ? theme.colors.neutral200 : theme.colors.primary600};
+  color: ${(props) => (props.disabled ? theme.colors.neutral500 : theme.colors.white)};
 
   &:hover {
-    background-color: ${(props) => (props.disabled ? theme.colors.neutral200 : theme.colors.primary600)};
+    background-color: ${(props) =>
+      props.disabled ? theme.colors.neutral200 : theme.colors.primary600};
   }
 
   &:active {

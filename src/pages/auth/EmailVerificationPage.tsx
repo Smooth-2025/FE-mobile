@@ -6,11 +6,7 @@ import { useEmailVerification } from '@hooks/useEmailVerification';
 import { useCountdown } from '@hooks/useCountdown';
 import { useToast } from '@hooks/useToast';
 import { useAppDispatch, useAppSelector } from '@hooks/useAppRedux';
-import { 
-  setSignupStep, 
-  nextSignupStep,
-  selectSignupCurrentStep 
-} from '@store/slices/authSlice';
+import { setSignupStep, nextSignupStep, selectSignupCurrentStep } from '@store/slices/authSlice';
 import { StepProgressBar } from '@components/auth/StepProgressBar';
 import {
   validateVerificationCode,
@@ -121,15 +117,10 @@ export function EmailVerificationPage() {
 
   const isCodeValid = verificationCode.length === 5 && !codeError;
 
-
- 
   return (
     <>
-      <Header 
-        type="back"  
-        onLeftClick={() => navigate(-1)} 
-      />
-      
+      <Header type="back" onLeftClick={() => navigate(-1)} />
+
       <Container>
         <Content>
           <StepProgressBar currentStep={currentStep} />
@@ -141,49 +132,43 @@ export function EmailVerificationPage() {
             메일을 확인하고 인증코드 5자리를 입력해주세요.
           </Subtitle>
 
-        {/* 이메일을 disabled Input으로 변경 */}
-        <FormGroup>
-          <Label>이메일</Label>
-          <Input
-            type="email"
-            value={email}
-            disabled
-          />
-        </FormGroup>
+          {/* 이메일을 disabled Input으로 변경 */}
+          <FormGroup>
+            <Label>이메일</Label>
+            <Input type="email" value={email} disabled />
+          </FormGroup>
 
-        {/* 인증코드 입력 - 타이머를 input 안에 표시 */}
-        <FormGroup>
-          <Label>인증코드</Label>
-          <CodeInputWrapper>
-            <Input
-              type="text"
-              placeholder="인증코드 5자리"
-              value={verificationCode}
-              onChange={handleCodeChange}
-              maxLength={5}
-            />
-            {!isExpired && (
-              <CodeTimerDisplay>{formattedTime}</CodeTimerDisplay>
-            )}
-          </CodeInputWrapper>
-          
-          {codeError && <ErrorMessage>{codeError}</ErrorMessage>}
-          {isExpired && <ErrorMessage>인증 시간이 만료되었습니다.</ErrorMessage>}
-        </FormGroup>
+          {/* 인증코드 입력 - 타이머를 input 안에 표시 */}
+          <FormGroup>
+            <Label>인증코드</Label>
+            <CodeInputWrapper>
+              <Input
+                type="text"
+                placeholder="인증코드 5자리"
+                value={verificationCode}
+                onChange={handleCodeChange}
+                maxLength={5}
+              />
+              {!isExpired && <CodeTimerDisplay>{formattedTime}</CodeTimerDisplay>}
+            </CodeInputWrapper>
 
-        <VerifyButton disabled={!isCodeValid || isLoading || isExpired} onClick={handleVerify}>
-          {isLoading ? '인증 중...' : '인증완료'}
-        </VerifyButton>
+            {codeError && <ErrorMessage>{codeError}</ErrorMessage>}
+            {isExpired && <ErrorMessage>인증 시간이 만료되었습니다.</ErrorMessage>}
+          </FormGroup>
 
-        <ResendText>
-          메일이 도착하지 않았나요?{' '}
-          <ResendLink onClick={handleResend} disabled={isLoading}>
-            재전송
-          </ResendLink>
-        </ResendText>
+          <VerifyButton disabled={!isCodeValid || isLoading || isExpired} onClick={handleVerify}>
+            {isLoading ? '인증 중...' : '인증완료'}
+          </VerifyButton>
+
+          <ResendText>
+            메일이 도착하지 않았나요?{' '}
+            <ResendLink onClick={handleResend} disabled={isLoading}>
+              재전송
+            </ResendLink>
+          </ResendText>
         </Content>
       </Container>
-      
+
       {toasts &&
         toasts.map((toast) => (
           <AlertToast

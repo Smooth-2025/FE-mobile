@@ -24,7 +24,6 @@ const Content = styled.div<{ $hasBottomNav: boolean }>`
   box-sizing: border-box;
 `;
 
-
 type RouteHandle = { hideBottomNav?: boolean };
 type MatchUnknown = { handle?: unknown };
 

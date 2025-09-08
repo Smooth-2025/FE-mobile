@@ -39,7 +39,7 @@ export const InfoItem = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: ${theme.spacing.md}px 0;
-  
+
   &:last-child {
     border-bottom: none;
   }
@@ -55,7 +55,7 @@ export const InfoValue = styled.span`
   font-size: ${theme.fontSize[16]}rem;
   color: ${theme.colors.neutral700};
   font-weight: 500;
-  
+
   &.no-data {
     color: ${theme.colors.neutral400};
     font-style: italic;

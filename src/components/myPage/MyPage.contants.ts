@@ -10,7 +10,6 @@ export interface MenuItemData {
 }
 
 export const MENU_ITEMS: MenuItemData[] = [
-
   {
     id: 'emergency',
     path: '/mypage/emergency',

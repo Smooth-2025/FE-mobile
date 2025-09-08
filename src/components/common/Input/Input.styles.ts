@@ -12,7 +12,6 @@ export const StyledLabel = styled.label`
   color: ${theme.colors.neutral600};
 `;
 
-
 export const StyledInput = styled.input`
   width: 100%;
   box-sizing: border-box;
@@ -41,7 +40,7 @@ export const StyledInput = styled.input`
     box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.primary600};
     outline: none;
   }
-  
+
   &:focus:disabled {
     /* disabled 상태에서는 focus 효과 제거 */
     border-color: ${({ theme }) => theme.colors.neutral300};

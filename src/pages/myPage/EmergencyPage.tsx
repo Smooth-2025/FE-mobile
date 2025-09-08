@@ -73,10 +73,10 @@ export default function EmergencyPage() {
   // 전화번호 마스킹
   const maskPhoneNumber = (phone: string) => {
     if (!phone) return '[정보 없음]';
-    
+
     // 하이픈 제거한 순수 번호로 처리
     const cleanPhone = phone.replace(/-/g, '');
-    
+
     if (cleanPhone.length === 11 && cleanPhone.startsWith('010')) {
       // 010-XXXX-XXXX 형태로 마스킹
       return `010-****-${cleanPhone.slice(-4)}`;
@@ -86,7 +86,7 @@ export default function EmergencyPage() {
       const end = cleanPhone.slice(-4);
       return `${start}-****-${end}`;
     }
-    
+
     return phone; // 너무 짧은 경우 그대로 표시
   };
 
@@ -99,11 +99,7 @@ export default function EmergencyPage() {
   if (isLoading) {
     return (
       <>
-        <Header 
-          type="close" 
-          title="응급정보" 
-          onLeftClick={handleGoBack} 
-        />
+        <Header type="close" title="응급정보" onLeftClick={handleGoBack} />
         <S.Container>
           <S.LoadingContainer>
             <S.LoadingText>응급정보를 불러오는 중...</S.LoadingText>
@@ -115,14 +111,9 @@ export default function EmergencyPage() {
 
   return (
     <>
-      <Header 
-        type="close" 
-        title="응급정보" 
-        onLeftClick={handleGoBack} 
-      />
-      
-      <S.Container>
+      <Header type="close" title="응급정보" onLeftClick={handleGoBack} />
 
+      <S.Container>
         {/* 응급정보 내용 */}
         <S.ContentSection>
           <S.InfoItem>
@@ -155,9 +146,7 @@ export default function EmergencyPage() {
         </S.ContentSection>
 
         {/* 수정 버튼 */}
-        <S.EditButton onClick={handleEditEmergency}>
-          응급정보 수정
-        </S.EditButton>
+        <S.EditButton onClick={handleEditEmergency}>응급정보 수정</S.EditButton>
       </S.Container>
 
       {/* 토스트 알림 */}

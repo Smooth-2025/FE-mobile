@@ -6,7 +6,9 @@ export type AlertRenderedRequest = {
 };
 
 export type AlertRenderedResponse = {
-  success: boolean;
+  data: {
+    reportId: string;
+  };
 };
 
 export const postAlertRendered = async (

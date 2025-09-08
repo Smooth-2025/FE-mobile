@@ -50,7 +50,7 @@ export const tokenUtils = {
       '/api/users/auth/login',
       '/api/users/auth/register',
       '/api/users/auth/send-verification',
-      '/api/users/auth/verify-email', 
+      '/api/users/auth/verify-email',
       '/api/users/auth/check-email',
       '/api/users/auth/refresh',
     ];

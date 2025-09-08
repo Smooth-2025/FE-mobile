@@ -26,7 +26,7 @@ interface AuthState {
   // 인증 여부
   isAuthenticated: boolean;
 
-   signupCurrentStep: 1 | 2 | 3 | 4;
+  signupCurrentStep: 1 | 2 | 3 | 4;
 }
 
 // 초기 상태
@@ -47,50 +47,45 @@ export const loginAsync = createAsyncThunk<
   LoginResponse['data'],
   LoginRequest,
   { rejectValue: string }
->(
-'auth/login',
-  async (loginData: LoginRequest, { rejectWithValue }) => {
-    try {
-      const response = await loginUser(loginData);
-      
-      // 토큰이 있는지 확인
-      if (!response.data.token) {
-        return rejectWithValue('토큰을 받지 못했습니다.');
-      }
-      
-      // 토큰 저장
-      tokenUtils.setToken(response.data.token);
-      
-      return response.data;
-    } catch (error: unknown) {
-      const axiosError = error as AxiosError<{ message?: string }>;
-      
-      const errorMessage = axiosError.response?.data?.message || axiosError.message || '로그인에 실패했습니다.';
-      return rejectWithValue(errorMessage);
+>('auth/login', async (loginData: LoginRequest, { rejectWithValue }) => {
+  try {
+    const response = await loginUser(loginData);
+
+    // 토큰이 있는지 확인
+    if (!response.data.token) {
+      return rejectWithValue('토큰을 받지 못했습니다.');
     }
-  },
-);
+
+    // 토큰 저장
+    tokenUtils.setToken(response.data.token);
+
+    return response.data;
+  } catch (error: unknown) {
+    const axiosError = error as AxiosError<{ message?: string }>;
+
+    const errorMessage =
+      axiosError.response?.data?.message || axiosError.message || '로그인에 실패했습니다.';
+    return rejectWithValue(errorMessage);
+  }
+});
 
 // 회원가입 비동기 액션
 export const registerAsync = createAsyncThunk<
   RegisterResponse['data'],
   RegisterRequest,
   { rejectValue: string }
->(
-  'auth/register',
-  async (registerData: RegisterRequest, { rejectWithValue }) => {
-    try {
-      const response = await registerUser(registerData);
-      
-      
-      return response.data; 
-    } catch (error: unknown) {
-      const axiosError = error as AxiosError<{ message?: string }>;
-      const errorMessage = axiosError.response?.data?.message || axiosError.message || '회원가입에 실패했습니다.';
-      return rejectWithValue(errorMessage);
-    }
+>('auth/register', async (registerData: RegisterRequest, { rejectWithValue }) => {
+  try {
+    const response = await registerUser(registerData);
+
+    return response.data;
+  } catch (error: unknown) {
+    const axiosError = error as AxiosError<{ message?: string }>;
+    const errorMessage =
+      axiosError.response?.data?.message || axiosError.message || '회원가입에 실패했습니다.';
+    return rejectWithValue(errorMessage);
   }
-);
+});
 // 로그아웃 비동기 액션
 export const logoutAsync = createAsyncThunk<void, void, { rejectValue: string }>(
   'auth/logout',
@@ -141,28 +136,27 @@ const authSlice = createSlice({
       state.error = null;
     },
 
-
     // 회원가입 스텝 관리
     setSignupStep: (state, action: PayloadAction<1 | 2 | 3 | 4>) => {
       state.signupCurrentStep = action.payload;
     },
-    
+
     nextSignupStep: (state) => {
       if (state.signupCurrentStep < 4) {
         state.signupCurrentStep = (state.signupCurrentStep + 1) as 1 | 2 | 3 | 4;
       }
     },
-    
+
     prevSignupStep: (state) => {
       if (state.signupCurrentStep > 1) {
         state.signupCurrentStep = (state.signupCurrentStep - 1) as 1 | 2 | 3 | 4;
       }
     },
-    
+
     resetSignupStep: (state) => {
       state.signupCurrentStep = 1;
     },
-    
+
     // 로그아웃시 상태 초기화
     resetAuthState: (state) => {
       tokenUtils.removeToken();
@@ -207,7 +201,7 @@ const authSlice = createSlice({
   },
 
   // 비동기 액션 처리
-extraReducers: (builder) => {
+  extraReducers: (builder) => {
     // 로그인 성공 처리
     builder
       .addCase(loginAsync.fulfilled, (state, action) => {
@@ -272,7 +266,7 @@ extraReducers: (builder) => {
         state.isAuthenticated = false;
       });
 
-      // 회원탈퇴 액션 처리
+    // 회원탈퇴 액션 처리
     builder
       .addCase(deleteAccountAsync.pending, (state) => {
         state.isDeleteAccountLoading = true;
@@ -296,11 +290,17 @@ extraReducers: (builder) => {
 });
 
 // Export
-export const { clearError, setAccessToken, logout, updateUser,   setSignupStep, 
-  nextSignupStep, 
-  prevSignupStep, 
+export const {
+  clearError,
+  setAccessToken,
+  logout,
+  updateUser,
+  setSignupStep,
+  nextSignupStep,
+  prevSignupStep,
   resetSignupStep,
-  resetAuthState } = authSlice.actions;
+  resetAuthState,
+} = authSlice.actions;
 
 export const selectSignupCurrentStep = (state: { auth: AuthState }) => state.auth.signupCurrentStep;
 export default authSlice.reducer;
@@ -312,7 +312,8 @@ export const selectIsAuthenticated = (state: { auth: AuthState }) => state.auth.
 export const selectIsLoginLoading = (state: { auth: AuthState }) => state.auth.isLoginLoading;
 export const selectIsRegisterLoading = (state: { auth: AuthState }) => state.auth.isRegisterLoading;
 export const selectIsLogoutLoading = (state: { auth: AuthState }) => state.auth.isLogoutLoading;
-export const selectIsDeleteAccountLoading = (state: { auth: AuthState }) => state.auth.isDeleteAccountLoading;
+export const selectIsDeleteAccountLoading = (state: { auth: AuthState }) =>
+  state.auth.isDeleteAccountLoading;
 export const selectAuthError = (state: { auth: AuthState }) => state.auth.error;
 
 /*

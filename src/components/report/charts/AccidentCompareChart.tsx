@@ -19,7 +19,7 @@ export default function AccidentCompareChart({ data }: { data: BenchmarkChart })
       <Styled.ChartContent>
         <Styled.TopBox>
           <Styled.ValueTop>{formatDuration(valuesSec[0] ?? 0)}</Styled.ValueTop>
-          <Styled.ValueTop>{formatDuration(valuesSec[1] ?? 0)}초</Styled.ValueTop>
+          <Styled.ValueTop>{formatDuration(valuesSec[1] ?? 0)}</Styled.ValueTop>
         </Styled.TopBox>
 
         <Styled.BarBox>

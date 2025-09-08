@@ -29,13 +29,13 @@ export const validateLoginPassword = (password: string): string => {
 // 로그인 폼 전체 유효성 검사
 export const validateLoginForm = (email: string, password: string): LoginFormErrors => {
   const errors: LoginFormErrors = {};
-  
+
   const emailError = validateEmail(email);
   if (emailError) errors.email = emailError;
-  
+
   const passwordError = validateLoginPassword(password);
   if (passwordError) errors.password = passwordError;
-  
+
   return errors;
 };
 

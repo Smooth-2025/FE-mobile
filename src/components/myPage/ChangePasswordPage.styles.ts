@@ -41,18 +41,21 @@ export const Input = styled.input<{
   width: 100%;
   height: 48px;
   padding: 0 48px 0 16px;
-  border: 1px solid ${({ $hasError, $hasSuccess }) =>
-    $hasError ? theme.colors.danger500 : 
-    $hasSuccess ? theme.colors.success600 : 
-    theme.colors.neutral300};
+  border: 1px solid
+    ${({ $hasError, $hasSuccess }) =>
+      $hasError
+        ? theme.colors.danger500
+        : $hasSuccess
+          ? theme.colors.success600
+          : theme.colors.neutral300};
   border-radius: ${theme.borderRadius.sm}px;
   font-size: ${theme.fontSize[16]}rem;
   background-color: ${theme.colors.white};
-  
+
   &::placeholder {
     color: ${theme.colors.neutral400};
   }
-  
+
   &:focus {
     outline: none;
     border-color: ${({ $hasError }) =>

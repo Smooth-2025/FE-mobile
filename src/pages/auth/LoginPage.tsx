@@ -26,13 +26,8 @@ import {
   SignupLink,
   LinkButton,
 } from '@/components/auth/LoginPage.styles';
-import {
-  validateLoginForm,
-  type LoginFormErrors,
-} from '@/utils/validation/authValidation';
+import { validateLoginForm, type LoginFormErrors } from '@/utils/validation/authValidation';
 import type { LoginRequest } from '@/types/api';
-
-
 
 // LoginPage 컴포넌트
 export function LoginPage() {
