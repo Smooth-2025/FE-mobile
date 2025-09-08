@@ -32,7 +32,7 @@ export default function ReportCard(props: PropsType) {
     if (data?.id !== null && !data.isRead) {
       markReportAsRead(data.id);
     }
-    navigate(`/report/detail/${data.id}`);
+    navigate(`/report/${data.id}`);
   };
 
   return (

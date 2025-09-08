@@ -45,7 +45,7 @@ export const drivingApi = createApi({
         if (pageParam) params.cursor = pageParam;
 
         return {
-          url: '/timeline',
+          url: '/timeline/all',
           method: 'GET',
           params,
         };
@@ -90,7 +90,7 @@ export const drivingApi = createApi({
         if (pageParam) params.cursor = pageParam;
 
         return {
-          url: '/timeline/reports',
+          url: '/timeline/report',
           method: 'GET',
           params,
         };

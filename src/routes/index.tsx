@@ -1,12 +1,13 @@
 import { lazy, Suspense, type ReactNode } from 'react';
 import { createBrowserRouter, Navigate, RouterProvider, type RouteObject } from 'react-router-dom';
-import AppLayout from '@/layout/AppLayout';
 
 // page lazy import
+const AppLayout = lazy(() => import('@/layout/AppLayout'));
 const HomePage = lazy(() => import('@pages/home/HomePage'));
 const LoginPage = lazy(() => import('@pages/auth/LoginPage'));
 const DrivePage = lazy(() => import('@pages/drive/DrivePage'));
 const ReportPage = lazy(() => import('@pages/report/ReportPage'));
+const ReportDetailPage = lazy(() => import('@pages/report/ReportDetailPage'));
 const MyPage = lazy(() => import('@pages/myPage/MyPage'));
 const ProfilePage = lazy(() => import('@pages/myPage/ProfilePage'));
 const NotFoundPage = lazy(() => import('@pages/NotFoundPage'));
@@ -50,6 +51,7 @@ const routes: RouteObject[] = [
       { index: true, element: <HomePage /> },
       { path: 'drive', element: <DrivePage /> },
       { path: 'report', element: <ReportPage /> },
+      { path: 'report/:id', element: <ReportDetailPage />, handle: { hideBottomNav: true } },
       { path: 'mypage', element: <MyPage /> },
       { path: 'mypage/profile', element: <ProfilePage />, handle: { hideBottomNav: true } },
       { path: 'mypage/ChangePasswordPage', element: <ChangePasswordPage /> , handle: { hideBottomNav: true } },

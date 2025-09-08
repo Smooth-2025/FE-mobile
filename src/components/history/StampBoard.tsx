@@ -5,8 +5,8 @@ import { useGetDrivingProgressQuery } from '@/store/report/reportApi';
 
 export default function StampBoard() {
   const { data, isLoading, isError } = useGetDrivingProgressQuery();
-  const stampTotal = data?.threshold ?? 15;
-  const count = data?.currentCycleCount ?? 0;
+  const STAMP_TOTAL = 15;
+  const count = data?.numberOfDriving ?? 0;
 
   if (isLoading) {
     return <>isLoading...</>;
@@ -36,7 +36,7 @@ export default function StampBoard() {
           </p>
         </styled.StatusHeader>
         <styled.StampGrid>
-          {Array.from({ length: stampTotal }, (_, i) => i + 1).map((n) => {
+          {Array.from({ length: STAMP_TOTAL }, (_, i) => i + 1).map((n) => {
             const filled = n <= count;
             return (
               <styled.StampCell key={n} filled={filled} aria-label={`stamp-${n}`}>
