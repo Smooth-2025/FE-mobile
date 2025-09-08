@@ -4,6 +4,7 @@ import { defineConfig } from 'vite';
 
 // https://vite.dev/config/
 export default defineConfig({
+  assetsInclude: ['**/*.glb', '**/*.gltf'],
   plugins: [
     react({
       babel: {
@@ -11,6 +12,10 @@ export default defineConfig({
       },
     }),
   ],
+  define: {
+    global: 'globalThis',
+  },
+  server: {},
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
