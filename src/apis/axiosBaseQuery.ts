@@ -31,7 +31,7 @@ export const axiosBaseQuery =
       const e = err as AxiosError<BackendError>;
       const code = e.response?.data?.code;
 
-      const isLinkStatusGet = (method ?? 'GET').toUpperCase() === 'GET' && url === '/vehicle';
+      const isLinkStatusGet = (method ?? 'GET').toUpperCase() === 'GET' && url === '/users/vehicle';
 
       if (code === 1601 && isLinkStatusGet) {
         return { data: { linked: false, vehicle: null } };

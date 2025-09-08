@@ -25,7 +25,9 @@ function Placeholder() {
 }
 
 export default function WeeklySummary() {
-  const { data, isLoading, isError } = useGetWeeklySummaryQuery();
+  const { data, isLoading, isError } = useGetWeeklySummaryQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+  });
 
   if (isLoading) {
     return <Placeholder />;
