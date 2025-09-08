@@ -1,4 +1,4 @@
-import drivecastApi from './drivecast';
+import api from './index';
 import type { 
   EmergencyRequestDto, 
   EmergencyDecisionResponse, 
@@ -6,9 +6,9 @@ import type {
 } from '@/types/api';
 
 export const sendEmergencyDecision = async (data: EmergencyRequestDto): Promise<EmergencyDecisionResponse> => {
-  return await drivecastApi.post('/api/drivecast/emergency/decision', data);
+  return await api.post('/api/drivecast/emergency/decision', data);
 };
 
 export const getEmergencyHistory = async (): Promise<EmergencyHistoryResponse> => {
-  return await drivecastApi.get('/api/drivecast/emergency/history');
+  return await api.get('/api/drivecast/emergency/history');
 };
