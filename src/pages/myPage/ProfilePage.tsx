@@ -8,12 +8,13 @@ import {
   selectIsLogoutLoading,
   selectIsDeleteAccountLoading,
 } from '@/store/slices/authSlice';
-import { useToast } from '@/hooks/useToast';
+import { baseApi } from '@/store/baseApi';
 import { getUserProfile } from '@/apis/auth';
 import Header from '@/layout/Header';
 import BottomSheetPortal from '@/components/portal/BottomSheetPortal';
 import AlertToast from '@/components/common/AlertToast/AlertToast';
 import * as S from '@/components/myPage/ProfilePage.styles';
+import { useToast } from '@/hooks/useToast';
 import type { UserProfileResponse } from '@/types/api';
 
 type UserProfile = UserProfileResponse['data'];
@@ -91,6 +92,10 @@ export default function ProfilePage() {
   const handleLogout = async () => {
     try {
       await dispatch(logoutAsync()).unwrap();
+
+      //RTK Query 초기화
+      dispatch(baseApi.util.resetApiState());
+
       setIsLogoutSheetOpen(false);
       navigate('/login', {
         state: { successMessage: '이용해주셔서 감사합니다. 다시 만나요!' },
@@ -105,6 +110,10 @@ export default function ProfilePage() {
     try {
       await dispatch(deleteAccountAsync()).unwrap();
       setIsDeleteAccountSheetOpen(false);
+
+      //RTK Query 초기화
+      dispatch(baseApi.util.resetApiState());
+
       navigate('/login', {
         state: { successMessage: '계정 탈퇴가 완료되었습니다. 이용해주셔서 감사합니다.' },
       });

@@ -57,7 +57,9 @@ function Placeholder() {
 }
 
 export default function CharacterTraits() {
-  const { data, isLoading, isError } = useGetCharacterTraitsQuery();
+  const { data, isLoading, isError } = useGetCharacterTraitsQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+  });
 
   if (isLoading) {
     return <Placeholder />;
