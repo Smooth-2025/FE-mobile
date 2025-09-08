@@ -21,6 +21,7 @@ export const StyledInput = styled.input`
   border-radius: ${theme.borderRadius.md}px;
   padding: 12px 16px;
   outline: none;
+  border: 1px solid transparent;
 
   &:disabled {
     background-color: ${({ theme }) => theme.colors.neutral50};
@@ -34,10 +35,9 @@ export const StyledInput = styled.input`
   }
 
   &:focus {
-    border-color: ${({ theme }) => theme.colors.primary700};
+    border: 1px solid ${({ theme }) => theme.colors.primary700};
     background-color: ${({ theme }) => theme.colors.white};
     color: ${({ theme }) => theme.colors.neutral600};
-    box-shadow: 0 0 0 2px ${({ theme }) => theme.colors.primary600};
     outline: none;
   }
 
