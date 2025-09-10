@@ -223,9 +223,9 @@ export function LoginPage() {
       </PageContainer>
 
       {/* 토스트 알림들 */}
-      {toasts.map((toast) => (
+      {toasts.map((toast, index) => (
         <AlertToast
-          key={toast.id}
+          key={`${toast.id}-${index}`}
           type={toast.type}
           title={toast.title}
           content={toast.content}

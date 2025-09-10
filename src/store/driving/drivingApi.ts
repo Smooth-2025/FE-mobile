@@ -1,5 +1,4 @@
-import { createApi } from '@reduxjs/toolkit/query/react';
-import { axiosBaseQuery } from '@/apis/axiosBaseQuery';
+import { baseApi } from '@/store/baseApi';
 import { TIMELINE_DEFAULT_ARG } from '@/constants/driving';
 import type {
   TodaySummary,
@@ -10,28 +9,25 @@ import type {
   Cursor,
 } from '@/store/driving/type';
 
-export const drivingApi = createApi({
-  reducerPath: 'drivingApi',
-  baseQuery: axiosBaseQuery({ baseUrl: '/api/driving-analysis' }),
-  tagTypes: ['TodaySummary', 'CharacterTraits', 'WeeklySummary', 'Timeline'],
+export const drivingApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
-    //오늘 주행 요약
+    // 오늘 주행 요약
     getTodaySummary: build.query<TodaySummary, void>({
-      query: () => ({ url: '/summary/today', method: 'GET' }),
+      query: () => ({ url: '/driving-analysis/summary/today', method: 'GET' }),
       providesTags: ['TodaySummary'],
     }),
     // 유저 성향 조회
     getCharacterTraits: build.query<CharacterTraits, void>({
-      query: () => ({ url: '/my/character', method: 'GET' }),
+      query: () => ({ url: '/driving-analysis/my/character', method: 'GET' }),
       providesTags: ['CharacterTraits'],
     }),
-    //최근 7일 주행 요약
+    // 최근 7일 주행 요약
     getWeeklySummary: build.query<WeeklySummary, void>({
-      query: () => ({ url: '/summary/weekly', method: 'GET' }),
+      query: () => ({ url: '/driving-analysis/summary/weekly', method: 'GET' }),
       providesTags: ['WeeklySummary'],
     }),
 
-    //주행 기록 (전체)
+    // 주행 기록 (전체)
     getTimeline: build.infiniteQuery<Timeline, TimelineArg, Cursor>({
       infiniteQueryOptions: {
         initialPageParam: undefined,
@@ -45,13 +41,14 @@ export const drivingApi = createApi({
         if (pageParam) params.cursor = pageParam;
 
         return {
-          url: '/timeline/all',
+          url: '/driving-analysis/timeline/all',
           method: 'GET',
           params,
         };
       },
       providesTags: ['Timeline'],
     }),
+
     // 주행 기록 (주행)
     getTimelineDriving: build.infiniteQuery<Timeline, TimelineArg, Cursor>({
       infiniteQueryOptions: {
@@ -61,20 +58,19 @@ export const drivingApi = createApi({
           return lastPage.nextCursor;
         },
       },
-
       query: ({ queryArg, pageParam }) => {
         const params: Record<string, string> = { limit: String(queryArg.limit) };
         if (pageParam) params.cursor = pageParam;
 
         return {
-          url: '/timeline/driving',
+          url: '/driving-analysis/timeline/driving',
           method: 'GET',
           params,
         };
       },
-
       providesTags: ['Timeline'],
     }),
+
     // 주행 기록 (리포트)
     getTimelineReports: build.infiniteQuery<Timeline, TimelineArg, Cursor>({
       infiniteQueryOptions: {
@@ -84,29 +80,29 @@ export const drivingApi = createApi({
           return lastPage.nextCursor;
         },
       },
-
       query: ({ queryArg, pageParam }) => {
         const params: Record<string, string> = { limit: String(queryArg.limit) };
         if (pageParam) params.cursor = pageParam;
 
         return {
-          url: '/timeline/report',
+          url: '/driving-analysis/timeline/report',
           method: 'GET',
           params,
         };
       },
       providesTags: ['Timeline'],
     }),
-    //리포트 읽음 업데이트
+
+    // 리포트 읽음 업데이트
     markReportAsRead: build.mutation<void, number>({
       query: (reportId) => ({
-        url: `/reports/${reportId}/read`,
+        url: `/driving-analysis/reports/${reportId}/read`,
         method: 'PATCH',
       }),
       invalidatesTags: ['Timeline'],
 
       async onQueryStarted(reportId, { dispatch, queryFulfilled }) {
-        // 공통 업데이터
+        // 공통 업데이트 함수
         const applyPatch = (page: Timeline) => {
           page?.items?.forEach?.((item) => {
             if (item.type === 'REPORT' && item.data?.id === reportId) {
@@ -114,18 +110,21 @@ export const drivingApi = createApi({
             }
           });
         };
-        //리포트 탭 캐시 패치
+
+        // 리포트 탭 캐시 패치
         const patchReports = dispatch(
           drivingApi.util.updateQueryData('getTimelineReports', TIMELINE_DEFAULT_ARG, (draft) => {
             draft.pages.forEach((page) => applyPatch(page));
           }),
         );
-        //전체 탭 캐시 패치
+
+        // 전체 탭 캐시 패치
         const patchAll = dispatch(
           drivingApi.util.updateQueryData('getTimeline', TIMELINE_DEFAULT_ARG, (draft) => {
             draft.pages.forEach((page) => applyPatch(page));
           }),
         );
+
         try {
           await queryFulfilled;
         } catch {

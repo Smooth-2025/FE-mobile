@@ -29,7 +29,9 @@ function Placeholder() {
 }
 
 export default function TodaySummary() {
-  const { data, isLoading, isError } = useGetTodaySummaryQuery();
+  const { data, isLoading, isError } = useGetTodaySummaryQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+  });
 
   if (isLoading) {
     return <Placeholder />;

@@ -6,9 +6,10 @@ import { selectAlerts } from '@/store/slices/alertSlice';
 import { theme } from '@/styles/theme';
 import DrivePortal from '@/components/portal/DrivePortal';
 import DriveOverlayPage from '@/pages/driveOverlay/DriveOverlayPage';
-import { selectIsAuthenticated } from '@/store/slices/authSlice';
+import { selectIsAuthenticated, selectUser, fetchUserProfileAsync } from '@/store/slices/authSlice';
 import { useWebSocket } from '@/hooks/useWebSocket';
 import { useGetLinkStatusQuery } from '@/store/vehicle/vehicleApi';
+import { useAppDispatch } from '@/hooks/useAppRedux';
 import BottomNav, { NAV_HEIGHT } from './BottomNav';
 
 const Shell = styled.div`
@@ -32,6 +33,7 @@ const isRouteHandle = (h: unknown): h is RouteHandle =>
 
 export default function AppLayout() {
   const [drivingActive, setDrivingActive] = useState(false);
+  const dispatch = useAppDispatch();
 
   const matches = useMatches() as ReadonlyArray<MatchUnknown>;
   const hideBottomNav = matches.some(
@@ -39,6 +41,8 @@ export default function AppLayout() {
   );
 
   const alert = useSelector(selectAlerts);
+  const isAuthenticated = useSelector(selectIsAuthenticated);
+  const user = useSelector(selectUser);
 
   useEffect(() => {
     if (!alert) return;
@@ -52,7 +56,12 @@ export default function AppLayout() {
     }
   }, [alert, drivingActive]);
 
-  const isAuthenticated = useSelector(selectIsAuthenticated);
+  // 앱 시작시 사용자 프로필 불러오기
+  useEffect(() => {
+    if (isAuthenticated && !user) {
+      dispatch(fetchUserProfileAsync());
+    }
+  }, [isAuthenticated, user, dispatch]);
   const { data: linkStatus } = useGetLinkStatusQuery(undefined, {
     skip: !isAuthenticated,
   });
