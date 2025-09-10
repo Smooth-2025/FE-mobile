@@ -11,7 +11,7 @@ export const vehicleApi = baseApi.injectEndpoints({
 
     //-- 차량 연동 요청  --
     linkVehicle: builder.mutation<LinkStatus, LinkVehicleReq>({
-      query: (data) => ({ url: '/vehicle', method: 'POST', data }),
+      query: (data) => ({ url: '/users/vehicle', method: 'POST', data }),
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
           const { data: nextStatus } = await queryFulfilled;
