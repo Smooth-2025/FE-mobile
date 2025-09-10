@@ -8,7 +8,6 @@ export const ReportCardContainer = styled.div<{ $status: 'PROCESSING' | 'COMPLET
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-top: 8px;
   cursor: pointer;
   background: ${({ $status, theme }) =>
     $status === 'PROCESSING' ? theme.colors.primary100 : theme.colors.primary100};

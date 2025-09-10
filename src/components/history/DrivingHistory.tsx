@@ -106,19 +106,21 @@ export default function DrivingHistory() {
           sections.map((sec) => (
             <section key={sec.date} style={{ marginBottom: 16 }}>
               <Styled.DateTitle>{formatDateLabel(sec.date)}</Styled.DateTitle>
-              {sec.items.map((item) => {
-                if (item.type === 'DRIVING') {
-                  return (
-                    <DrivingCard key={`drv-${item.id}`} status={item.status} data={item.data} />
-                  );
-                }
-                if (item.type === 'REPORT') {
-                  return (
-                    <ReportCard key={`rpt-${item.id}`} status={item.status} data={item.data} />
-                  );
-                }
-                return null;
-              })}
+              <Styled.ItemList>
+                {sec.items.map((item) => {
+                  if (item.type === 'DRIVING') {
+                    return (
+                      <DrivingCard key={`drv-${item.id}`} status={item.status} data={item.data} />
+                    );
+                  }
+                  if (item.type === 'REPORT') {
+                    return (
+                      <ReportCard key={`rpt-${item.id}`} status={item.status} data={item.data} />
+                    );
+                  }
+                  return null;
+                })}
+              </Styled.ItemList>
             </section>
           ))
         )}

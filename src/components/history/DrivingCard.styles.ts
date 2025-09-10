@@ -8,14 +8,13 @@ export const DrivingCardContainer = styled.div<{ $status: 'PROCESSING' | 'COMPLE
     ${({ $status, theme }) => ($status === 'PROCESSING' ? 'none' : theme.colors.neutral300)};
   border-radius: 10px;
   padding: 24px 20px;
-  margin-bottom: 10px;
   display: flex;
   flex-direction: column;
 `;
 
-export const MetricsSection = styled.div`
+export const MetricsSection = styled.div<{ $status: 'PROCESSING' | 'COMPLETED' }>`
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: ${({ $status }) => ($status === 'PROCESSING' ? '1fr' : '1fr 1fr')};
   gap: 12px 30px;
 
   @media (max-width: 400px) {

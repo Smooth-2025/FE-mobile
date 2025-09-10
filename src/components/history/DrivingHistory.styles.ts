@@ -51,3 +51,9 @@ export const LoadMore = styled.div`
   color: ${({ theme }) => theme.colors.neutral500};
   font-size: ${({ theme }) => theme.fontSize[16]};
 `;
+
+export const ItemList = styled.div`
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+`;
