@@ -39,7 +39,7 @@ export default function AccidentResponse({ reportId }: { reportId: number }) {
             </li>
             <li>
               <span>평균 반응 시간</span>
-              <span>{formatDuration(avgReactionSec ?? 0)} 초</span>
+              <span>{formatDuration(avgReactionSec ?? 0)}</span>
             </li>
             <li>
               <span>감속/정지 반응비율</span>
@@ -54,7 +54,7 @@ export default function AccidentResponse({ reportId }: { reportId: number }) {
         {/* == 주행차트 ==  */}
         <div>
           <Styled.AccidentTitle>
-            평균 사용자보다
+            평균 사용자보다 {` `}
             <b>{formatDuration(deltaSec ?? 0)}</b>
             <br />
             {deltaSec > 0

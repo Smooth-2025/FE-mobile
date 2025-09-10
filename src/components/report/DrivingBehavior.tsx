@@ -45,11 +45,11 @@ export default function DrivingBehavior({ reportId }: { reportId: number }) {
         {/* == 주행 차트1 ==  */}
         <div>
           <Styled.BehaviorTitle>
-            이번 주행에는
+            이번 주행에는 {` `}
             <b>
               {drivingPattern.weekday} {drivingPattern.timeslot}
             </b>
-            에 위험 운전 행동이 가장 많이 발생했습니다.
+            에 <br /> 위험 운전 행동이 가장 많이 발생했습니다.
           </Styled.BehaviorTitle>
           <PatternChart data={drivingPattern.chart} />
           <Styled.InsightText>{drivingPattern.comment}</Styled.InsightText>
