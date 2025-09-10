@@ -76,9 +76,9 @@ export default function CharacterTraits() {
       <styled.Header>
         <styled.Subtitle>100km 주행 분석 결과</styled.Subtitle>
         <styled.Title>
-          당신의 운전 성향은 &nbsp;
+          당신의 운전 성향은
           <strong>
-            {data?.characterTrait && `[${data?.characterTrait}]`}
+            {data?.characterTrait && ` [${data?.characterTrait}] `}
             {characterTypeLabels[data?.characterType ?? 'NONE']}
           </strong>
           입니다.
