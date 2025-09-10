@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { loginUser, registerUser, logoutUser, deleteAccount } from '@apis/auth';
+import { loginUser, registerUser, logoutUser, deleteAccount, getUserProfile } from '@apis/auth';
 import { tokenUtils } from '@/utils/token';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type {
@@ -8,6 +8,7 @@ import type {
   RegisterRequest,
   RegisterResponse,
   User,
+  UserProfileResponse,
 } from '@/types/api';
 import type { AxiosError } from 'axios';
 
@@ -127,6 +128,28 @@ export const deleteAccountAsync = createAsyncThunk<void, void, { rejectValue: st
   },
 );
 
+// 사용자 프로필 조회 비동기 액션
+export const fetchUserProfileAsync = createAsyncThunk<
+  UserProfileResponse['data'],
+  void,
+  { rejectValue: string }
+>(
+  'auth/fetchUserProfile',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await getUserProfile();
+      return response.data;
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError<{ message?: string }>;
+      const errorMessage =
+        axiosError.response?.data?.message ||
+        axiosError.message ||
+        '사용자 프로필을 불러오는데 실패했습니다.';
+      return rejectWithValue(errorMessage);
+    }
+  },
+);
+
 // Auth Slice
 const authSlice = createSlice({
   name: 'auth',
@@ -213,6 +236,10 @@ const authSlice = createSlice({
           id: action.payload.userId,
           name: action.payload.name,
           email: '',
+          phone: '',
+          gender: 'MALE',
+          termsOfServiceAgreed: true,
+          privacyPolicyAgreed: true,
         } as User;
       })
       .addCase(loginAsync.rejected, (state, action) => {
@@ -285,6 +312,27 @@ const authSlice = createSlice({
         state.user = null;
         state.accessToken = null;
         state.isAuthenticated = false;
+      });
+
+    // 사용자 프로필 조회 액션 처리
+    builder
+      .addCase(fetchUserProfileAsync.fulfilled, (state, action) => {
+        state.user = {
+          id: action.payload.id,
+          name: action.payload.name,
+          email: action.payload.email,
+          phone: action.payload.phone,
+          gender: action.payload.gender,
+          bloodType: action.payload.bloodType,
+          emergencyContact1: action.payload.emergencyContact1,
+          emergencyContact2: action.payload.emergencyContact2,
+          emergencyContact3: action.payload.emergencyContact3,
+          termsOfServiceAgreed: true,
+          privacyPolicyAgreed: true,
+        } as User;
+      })
+      .addCase(fetchUserProfileAsync.rejected, (state, action) => {
+        state.error = action.payload || '사용자 프로필을 불러오는데 실패했습니다.';
       });
   },
 });
