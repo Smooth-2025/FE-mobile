@@ -31,11 +31,11 @@ export function formatMinutes(minutes: number): string {
   const remain = minutes % 60;
 
   if (hours > 0 && remain > 0) {
-    return `${hours} 시간 ${remain} 분`;
+    return `${hours}시간 ${remain}분`;
   } else if (hours > 0) {
-    return `${hours} 시간`;
+    return `${hours}시간`;
   } else {
-    return `${remain} 분`;
+    return `${remain}분`;
   }
 }
 

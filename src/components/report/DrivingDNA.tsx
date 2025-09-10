@@ -49,13 +49,12 @@ export default function DrivingDNA({ reportId }: { reportId: number }) {
       {/* == 주행 차트 ==  */}
       <div>
         <Styled.DNATitle>
-          DNA 분석결과&nbsp;
+          DNA 분석결과 &nbsp;
           <b>
             {axes.map((axis) => axis.label).join('-')}
             <br />
             {headline ?? ''}
-          </b>
-          예요!
+          </b>{' '}
         </Styled.DNATitle>
         <RadarChart categories={CATEGORIES} series={series} />
         <Styled.DNAListBox>
