@@ -27,7 +27,7 @@ export default function AccidentResponse({ reportId }: { reportId: number }) {
       <Styled.AccidentWrapper>
         <div>
           <Styled.AccidentTitle>
-            사고 상황에 평균 <b>1.7초</b> <br /> 만에 반응했어요!
+            사고 상황에 평균 <b>{formatDuration(avgReactionSec ?? 0)}</b> <br /> 만에 반응했어요!
           </Styled.AccidentTitle>
           <Styled.AccidentSubTitle>
             빠른 감속 반응은 사고 위험을 줄이는 데 매우 중요합니다!
@@ -39,22 +39,22 @@ export default function AccidentResponse({ reportId }: { reportId: number }) {
             </li>
             <li>
               <span>평균 반응 시간</span>
-              <span>{formatDuration(avgReactionSec ?? 0)} 초</span>
+              <span>{formatDuration(avgReactionSec ?? 0)}</span>
             </li>
             <li>
               <span>감속/정지 반응비율</span>
-              <span>{brakeOrStopRatio ?? 0} %</span>
+              <span>{brakeOrStopRatio ?? 0}%</span>
             </li>
             <li>
               <span>우회 비율</span>
-              <span>{avoidRatio ?? 0} %</span>
+              <span>{avoidRatio ?? 0}%</span>
             </li>
           </Styled.AccidentInfoList>
         </div>
         {/* == 주행차트 ==  */}
         <div>
           <Styled.AccidentTitle>
-            평균 사용자보다
+            평균 사용자보다 {` `}
             <b>{formatDuration(deltaSec ?? 0)}</b>
             <br />
             {deltaSec > 0

@@ -17,10 +17,10 @@ export default function DrivingSummary({ reportId }: { reportId: number }) {
       {/* == 주행 차트 ==  */}
       <Styled.SummaryBox>
         <Styled.SummaryTitle>
-          15회 운전 기간동안 총 <b>{data?.totalDistanceKm ?? 0}km</b>를 <br /> 운전했어요!
+          15회 운전 기간동안 <br />총 <b>{data?.totalDistanceKm ?? 0}km</b>를 운전했어요!
         </Styled.SummaryTitle>
         <Styled.DateText>
-          {data?.periodStart} - {data?.periodEnd}
+          {data?.periodStart} ~ {data?.periodEnd}
         </Styled.DateText>
         <Styled.InfoList>
           <li>
