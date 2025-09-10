@@ -55,11 +55,13 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    // 401 에러 처리 - refresh API 요청은 재시도하지 않음
+    // 401 에러 처리 - 인증 관련 API는 재시도하지 않음
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
-      !originalRequest.url?.includes('/api/users/auth/refresh')
+      !originalRequest.url?.includes('/api/users/auth/refresh') &&
+      !originalRequest.url?.includes('/api/users/auth/login') &&
+      !originalRequest.url?.includes('/api/users/auth/register')
     ) {
       if (isRefreshing) {
         // 이미 갱신 중이면 대기열에 추가
