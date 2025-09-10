@@ -12,7 +12,7 @@ export default function DrivingCard(props: PropsType) {
   if (props.status === 'PROCESSING') {
     return (
       <Styled.DrivingCardContainer $status={'PROCESSING'}>
-        <Styled.MetricsSection>
+        <Styled.MetricsSection $status={'PROCESSING'}>
           <Styled.MetricItem>
             <Styled.ProcessingIndicator>
               <span />
@@ -29,7 +29,7 @@ export default function DrivingCard(props: PropsType) {
 
   return (
     <Styled.DrivingCardContainer $status={'COMPLETED'}>
-      <Styled.MetricsSection>
+      <Styled.MetricsSection $status={'PROCESSING'}>
         <Styled.MetricItem>
           <Styled.Dot color={theme.colors.accent_orange} />
           <Styled.MetricLabel>정속 주행률</Styled.MetricLabel>
