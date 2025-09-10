@@ -29,7 +29,7 @@ export default function DrivingCard(props: PropsType) {
 
   return (
     <Styled.DrivingCardContainer $status={'COMPLETED'}>
-      <Styled.MetricsSection $status={'PROCESSING'}>
+      <Styled.MetricsSection $status={'COMPLETED'}>
         <Styled.MetricItem>
           <Styled.Dot color={theme.colors.accent_orange} />
           <Styled.MetricLabel>정속 주행률</Styled.MetricLabel>
