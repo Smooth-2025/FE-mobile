@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import styled from '@emotion/styled';
 import { Outlet, useMatches, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -45,6 +45,28 @@ export default function AppLayout() {
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const user = useSelector(selectUser);
 
+  // 토큰 검증 중복 방지를 위한 캐싱 로직
+  const lastTokenCheckTime = useRef<number>(0);
+  const TOKEN_CHECK_COOLDOWN = 200; // 200ms 쿨다운
+
+  const safeTokenCheck = useCallback(async (reason: string): Promise<void> => {
+    const now = Date.now();
+    if (now - lastTokenCheckTime.current < TOKEN_CHECK_COOLDOWN) {
+      console.warn(`토큰 체크 스킵 (${reason}) - 최근에 실행됨`);
+      return;
+    }
+    
+    lastTokenCheckTime.current = now;
+    
+    try {
+      await dispatch(fetchUserProfileAsync()).unwrap();
+      console.warn(`토큰 검증 완료 (${reason})`);
+    } catch (error) {
+      console.error(`토큰 검증 실패 (${reason}):`, error);
+      // 401 인터셉터가 자동으로 토큰 갱신 시도
+    }
+  }, [dispatch]);
+
   useEffect(() => {
     if (!alert) return;
     if (alert.type === 'start' && drivingActive !== true) {
@@ -64,56 +86,19 @@ export default function AppLayout() {
     }
   }, [isAuthenticated, user, dispatch]);
 
-  // 앱 시작 시 토큰 검증용 (새로고침/페이지 이동 시 토큰 상태 체크)
+  // 앱 시작 시 토큰 검증용 (새로고침 시 토큰 상태 체크)
   useEffect(() => {
-    let mounted = true;
-    
     if (isAuthenticated) {
-      // 비동기로 토큰 유효성 검사
-      const checkTokenValidity = async () => {
-        try {
-          await dispatch(fetchUserProfileAsync()).unwrap();
-          console.warn('앱 시작 시 토큰 검증 완료');
-        } catch (error) {
-          if (mounted) {
-            console.error('토큰 검증 실패 - 갱신 로직 작동:', error);
-            // 401 인터셉터가 자동으로 토큰 갱신 시도
-          }
-        }
-      };
-      
-      checkTokenValidity();
+      safeTokenCheck('앱 시작');
     }
-
-    return () => {
-      mounted = false;
-    };
-  }, [dispatch, isAuthenticated]); // 마운트 시에만 한 번 실행
+  }, [isAuthenticated, safeTokenCheck]); // 마운트 시에만 한 번 실행
 
   // 페이지 이동 시 토큰 검증 (홈→리포트→마이페이지 이동 시)
   useEffect(() => {
-    let mounted = true;
-    
     if (isAuthenticated) {
-      const checkTokenOnPageChange = async () => {
-        try {
-          await dispatch(fetchUserProfileAsync()).unwrap();
-          console.warn(`페이지 이동 시 토큰 검증 완료: ${location.pathname}`);
-        } catch (error) {
-          if (mounted) {
-            console.error('페이지 이동 시 토큰 검증 실패:', error);
-            // 401 인터셉터가 자동으로 토큰 갱신 시도
-          }
-        }
-      };
-      
-      checkTokenOnPageChange();
+      safeTokenCheck(`페이지 이동: ${location.pathname}`);
     }
-
-    return () => {
-      mounted = false;
-    };
-  }, [location.pathname, isAuthenticated, dispatch]); // 경로가 바뀔 때마다 실행
+  }, [location.pathname, isAuthenticated, safeTokenCheck]); // 경로가 바뀔 때마다 실행
 
   const { data: linkStatus } = useGetLinkStatusQuery(undefined, {
     skip: !isAuthenticated,
